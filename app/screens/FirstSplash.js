@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
 import React from "react";
 import headPhone from "../../assets/images/headPhone.jpg";
 import { ButtonOwn, Indicator } from "../../src/components/Components";
-export const FirstSplash = () => {
+export const FirstSplash = ({navigation}) => {
     return (
         <View style={styles.container}>
             <View>
@@ -29,18 +29,18 @@ export const FirstSplash = () => {
             <View style={styles.containerButton} >
                 <ButtonOwn
                     title={"Siguiente"}
-                    onPress={() => { }}
+                    onPress={() => { navigation.navigate("secondSplash")}}
                 >
 
                 </ButtonOwn>
             </View>
-            <View style={styles.containerIndicator}>
+
                 <Indicator
                 i1={true}
                 i2={false}
                 >
                 </Indicator>
-            </View>
+
         </View>
     );
 }
@@ -50,9 +50,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FDFDFD',
         flexDirection: "column",
-       
         justifyContent: 'center',
-        position:"relative"
+        position:"relative",
+        paddingHorizontal:50
+        
     },
     containerIndicator:{
         flexDirection:"row",
@@ -65,9 +66,12 @@ const styles = StyleSheet.create({
         justifyContent:"center",
     },
     containerButton:{
-        marginBottom:60,
-        flexDirection:"row",
-        justifyContent:"center",
+        position:"absolute",
+        bottom:0,
+        width:Dimensions.get("window").width,
+        marginBottom: 90,
+        flexDirection: "row",
+        justifyContent: "center",
     },
     containerImageBack:{
         position:"absolute",
@@ -78,7 +82,6 @@ const styles = StyleSheet.create({
         borderRadius: 20
     },
     title: {
-        fontFamily: 'Oswald',
         fontStyle: "normal",
         fontWeight: "400",
         fontSize: 35,
@@ -91,7 +94,6 @@ const styles = StyleSheet.create({
         marginBottom:20
     },
     subTitle: {
-        fontFamily: 'Oswald',
         fontStyle: "normal",
         fontWeight: "400",
         fontSize: 20,
