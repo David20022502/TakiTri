@@ -20,7 +20,10 @@ const StackLibrary = createNativeStackNavigator();
 
 export default function Home({ navigation }) {
   global.navigation = navigation;
-  const { pageStatus } = useContext(HomeContext)
+  const { loadLikedMusics } = useContext(HomeContext)
+  React.useEffect(()=>{
+    loadLikedMusics();
+  },[])
   return (
     <>
       <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>

@@ -1,4 +1,4 @@
-import { HOME_PAGE_USER, IS_PLAYING_SOUND, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, PLAY_MUSIC_HOME } from "./HomeTypes";
+import { HOME_PAGE_USER, IS_PLAYING_SOUND, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, LOAD_ISLIKE_SONG, PLAY_MUSIC_HOME } from "./HomeTypes";
 
 
 export const HomeReducer=(state, action)=>{
@@ -38,6 +38,12 @@ export const HomeReducer=(state, action)=>{
             return{
                 ...state,
                 currentPlayList:payload
+            }
+        }
+        case LOAD_ISLIKE_SONG:{
+            return{
+                ...state,
+                likedSongsList:payload
             }
         }
     }

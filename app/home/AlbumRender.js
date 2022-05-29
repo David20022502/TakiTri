@@ -2,15 +2,29 @@ import { Icon } from '@rneui/themed';
 import * as React from 'react';
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions, Image } from 'react-native';
 import { MusicItem } from '../../src/Items/MusicItem';
-import { getMusics, getSongsByAlbum } from '../../src/services/MusicServices';
+import { getLikedSongById, getMusics, getSongsByAlbum } from '../../src/services/MusicServices';
 import disco from "../../assets/images/disco.jpeg";
+import HomeContext from '../../context/HomeContext/HomeContext';
 export const AlbumRender = (props) => {
     let {itemAlbum}=props.route.params;
+    let {typeAlbum}=props.route.params;
     const [datas, setDatas] = React.useState([])
-
+    const { likedSongsList } = React.useContext(HomeContext)
+    console.log(itemAlbum);
     React.useEffect(() => {
-        getSongsByAlbum(setDatas,itemAlbum.genre_name);
-    }, [])
+        switch(typeAlbum){
+            case "ALBUM":{
+                getSongsByAlbum(setDatas,itemAlbum.genre_name);
+                return;
+            }
+            case "FAVORITES":{
+               //setDatas(likedSongsList);
+               getLikedSongById(setDatas,likedSongsList);
+                return;
+            }
+
+        }
+    }, [likedSongsList])
     const renderItemMusic = (item) => {
         return (<MusicItem music={item.item} playList={datas} ></MusicItem>);
     }

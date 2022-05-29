@@ -14,15 +14,15 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
     if (item.item.length > 1) {
       return (
         <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 5 }}>
-          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic",{itemAlbum:item.item[0]}) }} imageUri={item.item[0].imageURL} title={item.item[0].name}></AlbumItem>
-          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic",{itemAlbum:item.item[1]}) }} imageUri={item.item[1].imageURL} title={item.item[1].name}></AlbumItem>
+          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic",{itemAlbum:item.item[0],typeAlbum:"ALBUM"}) }} imageUri={item.item[0].imageURL} title={item.item[0].name}></AlbumItem>
+          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic",{itemAlbum:item.item[1],typeAlbum:"ALBUM"}) }} imageUri={item.item[1].imageURL} title={item.item[1].name}></AlbumItem>
         </View>
 
       );
     } else {
       return (
         <View style={{ flexDirection: "row", justifyContent: "flex-start", paddingHorizontal: 5 }}>
-          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic",{itemAlbum:item.item[0]}) }} imageUri={item.item[0].imageURL} title={item.item[0].name}></AlbumItem>
+          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic",{itemAlbum:item.item[0],typeAlbum:"ALBUM"}) }} imageUri={item.item[0].imageURL} title={item.item[0].name}></AlbumItem>
         </View>
 
       );

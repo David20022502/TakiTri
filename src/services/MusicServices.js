@@ -1,5 +1,5 @@
 import { async } from "@firebase/util";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs,getDoc, query, where, doc } from "firebase/firestore";
 
 export const getMusics=async(resfreshFn)=>{
     const musicsRef = collection(
@@ -72,6 +72,13 @@ export const lokForSongs=async(resfreshFn,title)=>{
         const NOMBRE = item.song_name;
         const AUTOR = item.author;
         //console.log(NOMBRE,GENERO,AUTOR);
+        if(item.id=="7uxRJlaFVdpPUmB63qQ2"){
+          console.log("cancion encontrada",item)
+        }else{
+          console.log("cancion no encontrada")
+        }
+   
+
         if (NOMBRE.toLowerCase().includes(title.toLowerCase()) ||
             AUTOR.toLowerCase().includes(title.toLowerCase()) ) {
               tempSongsAlbum.push(doc.data());
@@ -85,21 +92,23 @@ export const lokForSongs=async(resfreshFn,title)=>{
     
   console.log("songsByAlbum",tempSongsAlbum);
 }
+export const getLikedSongById=async(resfreshFn,listMusicsId)=>{
+  const songsAlbumRef = collection(
+    global.db_Firestore,
+      "/songs"
+    );
+  let likedSongsOrder=[];
+  for(let i=0;i<listMusicsId.length;i++){
+    likedSongsOrder.push(listMusicsId[i].id);
+  }
+  console.log("ordenados",likedSongsOrder)
+  const songsLikeds = query(songsAlbumRef, where("id", "in", likedSongsOrder));
+  const querySnapshot = await getDocs(songsLikeds);
 
-export const getAccoutsNumber = async (setTamanio,cedula) => {
-  const accountRef = collection(
-    global.dbCon,
-    "Personas/" + cedula + "/Cuentas"
-  );
-  const accounts = query(accountRef, where("state", "==", "VIGENTE"));
-  const querySnapshot = await getDocs(accounts);
-  //console.log("-----------------------", accounts);
-  let tmpArrayAccount = [];
+  let tempSongsAlbum=[];
   querySnapshot.forEach((doc) => {
-    //    console.log(doc.id, " => ", doc.data());
-    tmpArrayAccount.push(doc.id);
+    tempSongsAlbum.push(doc.data());
   });
-  console.log(tmpArrayAccount.length);
-  setTamanio(tmpArrayAccount.length);
-  await aniadirNumCuentas(tmpArrayAccount.length,cedula);
-};
+  resfreshFn(tempSongsAlbum)
+  console.log("songsliked by id",tempSongsAlbum);
+}

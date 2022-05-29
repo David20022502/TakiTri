@@ -11,15 +11,24 @@ import MusicRecent from "../../assets/images/MusicRecent.jpg";
 import favorites from "../../assets/images/favorites.jpg";
 import playList from "../../assets/images/playList.jpg";
 import madeForYou from "../../assets/images/madeForYou.jpg";
+import HomeContext from '../../context/HomeContext/HomeContext';
 
 export const HomeScreen = ({ navigation }) => {
-  const [isSelected, setIsSelected] = React.useState("MainPage");
-
-
+  //const [isSelected, setIsSelected] = React.useState("MainPage");
+  const { audioPlayer } = React.useContext(HomeContext)
+  const itemAlbumFavorite={
+      "author": "",
+      "genre_name": "Yaraví",
+      "id": "4ESAmUoaJ31q8xJMke9u",
+      "imageURL": "https://firebasestorage.googleapis.com/v0/b/borrador-a0724.appspot.com/o/albumes%2Fsinf%C3%B3nico%20a%20lo%20grande.jpg?alt=media&token=cbe92664-1094-4687-9e5e-f4ab3d484bba",
+      "image_reference": "albumes/sinfónico a lo grande",
+      "name": "Favoritos",
+      "year": 2017,
+  }
   return (
     <View style={styles.container}>
         <AlbumItem onPresseAlbum={()=>{navigation.navigate("madeForYou")}} title={"Ultimas Reproducciones"} imageUri={MusicRecent}></AlbumItem>
-        <AlbumItem onPresseAlbum={()=>{navigation.navigate("madeForYou")}} title={"Favoritos"} imageUri={favorites}></AlbumItem>
+        <AlbumItem onPresseAlbum={()=>{navigation.navigate("Favorites",{itemAlbum:itemAlbumFavorite,typeAlbum:"FAVORITES"})}} title={"Favoritos"} imageUri={favorites}></AlbumItem>
         <AlbumItem onPresseAlbum={()=>{navigation.navigate("madeForYou")}} title={"Mis PlayLists"} imageUri={playList}></AlbumItem>
         <AlbumItem onPresseAlbum={()=>{navigation.navigate("madeForYou")}} title={"Hecho para ti"} imageUri={madeForYou}></AlbumItem>
       

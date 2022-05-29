@@ -1,9 +1,11 @@
 import React, { useCallback, useContext, useMemo, useReducer, useState } from "react";
 import HomeContext from "./HomeContext";
 import { HomeReducer } from "./HomeReducer";
-import { HOME_PAGE_USER, IS_PLAYING_SOUND, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, PLAY_MUSIC_HOME } from "./HomeTypes";
+import { HOME_PAGE_USER, IS_PLAYING_SOUND, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, LOAD_ISLIKE_SONG, PLAY_MUSIC_HOME } from "./HomeTypes";
 import { Audio } from 'expo-av';
 import Sound from 'react-native-sound';
+import { getLikedSong } from "../../src/services/MusicServices";
+import { collection, getDocs } from "firebase/firestore";
 
 export const HomeStates = ({ children }) => {
   const initialState = useMemo(
@@ -11,7 +13,8 @@ export const HomeStates = ({ children }) => {
       audioPlayer: null,
       currentMusic: null,
       isPlayingSound: null,
-      currentPlayList: null
+      currentPlayList: null,
+      likedSongsList:null
     }),
     []
   );
@@ -88,15 +91,33 @@ export const HomeStates = ({ children }) => {
   const loadCurrentPlayList = (playList) => {
     dispatch({ type: LOAD_CURRENT_PLAYLIST, payload: playList })
   }
+  const loadLikedMusics=useCallback(async()=>{
+    const songsLiked = collection(
+      global.db_Firestore,
+        "favorite"," DP3XfsWz0llXfYtU8UUO","songs"
+      );
+  
+      const querySnapshot = await getDocs(songsLiked);
+      let tempSongsAlbum=[];
+     
+        querySnapshot.forEach((doc) => {
+          tempSongsAlbum.push(doc.data());
+        });
+      dispatch({type:LOAD_ISLIKE_SONG,payload:tempSongsAlbum});
+    console.log("songsliked",tempSongsAlbum);
+
+  },[])
   return <HomeContext.Provider
     value={{
       audioPlayer: state.audioPlayer,
       currentMusic: state.currentMusic,
       isPlayingSound: state.isPlayingSound,
       currentPlayList: state.currentPlayList,
+      likedSongsList:state.likedSongsList,
       playMusic,
       setisPlayingSound,
-      loadCurrentPlayList
+      loadCurrentPlayList,
+      loadLikedMusics
     }}
   >
     {children}
