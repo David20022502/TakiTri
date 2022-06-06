@@ -3,9 +3,10 @@ import { Icon, Slider } from '@rneui/themed';
 import React, { useContext, useRef } from 'react';
 import HomeContext from '../../context/HomeContext/HomeContext';
 import Sound from 'react-native-sound';
+import { deleteLikedSong, putLikedSong } from '../../src/services/MusicServices';
 
-export const PlayMusicHome = () => {
-  const { audioPlayer, currentMusic, isPlayingSound, playMusic, currentPlayList } = useContext(HomeContext)
+export const PlayMusicHome = ({ navigation }) => {
+  const { audioPlayer, currentMusic, isPlayingSound, playMusic, currentPlayList, likedSongsList, loadLikedMusics } = useContext(HomeContext)
   const [progresBar, setProgresBar] = React.useState(0);
   const [isPlayingSoundInside, setIsPlayingSoundInside] = React.useState(isPlayingSound);
   const [progresBarVolume, setProgresBarVolume] = React.useState(20);
@@ -18,6 +19,19 @@ export const PlayMusicHome = () => {
   let isRepeating = React.useRef(false)
   let isSliderChanging = React.useRef(false)
   let timeProgresInterval = useRef(null)
+  React.useEffect(() => {
+    const backAction = () => {
+          navigation.goBack();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [])
   React.useEffect(() => {
 
     BackHandler.addEventListener(
@@ -33,7 +47,20 @@ export const PlayMusicHome = () => {
       finsihInterval();
       initInterval();
     }
+
+
   }, [audioPlayer])
+  React.useEffect(() => {
+    if (currentMusic) {
+      const index = likedSongsList.indexOf(currentMusic.id);
+      console.log("cambia de musica y ver si es favorito", index)
+      if (index > 0) {
+        setIsLiked(true)
+      } else {
+        setIsLiked(false)
+      }
+    }
+  }, [currentMusic])
   const onPlaybackStatusUpdate = () => {
     // console.log("cambiando")
     if (audioPlayer.isPlaying()) {
@@ -109,6 +136,7 @@ export const PlayMusicHome = () => {
     }
     setIsPlayingSoundInside(true)
   }
+
   const onPrevMusic = () => {
     let numRandom = calculateRandomMusic();
     let index = 0;
@@ -135,156 +163,168 @@ export const PlayMusicHome = () => {
     return numRandom;
 
   }
-  const handleLikeMusic=()=>{
-    currentPlayList.length;
+  const handleLikedMusic = () => {
+    const index = likedSongsList.indexOf(currentMusic.id);
+    if (index > 0) {
+      deleteLikedSong(currentMusic.id, loadLikedMusics);
+    } else {
+      putLikedSong(currentMusic.id, loadLikedMusics);
+    }
 
   }
 
   return (
-    <View style="allContainer">
-      <Image
-        source={{ uri: currentMusic.imageURL }}
-        style={{ width: "100%", height: "100%" }}
-        resizeMode="cover"
-        blurRadius={30}
+    <>
+      {currentMusic && <View style="allContainer">
+
+        <Image
+          source={{ uri: currentMusic.imageURL }}
+          style={{ width: "100%", height: "100%" }}
+          resizeMode="cover"
+          blurRadius={30}
         >
-      </Image>
+        </Image>
 
 
-      <View style={styles.container}>
-        <View style={[styles.containerItems]}>
-          <TouchableOpacity
-            onPress={() => { global.navigation.goBack(); console.log("atras") }}
-          >
-            <View style={{ width: 75, height: 40, paddingLeft: 10 }}>
-              <View style={styles.lineHeader}></View>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.containerItems}>
-          <View style={styles.containerImage}>
-            <Image
-              source={{ uri: currentMusic.imageURL }}
-              style={{ width: 330, height: 330, borderRadius: 20 }}
+        <View style={styles.container}>
+          <View style={[styles.containerItems]}>
+            <TouchableOpacity
+              onPress={() => { global.navigation.goBack(); console.log("atras") }}
             >
-            </Image>
-            <View style={{ flexDirection: "row", width: 120, justifyContent: "space-between", paddingTop: 10, marginRight: 10 }}>
-              <TouchableOpacity
-                onPress={() => {
-                  setIsRandom(!isRandom);
-                }}
+              <View style={{ width: 75, height: 40, paddingLeft: 10 }}>
+                <View style={styles.lineHeader}></View>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.containerItems}>
+            <View style={styles.containerImage}>
+              <Image
+                source={{ uri: currentMusic.imageURL }}
+                style={{ width: 330, height: 330, borderRadius: 20 }}
               >
-                <Icon name="shuffle" size={25} type="entypo" color={isRandom ? "red" : "#FDFDFD"} />
+              </Image>
+              <View style={{ flexDirection: "row", width: 120, justifyContent: "space-between", paddingTop: 10, marginRight: 10 }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setIsRandom(!isRandom);
+                  }}
+                >
+                  <Icon name="shuffle" size={25} type="entypo" color={isRandom ? "red" : "#FDFDFD"} />
 
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    isRepeating.current = !isRepeating.current; setIsRepeatingButton(!isRepeatingButton)
+                  }}
+                >
+                  <Icon name="repeat" size={25} type="feather" color={isRepeatingButton ? "red" : "#FDFDFD"} />
+
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Icon name="dots-three-vertical" size={25} type="entypo" color={"#FDFDFD"} />
+
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+          <View style={styles.containerItemsTitles}>
+            <View style={{ flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+              <Text style={styles.TitleName}>{currentMusic.author}</Text>
+              <Text style={styles.subTitleName}>{currentMusic.song_name}</Text>
+            </View>
+
+          </View>
+          <View style={{ paddingTop: 20, alignItems: 'stretch', justifyContent: 'center' }}>
+
+            <Slider
+              onTouchStart={onStartSliderChange}
+              onTouchEnd={onFinishSliderChange}
+              value={progresBar}
+              onValueChange={conChangeProgresBar}
+              minimumTrackTintColor={"#FFFFFF"}
+              maximumTrackTintColor={"#B7B7B7"}
+              maximumValue={1}
+              minimumValue={0}
+              thumbStyle={{ height: 15, width: 15 }}
+              thumbProps={{
+                children: (
+
+                  <View
+
+                    style={{ width: 15, height: 15, backgroundColor: "#FFFFFF", borderRadius: 7 }}
+                  >
+
+                  </View>
+
+
+                )
+              }}
+            />
+          </View>
+          <View style={styles.containerItemsControl}>
+            <Text style={[styles.counter, { paddingRight: 20 }]}>
+              {progresTime}
+            </Text>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: 200 }}>
+              <TouchableOpacity
+                onPress={onPrevMusic}
+              >
+                <Icon name="fastbackward" size={25} type="ant-design" color={"#FDFDFD"} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={async () => {
+                if (audioPlayer.isPlaying()) {
+                  setIsPlayingSoundInside(false)
+                  audioPlayer.pause();
+                  //finsihInterval();
+
+                } else {
+                  setIsPlayingSoundInside(true)
+                  audioPlayer.play();
+                  //initInterval();
+
+                }
+
+              }}>
+                <Icon name={isPlayingSoundInside ? "pause" : "play"} size={60} type="ant-design" color={"#FDFDFD"} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={onNextMusic}
+              >
+                <Icon name="fastbackward" size={25} type="ant-design" color={"#FDFDFD"} style={{ transform: [{ rotateY: '180deg' }] }} />
+              </TouchableOpacity>
+
+            </View>
+            <Text style={[styles.counter, { paddingLeft: 20 }]}>
+              {duration}
+            </Text>
+          </View>
+
+
+          <View style={styles.containerItemsControlBottom}>
+
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: 200 }}>
+              <TouchableOpacity>
+                <Icon name="volume-mute" size={25} type="fontisto" color={"#FDFDFD"} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  isRepeating.current = !isRepeating.current; setIsRepeatingButton(!isRepeatingButton)
+                  handleLikedMusic();
+                  setIsLiked(!isLiked)
                 }}
               >
-                <Icon name="repeat" size={25} type="feather" color={isRepeatingButton ? "red" : "#FDFDFD"} />
+                <Icon name={isLiked ? "heart" : "hearto"} size={30} type="ant-design" color={"#FDFDFD"} />
 
               </TouchableOpacity>
               <TouchableOpacity>
-                <Icon name="dots-three-vertical" size={25} type="entypo" color={"#FDFDFD"} />
-
+                <Icon name="sharealt" size={30} type="ant-design" color={"#FDFDFD"} style={{ transform: [{ rotateY: '180deg' }] }} />
               </TouchableOpacity>
             </View>
-          </View>
-        </View>
-        <View style={styles.containerItemsTitles}>
-          <View style={{ flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-            <Text style={styles.TitleName}>{currentMusic.author}</Text>
-            <Text style={styles.subTitleName}>{currentMusic.song_name}</Text>
-          </View>
-
-        </View>
-        <View style={{ paddingTop: 20, alignItems: 'stretch', justifyContent: 'center' }}>
-
-          <Slider
-            onTouchStart={onStartSliderChange}
-            onTouchEnd={onFinishSliderChange}
-            value={progresBar}
-            onValueChange={conChangeProgresBar}
-            minimumTrackTintColor={"#FFFFFF"}
-            maximumTrackTintColor={"#B7B7B7"}
-            maximumValue={1}
-            minimumValue={0}
-            thumbStyle={{ height: 15, width: 15 }}
-            thumbProps={{
-              children: (
-
-                <View
-
-                  style={{ width: 15, height: 15, backgroundColor: "#FFFFFF", borderRadius: 7 }}
-                >
-
-                </View>
-
-
-              )
-            }}
-          />
-        </View>
-        <View style={styles.containerItemsControl}>
-          <Text style={[styles.counter, { paddingRight: 20 }]}>
-            {progresTime}
-          </Text>
-          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: 200 }}>
-            <TouchableOpacity
-              onPress={onPrevMusic}
-            >
-              <Icon name="fastbackward" size={25} type="ant-design" color={"#FDFDFD"} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={async () => {
-              if (audioPlayer.isPlaying()) {
-                setIsPlayingSoundInside(false)
-                audioPlayer.pause();
-                //finsihInterval();
-
-              } else {
-                setIsPlayingSoundInside(true)
-                audioPlayer.play();
-                //initInterval();
-
-              }
-
-            }}>
-              <Icon name={isPlayingSoundInside ? "pause" : "play"} size={60} type="ant-design" color={"#FDFDFD"} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={onNextMusic}
-            >
-              <Icon name="fastbackward" size={25} type="ant-design" color={"#FDFDFD"} style={{ transform: [{ rotateY: '180deg' }] }} />
-            </TouchableOpacity>
 
           </View>
-          <Text style={[styles.counter, { paddingLeft: 20 }]}>
-            {duration}
-          </Text>
         </View>
+      </View>}
+    </>
 
-
-        <View style={styles.containerItemsControlBottom}>
-
-          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: 200 }}>
-            <TouchableOpacity>
-              <Icon name="volume-mute" size={25} type="fontisto" color={"#FDFDFD"} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setIsLiked(!isLiked)}
-            >
-              <Icon name={isLiked ? "heart" : "hearto"} size={30} type="ant-design" color={"#FDFDFD"} />
-
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Icon name="sharealt" size={30} type="ant-design" color={"#FDFDFD"} style={{ transform: [{ rotateY: '180deg' }] }} />
-            </TouchableOpacity>
-          </View>
-
-        </View>
-      </View>
-    </View>
 
   );
 }
@@ -293,9 +333,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     paddingTop: 20,
-    position:"absolute",
-    height:"100%",
-    
+    position: "absolute",
+    height: "100%",
+
 
 
   },
@@ -365,6 +405,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
 
   },
-  
-});
 
+});

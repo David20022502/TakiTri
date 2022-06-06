@@ -1,6 +1,6 @@
 import { Icon } from '@rneui/themed';
 import * as React from 'react';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions, Image } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions, Image, BackHandler } from 'react-native';
 import { MusicItem } from '../../src/Items/MusicItem';
 import { getLikedSongById, getMusics, getSongsByAlbum } from '../../src/services/MusicServices';
 import disco from "../../assets/images/disco.jpeg";
@@ -8,13 +8,32 @@ import HomeContext from '../../context/HomeContext/HomeContext';
 export const AlbumRender = (props) => {
     let {itemAlbum}=props.route.params;
     let {typeAlbum}=props.route.params;
+    const{navigation}=props;
     const [datas, setDatas] = React.useState([])
     const { likedSongsList } = React.useContext(HomeContext)
-    console.log(itemAlbum);
+    React.useEffect(() => {
+        const backAction = () => {
+                console.log("navigation", navigation.canGoBack())
+                if (navigation.canGoBack()) {
+                    navigation.goBack();
+                } else {
+                    BackHandler.exitApp();
+                }
+
+            return true;
+        };
+
+        const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+        );
+
+        return () => backHandler.remove();
+    }, [])
     React.useEffect(() => {
         switch(typeAlbum){
             case "ALBUM":{
-                getSongsByAlbum(setDatas,itemAlbum.genre_name);
+                getSongsByAlbum(setDatas,itemAlbum);
                 return;
             }
             case "FAVORITES":{

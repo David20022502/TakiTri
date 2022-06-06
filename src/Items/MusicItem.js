@@ -6,7 +6,7 @@ import { PLAY_MUSIC_HOME } from "../../context/HomeContext/HomeTypes";
 import HomeContext from "../../context/HomeContext/HomeContext";
 
 export const MusicItem = ({music,playList}) => {
-    console.log("musica, ",music)
+
     const {playMusic,audioPlayer,currentMusic}=useContext(HomeContext)
     const changeAlbumPage=()=>{
         //changePageStatus(PLAY_MUSIC_HOME);
@@ -32,7 +32,6 @@ export const MusicItem = ({music,playList}) => {
                     </Text>
                 </View>
                 <View style={styles.containerOPtions}>
-                    <Icon name="plus" size={30} type="ant-design" color="white" onPress={() => { }} />
                     <Icon name="playcircleo" size={30} type="ant-design" color="white" onPress={() => { }} />
                 </View>
             </View>
@@ -59,7 +58,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        width: 75
+        width: 75,
+        marginLeft:30
+
     },
     title: {
         fontStyle: "normal",

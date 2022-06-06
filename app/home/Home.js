@@ -11,6 +11,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { LibraryPlayLists } from './LibraryScreens/LibraryPlayList';
 import { AlbumRender } from './AlbumRender';
 import { MadeForYou } from './MadeForYou';
+import { MyPlayList } from './LibraryScreens/MyPlayList';
+import { AddPlayList } from './LibraryScreens/AddPlayList';
+import { AddMusicPlayList } from './LibraryScreens/AddMusicPlayList';
+import { ModalInfoError } from '../components/ModalInfoError';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -20,7 +24,7 @@ const StackLibrary = createNativeStackNavigator();
 
 export default function Home({ navigation }) {
   global.navigation = navigation;
-  const { loadLikedMusics } = useContext(HomeContext)
+  const { loadLikedMusics ,isModalErrorVisible,messageError,handleIsModalErrorVisible} = useContext(HomeContext)
   React.useEffect(()=>{
     loadLikedMusics();
   },[])
@@ -29,6 +33,13 @@ export default function Home({ navigation }) {
       <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
         <Drawer.Screen name="Inicio" component={RootHomeTab} />
       </Drawer.Navigator>
+      <ModalInfoError
+      modalVisible={isModalErrorVisible}
+      setModalVisible={handleIsModalErrorVisible}
+      message={messageError}
+      >
+
+      </ModalInfoError>
     </>
 
   );
@@ -98,10 +109,21 @@ const LibraryNavigation = () => {
 
     />
     <StackLibrary.Screen name="PlayList"
-      component={Library}
+      component={MyPlayList}
       options={{ headerShown: false }}
 
     />
+    <StackLibrary.Screen name="AddPlayList"
+      component={AddPlayList}
+      options={{ headerShown: false }}
+
+    />
+    <StackLibrary.Screen name="AddMusicPlayList"
+      component={AddMusicPlayList}
+      options={{ headerShown: false }}
+
+    />
+    
      
   </StackLibrary.Navigator>);
 }

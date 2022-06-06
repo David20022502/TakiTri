@@ -14,6 +14,8 @@ import {
   Provider as PaperProvider,
   DarkTheme as PaperDarkTheme
 } from 'react-native-paper';
+import TakiTriContext from './context/SecurityContext/TakiTriContext';
+import { TakiTriStates } from './context/SecurityContext/TakiTriStates';
 function getDimensions() {
   let d = Dimensions.get("window").width;
   let result = d - 208;
@@ -41,16 +43,20 @@ export default function App() {
       text: '#ffffff',
       border: '#2a3942',
       notification: 'rgb(255, 69, 58)',
-      color:"white"
+      color: "white"
     },
   };
-  
-   
+
+
   return (
     <PaperProvider theme={CustomDarkTheme}>
       <NavigationContainer theme={MyTheme}>
-        <Navigation>
-        </Navigation>
+        <StatusBar backgroundColor='#fff'></StatusBar>
+        <TakiTriStates>
+          <Navigation>
+          </Navigation>
+        </TakiTriStates>
+
       </NavigationContainer>
     </PaperProvider>
 

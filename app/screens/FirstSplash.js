@@ -1,8 +1,13 @@
 import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import headPhone from "../../assets/images/headPhone.jpg";
 import { ButtonOwn, Indicator } from "../../src/components/Components";
+import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
 export const FirstSplash = ({navigation}) => {
+    const { isAutenticated,currentAutenticatedUser } = useContext(TakiTriContext)
+    React.useEffect(()=>{
+       // currentAutenticatedUser();
+      },[])
     return (
         <View style={styles.container}>
             <View>

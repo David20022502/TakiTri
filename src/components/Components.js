@@ -1,11 +1,27 @@
 import React from "react";
-import { StyleSheet, View, Dimensions, TextInput,TouchableOpacity } from "react-native";
+import { StyleSheet, View, Dimensions, TextInput, TouchableOpacity } from "react-native";
 import { Button, ButtonGroup, withTheme, Text } from '@rneui/themed';
 import { Icon } from "@rneui/base";
 export const ButtonOwn = ({ onPress, title }) => {
     return (<View style={styles.containerButton}>
         <Button
             buttonStyle={styles.ButtonOwn}
+            onPress={onPress}
+            title={title}
+            titleStyle={styles.titleStyle}
+        >
+
+        </Button>
+    </View>
+
+
+
+    );
+}
+export const ButtonOwnAddPlayList= ({ onPress, title }) => {
+    return (<View style={{width:200}}>
+        <Button
+            buttonStyle={styles.ButtonOwn1}
             onPress={onPress}
             title={title}
             titleStyle={styles.titleStyle}
@@ -59,6 +75,41 @@ export const InputText = ({
         />
     </View>;
 }
+export const InputTextAdd = ({
+    text,
+    onChangeText,
+    value,
+    keyboardType,
+    autoCapitalize,
+    maxLength,
+    modify,
+    minLength,
+    placeholder,
+    editable,
+    style,
+}) => {
+    return <View style={{ flexDirection: "column", width: 340 }}>
+        <View style={styles.fieldSetAdd}>
+            <Text style={styles.legendAdd}>{text}</Text>
+            <TextInput
+           
+                onChangeText={onChangeText}
+                value={value}
+                autoCapitalize={autoCapitalize}
+                maxLength={maxLength}
+                secureTextEntry={modify}
+                minLength={minLength}
+                placeholder={placeholder}
+                placeholderTextColor={"#848282"}
+                editable={editable}
+                style={{ fontSize: 16, color: "white", paddingTop: 5 }}
+
+            />
+        </View>
+
+        <View style={styles.lineStyle}></View>
+    </View>;
+}
 export const ButtonOwnHeader = ({ onPress, title, backgroundColor, textColor, color }) => {
     return (<View style={styles.containerButtonHeader}>
         <Button
@@ -85,29 +136,62 @@ export const InputLookFor = ({
 }) => {
     return <View style={styles.fieldSetLookFor}>
         <TouchableOpacity
-        onPress={onPress}
+            onPress={onPress}
         >
-        <View style={{height:30}}>
-            <Icon name="search" size={30} color={"white"} />
-        </View>
+            <View style={{ height: 30 }}>
+                <Icon name="search" size={30} color={"white"} />
+            </View>
         </TouchableOpacity>
-       
+
         <TextInput
             onChangeText={onChangeText}
             value={value}
             placeholder={placeholder}
             style={styles.styleInputLook}
-            placeholderTextColor="white" 
-            placeholderStyle={{ fontFamily: "AnotherFont", borderColor: 'red'}}
-            plc
-
+            placeholderTextColor="white"
+            placeholderStyle={{ fontFamily: "AnotherFont", borderColor: 'red' }}
         />
         <TouchableOpacity>
-        <View style={{height:30}}>
-            <Icon name="microphone" size={30} type={"font-awesome"} color={"white"}/>
-        </View>
+            <View style={{ height: 30 }}>
+                <Icon name="microphone" size={30} type={"font-awesome"} color={"white"} />
+            </View>
         </TouchableOpacity>
-        
+
+
+    </View>;
+}
+export const InputAddLookFor = ({
+    text,
+    onChangeText,
+    value,
+    placeholder,
+    onPress
+
+}) => {
+    return <View style={styles.fieldSetLookFor}>
+        <TouchableOpacity
+            onPress={onPress}
+        >
+            <View style={{ height: 30 }}>
+                <Icon name="search" size={30} color={"white"} />
+            </View>
+        </TouchableOpacity>
+
+        <TextInput
+            onChangeText={onChangeText}
+            value={value}
+            placeholder={placeholder}
+            style={{ color: "white", fontSize: 18 }}
+            placeholderTextColor="white"
+            placeholderStyle={{ fontFamily: "AnotherFont", borderColor: 'red' }}
+        />
+        <TouchableOpacity>
+            <View style={{ height: 30 }}>
+                <Icon name="microphone" size={30} type={"font-awesome"} color={"white"} />
+            </View>
+        </TouchableOpacity>
+
+
     </View>;
 }
 const styles = StyleSheet.create({
@@ -120,12 +204,12 @@ const styles = StyleSheet.create({
         width: 320,
         flexDirection: "row",
         justifyContent: "space-between",
-        alignItems:"center"
+        alignItems: "center"
 
     },
     styleInputLook: {
         paddingTop: 0,
-        width:200
+        width: 200
     },
     containerButtonHeader: {
         borderRadius: 15,
@@ -144,6 +228,18 @@ const styles = StyleSheet.create({
         height: 50,
         marginBottom: 20,
     },
+    fieldSetAdd: {
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        height: 50,
+        flexDirection: "row",
+
+    },
+    lineStyle: {
+        backgroundColor: "#83C8EA",
+        height: 2,
+        width: "100%"
+    },
     legend: {
         fontSize: 15,
         position: "absolute",
@@ -152,6 +248,12 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         color: "#83C8EA",
         paddingHorizontal: 8
+    },
+    legendAdd: {
+        fontSize: 23,
+        color: "#83C8EA",
+        marginRight: 20,
+        width: 100
     },
     containerButton: {
         backgroundColor: "#97DEF9",
@@ -163,6 +265,12 @@ const styles = StyleSheet.create({
         width: 289,
         height: 40,
 
+    },
+    ButtonOwn1:{
+        backgroundColor: "#97DEF9",
+        borderRadius: 15,
+        width: 200,
+        height: 40,
     },
     titleStyle: {
 

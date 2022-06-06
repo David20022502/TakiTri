@@ -19,13 +19,14 @@ import {
 //import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Icon } from '@rneui/themed';
 import { darkThemText } from '../../constants/Colors';
+import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
 
 
 export function DrawerContent(props) {
 
     const paperTheme = useTheme();
 
-    //const { signOut, toggleTheme } = React.useContext(AuthContext);
+    const { handleLogOut } = React.useContext(TakiTriContext);
 
     return(
         <View style={{flex:1,backgroundColor:"#202c33"}}>
@@ -142,7 +143,7 @@ export function DrawerContent(props) {
                     )}
                     labelStyle={{color:darkThemText}}
                     label="Cerrar Sesión"
-                    onPress={() => {}}
+                    onPress={() => {handleLogOut()}}
                 />
             </Drawer.Section>
         </View>

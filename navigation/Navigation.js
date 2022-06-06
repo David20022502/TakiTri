@@ -1,4 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useContext } from 'react';
 import { View } from 'react-native';
 import Home from '../app/home/Home';
 import { PlayMusicHome } from '../app/home/PlayMusicHome';
@@ -9,47 +10,70 @@ import { Login } from '../app/security/Login';
 import { Register } from '../app/security/Register';
 import { ResetPasword } from '../app/security/ResetPasword';
 import { HomeStates } from '../context/HomeContext/HomeSates';
+import TakiTriContext from '../context/SecurityContext/TakiTriContext';
 
 const Stack = createNativeStackNavigator();
+const StackAutenticated = createNativeStackNavigator();
+
 
 export const Navigation = () => {
+    const { isAutenticated,currentAutenticatedUser } = useContext(TakiTriContext)
+    React.useEffect(()=>{
+        //currentAutenticatedUser();
+        setTimeout(currentAutenticatedUser,1000)
+      },[])
     return (
-            <HomeStates>
-                <Stack.Navigator initialRouteName='firstSplash'>
-                    <Stack.Screen name="firstSplash"
-                        component={FirstSplash}
-                        options={{ headerShown: false }}
+        <HomeStates>
 
-                    />
-                    <Stack.Screen name="secondSplash"
-                        component={SecondSplash}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="login"
-                        component={Login}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="register"
-                        component={Register}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="ResetPasword"
-                        component={ResetPasword}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="ConfirmPassword"
-                        component={ConfirmPassword}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="Home"
-                        component={Home}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="PlayMusicHome"
-                        component={PlayMusicHome}
-                        options={{ headerShown: false }}
-                    />
-                </Stack.Navigator>
-            </HomeStates>
+            {
+                isAutenticated === true ? <AtenticatedUser /> : <UnAtenticatedUser />
+            }
+
+        </HomeStates>
+    );
+}
+const UnAtenticatedUser = () => {
+    return (
+        <Stack.Navigator initialRouteName='firstSplash'>
+            <Stack.Screen name="firstSplash"
+                component={FirstSplash}
+                options={{ headerShown: false }}
+
+            />
+            <Stack.Screen name="secondSplash"
+                component={SecondSplash}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="login"
+                component={Login}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="register"
+                component={Register}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="ResetPasword"
+                component={ResetPasword}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="ConfirmPassword"
+                component={ConfirmPassword}
+                options={{ headerShown: false }}
+            />
+        </Stack.Navigator>
+    );
+}
+const AtenticatedUser = () => {
+    return (
+        <StackAutenticated.Navigator initialRouteName='Home'>
+            <Stack.Screen name="Home"
+                component={Home}
+                options={{ headerShown: false }}
+            />
+             <Stack.Screen name="PlayMusicHome"
+                component={PlayMusicHome}
+                options={{ headerShown: false }}
+            />
+        </StackAutenticated.Navigator>
     );
 }

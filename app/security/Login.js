@@ -1,9 +1,21 @@
 import { View, Text, StyleSheet, Image, Dimensions, ScrollView, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useContext, useState } from "react";
 import { ButtonOwn, Indicator, InputText } from "../../src/components/Components";
 import iconGoogle from "../../assets/images/iconGoogle.jpg";
+import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
 
 export const Login = ({navigation}) => {
+    const { singInWithEmailPassword } = useContext(TakiTriContext)
+    const[userName,setUserName]=useState("");
+    const[password,setPassword]=useState("");
+
+    const onSubmit=()=>{
+        const user={
+            email:userName,
+            password:password
+        }
+        singInWithEmailPassword(user);
+    }
     return (
 
         <View style={styles.container}>
@@ -17,17 +29,21 @@ export const Login = ({navigation}) => {
                     <InputText
                         placeholder={"ejemplo123@gmail.com"}
                         text={"Usuario"}
+                        value={userName}
+                        onChangeText={setUserName}
                     >
                     </InputText>
                     <InputText
                         placeholder={"**********"}
                         text={"Contraseña"}
+                        value={password}
+                        onChangeText={setPassword}
                     >
                     </InputText>
                     <View style={styles.containerButton} >
                         <ButtonOwn
                             title={"Iniciar Sesión"}
-                            onPress={() => { navigation.navigate("Home")}}
+                            onPress={() => { onSubmit()}}
                         >
 
                         </ButtonOwn>

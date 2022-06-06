@@ -1,4 +1,4 @@
-import { HOME_PAGE_USER, IS_PLAYING_SOUND, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, LOAD_ISLIKE_SONG, PLAY_MUSIC_HOME } from "./HomeTypes";
+import { DELETE_SELECTED_ITEM_LIST, HOME_PAGE_USER, IS_LOADING_PAGE, IS_MODAL_ERROR_VISIBLE_PAGE, IS_ON_LONG_PRESS, IS_PLAYING_SOUND, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, LOAD_ISLIKE_SONG, MESSAGE_ERROR_MODAL, PLAY_MUSIC_HOME, PUSH_SELECTED_ITEM_LIST } from "./HomeTypes";
 
 
 export const HomeReducer=(state, action)=>{
@@ -40,10 +40,47 @@ export const HomeReducer=(state, action)=>{
                 currentPlayList:payload
             }
         }
+   
         case LOAD_ISLIKE_SONG:{
             return{
                 ...state,
                 likedSongsList:payload
+            }
+        }
+        case IS_ON_LONG_PRESS:{
+            return{
+                ...state,
+                isOnLongPress:payload
+            }
+        }
+        case PUSH_SELECTED_ITEM_LIST:{
+            return{
+                ...state,
+                selectedList:payload
+            }
+        }
+        case DELETE_SELECTED_ITEM_LIST:{
+            return{
+                ...state,
+                selectedList:payload
+            }
+        }
+        case IS_LOADING_PAGE:{
+            return{
+                ...state,
+                isLoading:payload
+            }
+        }
+        case IS_MODAL_ERROR_VISIBLE_PAGE:{
+            return{
+                ...state,
+                isModalErrorVisible:payload
+            }
+        }
+        case MESSAGE_ERROR_MODAL:{
+            return{
+                ...state,
+                messageError:payload
             }
         }
     }
