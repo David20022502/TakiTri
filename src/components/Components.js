@@ -72,6 +72,7 @@ export const InputText = ({
             placeholder={placeholder}
             editable={editable}
             style={style}
+
         />
     </View>;
 }
