@@ -15,13 +15,16 @@ import { MusicItem } from "../../../src/Items/MusicItem";
 import TakiTriContext from "../../../context/SecurityContext/TakiTriContext";
 export const AddPlayList = (props) => {
     const { navigation } = props;
+    let itemSelectedList;
     let musicList1 = React.useRef([]);
     try {
+        itemSelectedList=props.route.params.itemSelectedList;
         const { musicList } = props.route.params;
         console.log("propsd", props)
         musicList1.current = musicList;
     } catch (e) {
         musicList1.current = [];
+        itemSelectedList=[];
     }
 
     const { isOnLongPress, handleIsonlongPress, selectedList, handleDeleteSelectedList, handleMessageError, handleIsModalErrorVisible } = useContext(HomeContext);
@@ -33,16 +36,17 @@ export const AddPlayList = (props) => {
     const [imageUser, setImageUser] = React.useState(null);
     const [inputLookFor, setInputLookFor] = React.useState("");
     const [resultsMusics, setResultsMusics] = React.useState(null);
-    const [playListName, setPlayListName] = React.useState((selectedList[0] && selectedList[0].name) || "");
-    const [typePlayList, setTypePlayList] = React.useState((selectedList[0] && selectedList[0].genre_name) || "");
+    const [playListName, setPlayListName] = React.useState("");
+    const [typePlayList, setTypePlayList] = React.useState("");
+    const [itemSelectedEdit, setItemSelectedEdit] = React.useState(null);
     let isOnlongPressItem = React.useRef(false);
 
 
     React.useEffect(() => {
         getAlbumes(setAlbumes);
-        if (selectedList[0]) {
-            console.log("*----------------",selectedList)
-            getLikedSongById(setResultsMusics, selectedList[0].songList);
+        if (itemSelectedList[0]) {
+            console.log("*----------------",itemSelectedList)
+            //getLikedSongById(setResultsMusics, itemSelectedList[0].songList);
         }
 
         const backAction = () => {
@@ -78,6 +82,14 @@ export const AddPlayList = (props) => {
     }, [isOnLongPress])
     React.useEffect(() => {
         console.log("lista", selectedList)
+        if(selectedList[0]){
+             setItemSelectedEdit(selectedList)
+             setPlayListName(selectedList[0].name)
+             setTypePlayList(selectedList[0].genre_name)
+             musicList1.current=selectedList[0].songList;
+             getLikedSongById(setResultsMusics, musicList1.current);
+             console.log("******",selectedList[0])
+        }
     }, [selectedList])
     const chooseFile = async () => {
         let options = {
@@ -157,7 +169,7 @@ export const AddPlayList = (props) => {
 
             <View style={styles.conatinerTitleHeaderItem}>
                 {
-                    selectedList[0] ? <Text style={styles.textTitleItem}>
+                    (itemSelectedEdit&&itemSelectedEdit[0]) ? <Text style={styles.textTitleItem}>
 
                         Modificar PlayList
                     </Text> : <Text style={styles.textTitleItem}>
@@ -227,19 +239,19 @@ export const AddPlayList = (props) => {
             </View>
             <View style={{ flexDirection: "row", justifyContent: "center", marginBottom: 20 }}>
                 {
-                    selectedList[0] ? <InputTextAdd
+                    (itemSelectedEdit&&itemSelectedEdit[0]) ? <InputTextAdd
                         text={"Musicas:"}
                         placeholder={"Total de canciones"}
                         maxLength={30}
                         editable={false}
-                        value={selectedList[0].songList.length+""}
+                        value={itemSelectedEdit[0].songList.length+""}
                     >
                     </InputTextAdd> : <InputTextAdd
                         text={"Musicas:"}
                         placeholder={"Total de canciones"}
                         maxLength={30}
                         editable={false}
-                        value={musicList1.current.length + "" || "0"}
+                        value={(musicList1.current&&musicList1.current.length + "") || "0"}
                     >
                     </InputTextAdd>
                 }
@@ -250,7 +262,11 @@ export const AddPlayList = (props) => {
                 <View style={{ marginVertical: 3 }}>
                     <ButtonOwnAddPlayList
                         title={"Agregar Canciones"}
-                        onPress={() => { navigation.navigate("AddMusicPlayList", { musicList: musicList1.current }) }}
+                        onPress={() => { 
+
+                            navigation.navigate("AddMusicPlayList", { musicList: musicList1.current })
+                            //handleDeleteSelectedList({}, {}, true);
+                         }}
                     >
                     </ButtonOwnAddPlayList>
                 </View>

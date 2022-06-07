@@ -38,6 +38,7 @@ export const Login = ({navigation}) => {
                         text={"Contraseña"}
                         value={password}
                         onChangeText={setPassword}
+                        modify={true}
                     >
                     </InputText>
                     <View style={styles.containerButton} >
@@ -83,6 +84,9 @@ export const Login = ({navigation}) => {
 
                 </View>
             </ScrollView>
+            <ModalInfoError>
+
+            </ModalInfoError>
         </View>
 
     );

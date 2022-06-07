@@ -68,8 +68,9 @@ export const MyPlayList = ({ navigation }) => {
     }
     const handleUpdatePlayList=()=>{
         if(selectedList.length==1){
-            navigation.navigate("AddPlayList");
+            navigation.navigate("AddPlayList",{itemSelectedList:selectedList[0]});
             handleIsonlongPress(false);
+       
         }else{
             handleMessageError("Solo puede editar una PlayList a la vez")
             handleIsModalErrorVisible(true)
