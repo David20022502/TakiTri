@@ -111,6 +111,39 @@ export const InputTextAdd = ({
         <View style={styles.lineStyle}></View>
     </View>;
 }
+export const InputTextInfo = ({
+    text,
+    onChangeText,
+    value,
+    keyboardType,
+    autoCapitalize,
+    maxLength,
+    modify,
+    minLength,
+    placeholder,
+    editable,
+    style,
+}) => {
+    return <View style={styles.fieldSet}>
+        <Text style={[styles.legend,{backgroundColor:"#3b4a54",fontSize:15}]}>{text}</Text>
+        <TextInput
+            keyboardType={keyboardType}
+            onChangeText={onChangeText}
+            value={value}
+            autoCapitalize={autoCapitalize}
+            maxLength={maxLength}
+            secureTextEntry={modify}
+            minLength={minLength}
+            placeholder={placeholder}
+            editable={editable}
+            style={style}
+            placeholderTextColor="white"
+            color={"white"}
+
+        />
+    </View>;
+
+}
 export const ButtonOwnHeader = ({ onPress, title, backgroundColor, textColor, color }) => {
     return (<View style={styles.containerButtonHeader}>
         <Button

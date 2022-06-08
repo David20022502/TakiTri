@@ -3,16 +3,19 @@ import React, { useContext, useState } from "react";
 import { ButtonOwn, Indicator, InputText } from "../../src/components/Components";
 import iconGoogle from "../../assets/images/iconGoogle.jpg";
 import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
+import {ModalInfoError} from "../components/ModalInfoError"
 
-export const Login = ({navigation}) => {
+export const Login = ({ navigation }) => {
     const { singInWithEmailPassword } = useContext(TakiTriContext)
-    const[userName,setUserName]=useState("");
-    const[password,setPassword]=useState("");
+    const [userName, setUserName] = useState("");
+    const [password, setPassword] = useState("");
+    const [messageError, setMessageError] = useState("");
+    const [modalErrorVisible, setmodalErrorVisible] = useState(false);
 
-    const onSubmit=()=>{
-        const user={
-            email:userName,
-            password:password
+    const onSubmit = () => {
+        const user = {
+            email: userName,
+            password: password
         }
         singInWithEmailPassword(user);
     }
@@ -44,7 +47,7 @@ export const Login = ({navigation}) => {
                     <View style={styles.containerButton} >
                         <ButtonOwn
                             title={"Iniciar Sesión"}
-                            onPress={() => { onSubmit()}}
+                            onPress={() => { onSubmit() }}
                         >
 
                         </ButtonOwn>
@@ -67,14 +70,14 @@ export const Login = ({navigation}) => {
                 </View>
                 <View style={styles.containerOptions}>
                     <TouchableOpacity
-                        onPress={() => {navigation.navigate("register")}}
+                        onPress={() => { navigation.navigate("register") }}
                     >
                         <Text style={styles.optionsStyleText}>
                             Registrarse
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => {navigation.navigate("ResetPasword")}}
+                        onPress={() => { navigation.navigate("ResetPasword") }}
                     >
                         <Text style={styles.optionsStyleText}>
                             Olvidé la Contraseña
@@ -83,10 +86,15 @@ export const Login = ({navigation}) => {
 
 
                 </View>
-            </ScrollView>
-            <ModalInfoError>
+                <ModalInfoError
+                message={setmodalErrorVisible}
+                setModalVisible={setmodalErrorVisible}
+                modalVisible={modalErrorVisible}
+                >
 
-            </ModalInfoError>
+                </ModalInfoError>
+            </ScrollView>
+
         </View>
 
     );

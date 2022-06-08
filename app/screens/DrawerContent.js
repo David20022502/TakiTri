@@ -26,7 +26,7 @@ export function DrawerContent(props) {
 
     const paperTheme = useTheme();
 
-    const { handleLogOut } = React.useContext(TakiTriContext);
+    const { handleLogOut,userTakiTri } = React.useContext(TakiTriContext);
 
     return(
         <View style={{flex:1,backgroundColor:"#202c33"}}>
@@ -41,21 +41,12 @@ export function DrawerContent(props) {
                                 size={50}
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>
-                                <Title style={styles.title}>John Doe</Title>
-                                <Caption style={styles.caption}>@j_doe</Caption>
+                                <Title style={styles.title}>{userTakiTri.names}</Title>
+                                <Caption style={styles.caption}>{userTakiTri.user}</Caption>
                             </View>
                         </View>
 
-                        <View style={styles.row}>
-                            <View style={styles.section}>
-                                <Paragraph style={[styles.paragraph, styles.caption]}>80</Paragraph>
-                                <Caption style={styles.caption}>Following</Caption>
-                            </View>
-                            <View style={styles.section}>
-                                <Paragraph style={[styles.paragraph, styles.caption]}>100</Paragraph>
-                                <Caption style={styles.caption}>Followers</Caption>
-                            </View>
-                        </View>
+                       
                     </View>
 
                     <Drawer.Section style={styles.drawerSection}>
@@ -70,7 +61,7 @@ export function DrawerContent(props) {
                             labelStyle={{color:darkThemText}}
 
                             label="Inicio"
-                            onPress={() => {props.navigation.closeDrawer();
+                            onPress={() => {props.navigation.navigate("Inicio")
                             }}
                         />
                         <DrawerItem 
@@ -85,7 +76,7 @@ export function DrawerContent(props) {
                             labelStyle={{color:darkThemText}}
 
                             label="  Perfil"
-                            onPress={() => {props.navigation.navigate('')}}
+                            onPress={() => {props.navigation.navigate('Perfil')}}
                         />
                        
                         <DrawerItem 
@@ -117,16 +108,7 @@ export function DrawerContent(props) {
                             onPress={() => {props.navigation.navigate('')}}
                         />
                     </Drawer.Section>
-                    <Drawer.Section title="Preferencias">
-                        <TouchableRipple onPress={() => {}}>
-                            <View style={styles.preference}>
-                                <Text>Tema Obscuro</Text>
-                                <View pointerEvents="none">
-                                    <Switch value={paperTheme.dark}/>
-                                </View>
-                            </View>
-                        </TouchableRipple>
-                    </Drawer.Section>
+                  
                 </View>
                 
             </DrawerContentScrollView>

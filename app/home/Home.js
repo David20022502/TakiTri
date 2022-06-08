@@ -15,6 +15,7 @@ import { MyPlayList } from './LibraryScreens/MyPlayList';
 import { AddPlayList } from './LibraryScreens/AddPlayList';
 import { AddMusicPlayList } from './LibraryScreens/AddMusicPlayList';
 import { ModalInfoError } from '../components/ModalInfoError';
+import { ProfileScreen } from './ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -32,6 +33,7 @@ export default function Home({ navigation }) {
     <>
       <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
         <Drawer.Screen name="Inicio" component={RootHomeTab} />
+        <Drawer.Screen name="Perfil" component={ProfileScreen} />
       </Drawer.Navigator>
       <ModalInfoError
       modalVisible={isModalErrorVisible}
