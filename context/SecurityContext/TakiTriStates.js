@@ -1,5 +1,5 @@
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import React, { useCallback, useContext, useMemo, useReducer, useState } from "react";
 import TakiTriContext from "./TakiTriContext";
 import { TakiTriReducer } from "./TakiTriReducer";
@@ -16,13 +16,13 @@ export const TakiTriStates = ({ children }) => {
     []
   );
   const [state, dispatch] = useReducer(TakiTriReducer, initialState);
- 
-  const currentAutenticatedUser=()=>{
+
+  const currentAutenticatedUser = () => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
         dispatch({ type: LOAD_FIREBASE_USER, payload: user })
-      handleUserFirebase(user)
+        handleUserFirebase(user)
       } else {
         // User is signed out
         // ...
@@ -65,13 +65,14 @@ export const TakiTriStates = ({ children }) => {
       dispatch({ type: LOAD_TAKITRI_USER, payload: null })
       handleIsAutenticated(false);
     }).catch((error) => {
-      // An error happened.
       console.log("error al salir de la sesion")
     });
 
   }, [])
-
-
+  const handleUpdateUser = useCallback(async (values) => {
+    const userRef = doc(global.db_Firestore, "users", values.id);
+    await updateDoc(userRef, values);
+  }, [])
 
   return <TakiTriContext.Provider
     value={{
@@ -80,7 +81,8 @@ export const TakiTriStates = ({ children }) => {
       isAutenticated: state.isAutenticated,
       singInWithEmailPassword,
       handleLogOut,
-      currentAutenticatedUser
+      currentAutenticatedUser,
+      handleUpdateUser
     }}
   >
     {children}

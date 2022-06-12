@@ -5,7 +5,7 @@ import { Alert, BackHandler, Dimensions, FlatList, ScrollView, StyleSheet, Text,
 import HomeContext from "../../../context/HomeContext/HomeContext";
 import { ButtonOwn, ButtonOwnAddPlayList, ButtonOwnHeader, InputAddLookFor, InputLookFor, InputTextAdd } from "../../../src/components/Components";
 import { AlbumItem } from "../../../src/Items/AlbumItem";
-import { getAlbumes, getLikedSongById, handleSubmitPlayList, lokForSongs } from "../../../src/services/MusicServices";
+import { getAlbumes, getLikedSongById, handleSubmitPlayList, lokForSongs, handleUpdatePlayList } from "../../../src/services/MusicServices";
 import {
     launchImageLibraryAsync,
     MediaTypeOptions,
@@ -15,114 +15,93 @@ import { MusicItem } from "../../../src/Items/MusicItem";
 import TakiTriContext from "../../../context/SecurityContext/TakiTriContext";
 export const AddPlayList = (props) => {
     const { navigation } = props;
-    let itemSelectedList;
-    let musicList1 = React.useRef([]);
-    try {
-        itemSelectedList=props.route.params.itemSelectedList;
-        const { musicList } = props.route.params;
-        console.log("propsd", props)
-        musicList1.current = musicList;
-    } catch (e) {
-        musicList1.current = [];
-        itemSelectedList=[];
-    }
-
-    const { isOnLongPress, handleIsonlongPress, selectedList, handleDeleteSelectedList, handleMessageError, handleIsModalErrorVisible } = useContext(HomeContext);
+    const { handleIsToUpdatePlayList,isOnLongPress,handlePushPlayListMusicAdded, musicListPlayList, handleIsonlongPress, selectedList, handleDeleteSelectedList, handleMessageError, handleIsModalErrorVisible } = useContext(HomeContext);
     const { userTakiTri } = useContext(TakiTriContext);
-
-
-
-    const [albumes, setAlbumes] = React.useState([]);
     const [imageUser, setImageUser] = React.useState(null);
-    const [inputLookFor, setInputLookFor] = React.useState("");
-    const [resultsMusics, setResultsMusics] = React.useState(null);
+    const [resultsMusics, setResultsMusics] = React.useState([]);
     const [playListName, setPlayListName] = React.useState("");
     const [typePlayList, setTypePlayList] = React.useState("");
     const [itemSelectedEdit, setItemSelectedEdit] = React.useState(null);
     let isOnlongPressItem = React.useRef(false);
-
-
+    let canNavigateToNext = React.useRef(false);
     React.useEffect(() => {
-        getAlbumes(setAlbumes);
-        if (itemSelectedList[0]) {
-            console.log("*----------------",itemSelectedList)
-            //getLikedSongById(setResultsMusics, itemSelectedList[0].songList);
-        }
 
         const backAction = () => {
             if (!isOnlongPressItem.current) {
 
                 console.log("navigation", navigation.canGoBack())
                 if (navigation.canGoBack()) {
-                    navigation.goBack();
+                    Alert.alert("Alerta!", "Estas seguro de cancelar la operación?", [
+                        {
+                            text: "No",
+                            onPress: () => null,
+                            style: "cancel"
+                        },
+                        {
+                            text: "Si", onPress: () => {
+                                handlePushPlayListMusicAdded([]);
+                                navigation.goBack();
+                            }
+                        }
+                    ]);
+
+
                 } else {
                     BackHandler.exitApp();
                 }
 
             } else {
-                handleIsonlongPress(false);
-                handleDeleteSelectedList({}, {}, true);
-            }
 
+                Alert.alert("Alerta!", "Estas seguro de cancelar la operación?", [
+                    {
+                        text: "No",
+                        onPress: () => null,
+                        style: "cancel"
+                    },
+                    {
+                        text: "Si", onPress: () => {
+                            handleIsonlongPress(false);
+                            handleDeleteSelectedList({}, {}, true);
+                            navigation.goBack();
+                        }
+                    }
+                ]);
+
+            }
             return true;
         };
-
         const backHandler = BackHandler.addEventListener(
             "hardwareBackPress",
             backAction
         );
-
-        return () => backHandler.remove();
     }, [])
-    React.useEffect(() => {
-        musicList1.current = resultsMusics;
-    }, [resultsMusics])
+
     React.useEffect(() => {
         isOnlongPressItem.current = isOnLongPress;
     }, [isOnLongPress])
     React.useEffect(() => {
-        console.log("lista", selectedList)
-        if(selectedList[0]){
-             setItemSelectedEdit(selectedList)
-             setPlayListName(selectedList[0].name)
-             setTypePlayList(selectedList[0].genre_name)
-             musicList1.current=selectedList[0].songList;
-             getLikedSongById(setResultsMusics, musicList1.current);
-             console.log("******",selectedList[0])
+        console.log("cambiando a nuevo de agregar");
+        if (selectedList.length > 0) {
+            setItemSelectedEdit(selectedList)
+            setPlayListName(selectedList[0].name)
+            setTypePlayList(selectedList[0].genre_name)
+            getLikedSongById(setResultsMusics, selectedList[0].songList);
+            console.log("******", selectedList[0])
         }
     }, [selectedList])
+    React.useEffect(() => {
+        if (canNavigateToNext.current) {
+            canContinue();
+        }
+    }, [resultsMusics])
     const chooseFile = async () => {
         let options = {
             mediaTypes: MediaTypeOptions.Images,
         };
         let response = await launchImageLibraryAsync(options);
-        //console.log("Response", response);
         setImageUser(response.uri);
     };
-    const renderItemMusic = (item) => {
-        return (<MusicItem music={item.item} playList={resultsMusics} ></MusicItem>);
-    }
-    const handleLookForMusics = () => {
-        lokForSongs(setResultsMusics, inputLookFor)
-    }
-    const NotLookedFor = () => {
-        return (<View
-            style={{ flex: 1, flexDirection: "column", justifyContent: "center", alignItems: "center" }}
-        >
-            <Text
-                style={{ color: "white", fontSize: 30, marginHorizontal: 20, textAlign: "center" }}
-            >Siempre hay nuevas musicas para escuchar!</Text>
-        </View>);
-    }
-    const NotFound = () => {
-        return (<View
-            style={{ flex: 1, flexDirection: "column", justifyContent: "center", alignItems: "center" }}
-        >
-            <Text
-                style={{ color: "white", fontSize: 30 }}
-            >Sin Resultados...</Text>
-        </View>);
-    }
+
     const lettersName = (nameBasic, surnameBasic) => {
         let lettersImg =
             nameBasic.charAt(0).toUpperCase() +
@@ -131,11 +110,7 @@ export const AddPlayList = (props) => {
         return lettersImg;
     };
     const onSubmit = async () => {
-        let date = new Date()
-        let idMusics = [];
-        for (let i = 0; i < musicList1.current.length; i++) {
-            idMusics.push(musicList1.current[i].id);
-        }
+        let date = new Date();
         const values = {
             author: userTakiTri.names + " " + userTakiTri.lastName,
             genre_name: typePlayList,
@@ -145,7 +120,7 @@ export const AddPlayList = (props) => {
             image_references: "albumes/selección de capishcas",
             name: playListName,
             year: date.getFullYear(),
-            songList: idMusics
+            songList: musicListPlayList
         }
 
         if (playListName.length <= 0 || typePlayList.length <= 0) {
@@ -153,23 +128,71 @@ export const AddPlayList = (props) => {
             handleIsModalErrorVisible(true);
             handleMessageError("Ingrese los campos");
         } else {
-            if (musicList1.current.length < 3) {
+            if (musicListPlayList.length < 3) {
                 handleIsModalErrorVisible(true);
                 handleMessageError("Mìnimo 3 canciones");
             } else {
                 console.log("values", values)
-                handleSubmitPlayList(values);
+                handleSubmitPlayList(values,backToPlayList);
 
             }
         }
+    }
+    const updatePlayList = () => {
+        const values = {
+            id: itemSelectedEdit[0].id,
+            genre_name: typePlayList,
+            idUserOwn: userTakiTri.id,
+            imageURL: "https://firebasestorage.googleapis.com/v0/b/borrador-a0724.appspot.com/o/albumes%2Fselecci%C3%B3n%20de%20capishcas.jpg?alt=media&token=5a67bb96-6f7b-4fad-9d2c-32c333883d9d",
+            image_references: "albumes/selección de capishcas",
+            name: playListName,
+            songList: itemSelectedEdit[0].songList
+        }
 
+        if (playListName.length <= 0 || typePlayList.length <= 0) {
+            console.log("si hay error");
+            handleIsModalErrorVisible(true);
+            handleMessageError("Ingrese los campos");
+        } else {
+            if (itemSelectedEdit[0].songList.length < 3) {
+                handleIsModalErrorVisible(true);
+                handleMessageError("Mìnimo 3 canciones");
+            } else {
+                console.log("values a actualizar", values)
+                handleUpdatePlayList(values,backToPlayList);
+            }
+        }
+    }
+    const navigateToNext = () => {
+        canNavigateToNext.current = true;
+        if (selectedList.length > 0) {
+            getLikedSongById(setResultsMusics, selectedList[0].songList);
+        } else {
+            if (musicListPlayList.length > 0) {
+                getLikedSongById(setResultsMusics, musicListPlayList);
+            } else {
+                canContinue();
+            }
+        }
+
+    }
+    const canContinue = () => {
+        navigation.navigate("AddMusicPlayList", { musicList: resultsMusics });
+    }
+    const backToPlayList=()=>{
+        handlePushPlayListMusicAdded([]);
+        handleIsonlongPress(false);
+        handleDeleteSelectedList({}, {}, true);
+        handleIsToUpdatePlayList(true);
+        navigation.navigate("PlayList");
+        
     }
     return (
         <View styles={styles.containerMain}>
 
             <View style={styles.conatinerTitleHeaderItem}>
                 {
-                    (itemSelectedEdit&&itemSelectedEdit[0]) ? <Text style={styles.textTitleItem}>
+                    (selectedList.length > 0) ? <Text style={styles.textTitleItem}>
 
                         Modificar PlayList
                     </Text> : <Text style={styles.textTitleItem}>
@@ -239,19 +262,19 @@ export const AddPlayList = (props) => {
             </View>
             <View style={{ flexDirection: "row", justifyContent: "center", marginBottom: 20 }}>
                 {
-                    (itemSelectedEdit&&itemSelectedEdit[0]) ? <InputTextAdd
+                    (itemSelectedEdit && itemSelectedEdit.length > 0 && itemSelectedEdit[0]) ? <InputTextAdd
                         text={"Musicas:"}
                         placeholder={"Total de canciones"}
                         maxLength={30}
                         editable={false}
-                        value={itemSelectedEdit[0].songList.length+""}
+                        value={itemSelectedEdit[0].songList.length + ""}
                     >
                     </InputTextAdd> : <InputTextAdd
                         text={"Musicas:"}
                         placeholder={"Total de canciones"}
                         maxLength={30}
                         editable={false}
-                        value={(musicList1.current&&musicList1.current.length + "") || "0"}
+                        value={musicListPlayList.length + ""}
                     >
                     </InputTextAdd>
                 }
@@ -262,21 +285,30 @@ export const AddPlayList = (props) => {
                 <View style={{ marginVertical: 3 }}>
                     <ButtonOwnAddPlayList
                         title={"Agregar Canciones"}
-                        onPress={() => { 
+                        onPress={() => {
+                            navigateToNext();
+                        }}
+                    >
+                    </ButtonOwnAddPlayList>
+                </View>
+                {
+                    (itemSelectedEdit && itemSelectedEdit.length > 0 && itemSelectedEdit[0]) ? <View style={{ marginVertical: 6 }}>
+                        <ButtonOwnAddPlayList
+                            title={"Actualizar"}
+                            onPress={() => { updatePlayList() }}
+                        >
+                        </ButtonOwnAddPlayList>
+                    </View> : <View style={{ marginVertical: 6 }}>
+                        <ButtonOwnAddPlayList
+                            title={"Guardar"}
+                            onPress={() => { onSubmit() }}
+                        >
+                        </ButtonOwnAddPlayList>
+                    </View>
 
-                            navigation.navigate("AddMusicPlayList", { musicList: musicList1.current })
-                            //handleDeleteSelectedList({}, {}, true);
-                         }}
-                    >
-                    </ButtonOwnAddPlayList>
-                </View>
-                <View style={{ marginVertical: 6 }}>
-                    <ButtonOwnAddPlayList
-                        title={"Guardar"}
-                        onPress={() => { onSubmit() }}
-                    >
-                    </ButtonOwnAddPlayList>
-                </View>
+                }
+
+
                 <View style={{ marginVertical: 6 }}>
                     <ButtonOwnAddPlayList
                         title={"Cancelar"}
@@ -287,7 +319,12 @@ export const AddPlayList = (props) => {
                                     onPress: () => null,
                                     style: "cancel"
                                 },
-                                { text: "Si", onPress: () => navigation.goBack() }
+                                { text: "Si", onPress: () => {
+                                    handlePushPlayListMusicAdded([]);
+                                    handleIsonlongPress(false);
+                                    handleDeleteSelectedList({}, {}, true);
+                                    navigation.goBack() 
+                                }}
                             ]);
 
                         }}

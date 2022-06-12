@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useMemo, useReducer, useState } from "react";
 import HomeContext from "./HomeContext";
 import { HomeReducer } from "./HomeReducer";
-import { DELETE_SELECTED_ITEM_LIST, HOME_PAGE_USER, IS_LOADING_PAGE, IS_MODAL_ERROR_VISIBLE_PAGE, IS_ON_LONG_PRESS, IS_PLAYING_SOUND, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, LOAD_ISLIKE_SONG, MESSAGE_ERROR_MODAL, PLAY_MUSIC_HOME, PUSH_SELECTED_ITEM_LIST } from "./HomeTypes";
+import { DELETE_SELECTED_ITEM_LIST, HOME_PAGE_USER, IS_LOADING_PAGE, IS_MODAL_ERROR_VISIBLE_PAGE, IS_ON_LONG_PRESS, IS_PLAYING_SOUND, IS_TO_UPDATE_PLAYLIST, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, LOAD_ISLIKE_SONG, MESSAGE_ERROR_MODAL, PLAY_MUSIC_HOME, PUSH_MUSIC_PLAYLIST_ADDED, PUSH_SELECTED_ITEM_LIST } from "./HomeTypes";
 import { Audio } from 'expo-av';
 import Sound from 'react-native-sound';
 import { getLikedSong } from "../../src/services/MusicServices";
@@ -20,7 +20,10 @@ export const HomeStates = ({ children }) => {
       selectedList: [],
       isLoading:false,
       isModalErrorVisible:false,
-      messageError:""
+      messageError:"",
+      musicListPlayList:[],
+      isToUpdatePlayList:false
+
     }),
     []
   );
@@ -149,6 +152,7 @@ const handleMessageError = useCallback((message) => {
 
     dispatch({ type: PUSH_SELECTED_ITEM_LIST, payload: letSelectedList });
   }, [])
+
   const handleDeleteSelectedList = useCallback(async (item, selectedList,deleteAll) => {
     let letSelectedList;
     if (deleteAll) {
@@ -158,6 +162,15 @@ const handleMessageError = useCallback((message) => {
     }
     dispatch({ type: DELETE_SELECTED_ITEM_LIST, payload: letSelectedList });
   }, [])
+  const handlePushPlayListMusicAdded = useCallback(async (musicList) => {
+    dispatch({ type: PUSH_MUSIC_PLAYLIST_ADDED, payload: musicList });
+  }, [])
+  const handleIsToUpdatePlayList = useCallback(async (isToUpdate) => {
+    dispatch({ type:IS_TO_UPDATE_PLAYLIST, payload: isToUpdate });
+  }, [])
+ 
+ 
+
 
   return <HomeContext.Provider
     value={{
@@ -171,6 +184,10 @@ const handleMessageError = useCallback((message) => {
       isLoading:state.isLoading,
       isModalErrorVisible:state.isModalErrorVisible,
       messageError:state.messageError,
+      musicListPlayList:state.musicListPlayList,
+      isToUpdatePlayList:state.isToUpdatePlayList,
+      handlePushPlayListMusicAdded,
+      handleIsToUpdatePlayList,
       handleIsLoadingPage,
       handleIsModalErrorVisible,
       handleMessageError,

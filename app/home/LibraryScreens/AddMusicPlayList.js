@@ -17,13 +17,12 @@ export const AddMusicPlayList = (props) => {
     const{navigation}=props;
     let musicList1=React.useRef([]);
     try{
-        const{musicList}=props.route.params;
-        console.log("propsd123",props)
-        musicList1.current=musicList;
+        musicList1.current=props.route.params.musicList;
     }catch(e){
-        musicList1.current=[];
+
+
     }
-    const { isOnLongPress, handleIsonlongPress, selectedList, handleDeleteSelectedList } = useContext(HomeContext);
+    const { handlePushPlayListMusicAdded,musicListPlayList, handleIsonlongPress, selectedList, handleDeleteSelectedList,handlePushSelectedList } = useContext(HomeContext);
     const [inputLookFor, setInputLookFor] = React.useState("");
     const [resultsMusics, setResultsMusics] = React.useState(null);
     const [musicList, setMusicList] = React.useState(  musicList1.current);
@@ -35,7 +34,7 @@ export const AddMusicPlayList = (props) => {
 
                 console.log("navigation", navigation.canGoBack())
                 if (navigation.canGoBack()) {
-                    navigation.navigate("AddPlayList",{musicList:listMusic.current});
+                    navigation.navigate("AddPlayList");
                 } else {
                     BackHandler.exitApp();
                 }
@@ -56,8 +55,28 @@ export const AddMusicPlayList = (props) => {
         return () => backHandler.remove();
     }, [])
     React.useEffect(()=>{
+        if(selectedList.length>0){
+            let itemSelectedTemp=selectedList[0];
+            let idMusics=[];
+            handleDeleteSelectedList({},{},true)
+            for (let i = 0; i < musicList.length; i++) {
+                idMusics.push(musicList[i].id);
+            }
+            itemSelectedTemp.songList=idMusics;
+            console.log("datos nuevos",itemSelectedTemp)
+            handlePushSelectedList(itemSelectedTemp,selectedList);
+        }else{
+            let idMusics=[];  
+            for (let i = 0; i < musicList.length; i++) {
+                idMusics.push(musicList[i].id);
+            }          
+            handlePushPlayListMusicAdded(idMusics);
+        }
         listMusic.current=musicList;
     },[musicList])
+    React.useEffect(()=>{
+        console.log("musicListPlayList",musicListPlayList);
+    },[musicListPlayList])
 
     const renderItemMusic = (item) => {
         return (

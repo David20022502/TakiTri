@@ -91,7 +91,7 @@ export const getAlbumes = async (resfreshFn, userOunerId) => {
       querySnapshot.forEach((doc) => {
         tempSongsAlbum.push(doc.data());
       });
-      console.log("songsByAlbum", tempSongsAlbum)
+
       resfreshFn(tempSongsAlbum)
     }
 
@@ -129,7 +129,7 @@ export const getAlbumes = async (resfreshFn, userOunerId) => {
       resfreshFn(null)
     }
 
-    console.log("songsByAlbum", tempSongsAlbum);
+
   }
   export const getLikedSongById = async (resfreshFn, listMusicsId) => {
     const songsAlbumRef = collection(
@@ -159,7 +159,6 @@ export const getAlbumes = async (resfreshFn, userOunerId) => {
       });
     }
     resfreshFn(tempSongsAlbum)
-    console.log("songsliked by id", tempSongsAlbum);
   }
   export const putLikedSong = async (likedSongId, loadLikedMusics) => {
     await setDoc(doc(global.db_Firestore, "favorite", " DP3XfsWz0llXfYtU8UUO", "songs", likedSongId), {
@@ -174,11 +173,17 @@ export const getAlbumes = async (resfreshFn, userOunerId) => {
     console.log("deleted liked song", likedSongId);
   }
 
-  export const handleSubmitPlayList = async (values) => {
+  export const handleSubmitPlayList = async (values,backToPlayList) => {
     const docRef = await addDoc(collection(global.db_Firestore, "albums"), values);
     console.log("Document written with ID: ", docRef.id);
     const washingtonRef = doc(global.db_Firestore, "albums", docRef.id);
     await updateDoc(washingtonRef, {
       id: docRef.id
     });
+    backToPlayList();
+  }
+  export const handleUpdatePlayList = async (values,backToPlayList) => {
+    const washingtonRef = doc(global.db_Firestore, "albums", values.id);
+    await updateDoc(washingtonRef, values);
+    backToPlayList();
   }

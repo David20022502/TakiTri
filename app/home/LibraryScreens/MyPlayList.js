@@ -7,7 +7,7 @@ import TakiTriContext from "../../../context/SecurityContext/TakiTriContext";
 import { AlbumItem } from "../../../src/Items/AlbumItem";
 import { getAlbumes } from "../../../src/services/MusicServices";
 export const MyPlayList = ({ navigation }) => {
-    const { isOnLongPress, handleIsonlongPress, selectedList, handleDeleteSelectedList ,handleMessageError,handleIsModalErrorVisible} = useContext(HomeContext);
+    const {handleIsToUpdatePlayList,isToUpdatePlayList,isOnLongPress, handleIsonlongPress, selectedList, handleDeleteSelectedList ,handleMessageError,handleIsModalErrorVisible} = useContext(HomeContext);
 
     const { userTakiTri } = useContext(TakiTriContext);
 
@@ -44,10 +44,14 @@ export const MyPlayList = ({ navigation }) => {
         isOnlongPressItem.current = isOnLongPress;
     }, [isOnLongPress])
     React.useEffect(()=>{
-        console.log("dato traido123",albumes)
-    },[])
+        if(isToUpdatePlayList){
+            getAlbumes(setAlbumes,userTakiTri.id);
+            handleIsToUpdatePlayList(false);
+        }
+      
+    },[isToUpdatePlayList])
     const renderItemMusic = (item) => {
-        console.log("dato traido",item)
+       
         if (item.item.length > 1) {
 
             return (
@@ -68,8 +72,8 @@ export const MyPlayList = ({ navigation }) => {
     }
     const handleUpdatePlayList=()=>{
         if(selectedList.length==1){
-            navigation.navigate("AddPlayList",{itemSelectedList:selectedList[0]});
-            handleIsonlongPress(false);
+            navigation.navigate("AddPlayList");
+           // handleIsonlongPress(false);
        
         }else{
             handleMessageError("Solo puede editar una PlayList a la vez")

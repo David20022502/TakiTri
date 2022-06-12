@@ -5,21 +5,16 @@ import * as styles from '../../assets/styles/appStyles'
 import Feather from 'react-native-vector-icons/Feather'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { Avatar } from '@rneui/themed'
-import { InputTextInfo } from '../../src/components/Components'
+import { ButtonOwn, ButtonOwnAddPlayList, InputTextInfo } from '../../src/components/Components'
 import TakiTriContext from '../../context/SecurityContext/TakiTriContext'
 
 export const ProfileScreen = () => {
-  const paperTheme = useTheme();
-  const [data, setData] = React.useState({
-    email: '',
-    password: '',
-    check_textInputChange: false,
-    secureTextEntry: true,
-    isvalidEmail: true,
-    isvalidPassword: true
-  })
+  const { userTakiTri, handleUpdateUser } = React.useContext(TakiTriContext)
   const [imageUser, setImageUser] = React.useState(null);
-  const {userTakiTri}=React.useContext(TakiTriContext)
+  const [nameUser, setNameUser] = React.useState(userTakiTri.names);
+  const [lastNameUser, setLastNameUser] = React.useState(userTakiTri.lastName);
+  const [birthDate, setBirhDate] = React.useState(userTakiTri.birthDate);
+  const [email, setEmail] = React.useState(userTakiTri.user);
 
   const chooseFile = async () => {
     let options = {
@@ -29,7 +24,7 @@ export const ProfileScreen = () => {
     //console.log("Response", response);
     setImageUser(response.uri);
   };
- 
+
   const lettersName = (nameBasic, surnameBasic) => {
     let lettersImg =
       nameBasic.charAt(0).toUpperCase() +
@@ -37,9 +32,19 @@ export const ProfileScreen = () => {
       surnameBasic.charAt(0).toUpperCase();
     return lettersImg;
   };
+  const onSubmit = () => {
+    const values = {
+      "birthDate": birthDate,
+      "id": userTakiTri.id,
+      "lastName": lastNameUser,
+      "names": nameUser,
+      "user": email,
+    }
+    handleUpdateUser(values);
+  }
   return (
     <View style={{ flex: 1, marginHorizontal: 20 }}>
-     
+
       <View
         style={{
           justifyContent: "center",
@@ -84,8 +89,8 @@ export const ProfileScreen = () => {
         <InputTextInfo
           text={"Nombres"}
           placeholder={"xxxx xxxx"}
-          value={userTakiTri.names}
-
+          value={nameUser}
+          onChangeText={setNameUser}
         >
         </InputTextInfo>
       </View>
@@ -93,22 +98,38 @@ export const ProfileScreen = () => {
         <InputTextInfo
           text={"Apelllidos"}
           placeholder={"xxxx xxxx "}
-          value={userTakiTri.lastName}
+          value={lastNameUser}
+          onChangeText={setLastNameUser}
+        >
+        </InputTextInfo>
+      </View>
+
+      <View style={{ width: "100%" }}>
+        <InputTextInfo
+          text={"Correo"}
+          value={email}
+
+          onChangeText={setEmail}
 
         >
         </InputTextInfo>
       </View>
       <View style={{ width: "100%" }}>
         <InputTextInfo
-          text={"Usuario"}
-          value={userTakiTri.user}
-          placeholder={userTakiTri.user}
-          
-
+          text={"Fecha de Nacimiento"}
+          placeholder={"xxxx xxxx "}
+          value={birthDate}
+          onChangeText={setBirhDate}
         >
         </InputTextInfo>
       </View>
-    
+      <View style={{ marginVertical: 6,width:"100%",flexDirection:"row",justifyContent:"center" }}>
+                    <ButtonOwnAddPlayList
+                        title={"Actualizar"}
+                        onPress={() => { onSubmit() }}
+                    >
+                    </ButtonOwnAddPlayList>
+                </View>
 
     </View>
   )
