@@ -16,6 +16,7 @@ import { AddPlayList } from './LibraryScreens/AddPlayList';
 import { AddMusicPlayList } from './LibraryScreens/AddMusicPlayList';
 import { ModalInfoError } from '../components/ModalInfoError';
 import { ProfileScreen } from './ProfileScreen';
+import { RecentPlayed } from './RecentPlayed';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -77,7 +78,7 @@ const MainNavigation = () => {
 
     />
     <Stack.Screen name="ListenedNow"
-      component={LibraryPlayLists}
+      component={RecentPlayed}
       options={{ headerShown: false }}
 
     />
@@ -103,8 +104,6 @@ const MainNavigation = () => {
 }
 const LibraryNavigation = () => {
   return (<StackLibrary.Navigator initialRouteName='PlayList'>
-   
-   
     <StackLibrary.Screen name="Favorites"
       component={AlbumRender}
       options={{ headerShown: false }}

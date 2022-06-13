@@ -1,4 +1,4 @@
-import { DELETE_SELECTED_ITEM_LIST, HOME_PAGE_USER, IS_LOADING_PAGE, IS_MODAL_ERROR_VISIBLE_PAGE, IS_ON_LONG_PRESS, IS_PLAYING_SOUND, IS_TO_UPDATE_PLAYLIST, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, LOAD_ISLIKE_SONG, MESSAGE_ERROR_MODAL, PLAY_MUSIC_HOME, PUSH_MUSIC_PLAYLIST_ADDED, PUSH_SELECTED_ITEM_LIST } from "./HomeTypes";
+import { DELETE_SELECTED_ITEM_LIST, HOME_PAGE_USER, IS_LOADING_PAGE, IS_MODAL_ERROR_VISIBLE_PAGE, IS_ON_LONG_PRESS, IS_PLAYING_SOUND, IS_TO_UPDATE_PLAYLIST, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, LOAD_ISLIKE_SONG, MESSAGE_ERROR_MODAL, PLAY_MUSIC_HOME, PUSH_MUSIC_PLAYLIST_ADDED, PUSH_SELECTED_ITEM_LIST, UPDATE_MAX_NUMBER_DATABASE, UPDATE_PLAYED_MUSIC } from "./HomeTypes";
 
 
 export const HomeReducer=(state, action)=>{
@@ -93,6 +93,18 @@ export const HomeReducer=(state, action)=>{
             return{
                 ...state,
                 isToUpdatePlayList:payload
+            }
+        }
+         case UPDATE_PLAYED_MUSIC:{
+            return{
+                ...state,
+                musicListenedNow:payload
+            }
+        }
+        case UPDATE_MAX_NUMBER_DATABASE:{
+            return{
+                ...state,
+                maxNumberDataBase:payload
             }
         }
     }

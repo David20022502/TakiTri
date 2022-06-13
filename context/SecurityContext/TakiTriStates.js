@@ -22,6 +22,7 @@ export const TakiTriStates = ({ children }) => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         dispatch({ type: LOAD_FIREBASE_USER, payload: user })
+      
         handleUserFirebase(user)
       } else {
         // User is signed out
@@ -48,6 +49,7 @@ export const TakiTriStates = ({ children }) => {
       });
   }, [])
   const handleUserFirebase = useCallback(async (user) => {
+    global.user_id=user.uid;
     const docRef = doc(global.db_Firestore, "users", user.uid);
     const docSnap = await getDoc(docRef);
     console.log("usuario firestore", docSnap.data())

@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Dimensions, TouchableOpacity } from 'react-nati
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ButtonOwnHeader } from '../../src/components/Components';
 import { Icon } from '@rneui/themed';
+import { openDatabase } from "expo-sqlite";
 import { MainHome } from './HomeScreens/MainHome';
 import { TrendHome } from './HomeScreens/TrendHome';
 import { FavoriteHome } from './HomeScreens/FavoriteHome';
@@ -12,10 +13,43 @@ import favorites from "../../assets/images/favorites.jpg";
 import playList from "../../assets/images/playList.jpg";
 import madeForYou from "../../assets/images/madeForYou.jpg";
 import HomeContext from '../../context/HomeContext/HomeContext';
+import { createTableDatabase, deleteDataBase, getMaxNumberDataBase, getRecentPlayed } from '../../src/services/DataBase';
+import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
 
 export const HomeScreen = ({ navigation }) => {
   //const [isSelected, setIsSelected] = React.useState("MainPage");
-  const { audioPlayer } = React.useContext(HomeContext)
+  const { handleMaxNumberDataBase,audioPlayer,handleMusicPlayed ,musicPlayedList} = React.useContext(HomeContext)
+  const { userTakiTri } = React.useContext(TakiTriContext);
+  const [musicPlayed,setMusicPlayed]=React.useState([]);
+  const [maxNumberDataBase,setMaxNumberDataBase]=React.useState([]);
+  React.useEffect(()=>{
+    fillAppStatus();
+  },[])
+  React.useEffect(()=>{
+    handleMusicPlayed(musicPlayed,musicPlayedList,true);
+    console.log("musicPlayed firt time",musicPlayed);
+    if(musicPlayed.length>0){
+      getMaxNumberDataBase(setMaxNumberDataBase);
+      //handleMaxNumberDataBase
+    }
+  },[musicPlayed])
+  React.useEffect(()=>{
+    if(maxNumberDataBase.length>0&&maxNumberDataBase[0].maxNumber){
+      console.log("inserta nuevo max number",maxNumberDataBase);
+      handleMaxNumberDataBase(maxNumberDataBase[0].maxNumber);
+    }
+  },[maxNumberDataBase])
+
+  
+  const fillAppStatus = () => {
+    if (global.dbStatus == null) {
+
+      global.dbStatus = openDatabase("historymusics");
+    }
+  // deleteDataBase();
+     createTableDatabase();
+     getRecentPlayed(userTakiTri.id, setMusicPlayed);
+  };
   const itemAlbumFavorite={
       "author": "",
       "genre_name": "Yaraví",
@@ -27,11 +61,10 @@ export const HomeScreen = ({ navigation }) => {
   }
   return (
     <View style={styles.container}>
-        <AlbumItem onPresseAlbum={()=>{navigation.navigate("madeForYou")}} title={"Ultimas Reproducciones"} imageUri={MusicRecent}></AlbumItem>
+        <AlbumItem onPresseAlbum={()=>{navigation.navigate("ListenedNow")}} title={"Ultimas Reproducciones"} imageUri={MusicRecent}></AlbumItem>
         <AlbumItem onPresseAlbum={()=>{navigation.navigate("Favorites",{itemAlbum:itemAlbumFavorite,typeAlbum:"FAVORITES"})}} title={"Favoritos"} imageUri={favorites}></AlbumItem>
         <AlbumItem onPresseAlbum={()=>{navigation.navigate("madeForYou")}} title={"Mis PlayLists"} imageUri={playList}></AlbumItem>
-        <AlbumItem onPresseAlbum={()=>{navigation.navigate("madeForYou")}} title={"Hecho para ti"} imageUri={madeForYou}></AlbumItem>
-      
+        <AlbumItem onPresseAlbum={()=>{navigation.navigate("madeForYou")}} title={"Hecho para ti"} imageUri={madeForYou}></AlbumItem>   
     </View>
   );
 }

@@ -1,12 +1,14 @@
 import React, { useCallback, useContext, useMemo, useReducer, useState } from "react";
 import HomeContext from "./HomeContext";
 import { HomeReducer } from "./HomeReducer";
-import { DELETE_SELECTED_ITEM_LIST, HOME_PAGE_USER, IS_LOADING_PAGE, IS_MODAL_ERROR_VISIBLE_PAGE, IS_ON_LONG_PRESS, IS_PLAYING_SOUND, IS_TO_UPDATE_PLAYLIST, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, LOAD_ISLIKE_SONG, MESSAGE_ERROR_MODAL, PLAY_MUSIC_HOME, PUSH_MUSIC_PLAYLIST_ADDED, PUSH_SELECTED_ITEM_LIST } from "./HomeTypes";
+import { DELETE_SELECTED_ITEM_LIST, HOME_PAGE_USER, IS_LOADING_PAGE, IS_MODAL_ERROR_VISIBLE_PAGE, IS_ON_LONG_PRESS, IS_PLAYING_SOUND, IS_TO_UPDATE_PLAYLIST, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, LOAD_ISLIKE_SONG, MESSAGE_ERROR_MODAL, PLAY_MUSIC_HOME, PUSH_MUSIC_PLAYLIST_ADDED, PUSH_SELECTED_ITEM_LIST, UPDATE_MAX_NUMBER_DATABASE, UPDATE_PLAYED_MUSIC } from "./HomeTypes";
 import { Audio } from 'expo-av';
 import Sound from 'react-native-sound';
 import { getLikedSong } from "../../src/services/MusicServices";
 import { collection, getDocs } from "firebase/firestore";
 import TrackPlayer from 'react-native-track-player';
+import { deleteFromDatabeMusic, insertHistoryMusicDataBase } from "../../src/services/DataBase";
+import TakiTriContext from "../SecurityContext/TakiTriContext";
 
 export const HomeStates = ({ children }) => {
   const initialState = useMemo(
@@ -18,25 +20,43 @@ export const HomeStates = ({ children }) => {
       likedSongsList: null,
       isOnLongPress: false,
       selectedList: [],
-      isLoading:false,
-      isModalErrorVisible:false,
-      messageError:"",
-      musicListPlayList:[],
-      isToUpdatePlayList:false
+      isLoading: false,
+      isModalErrorVisible: false,
+      messageError: "",
+      musicListPlayList: [],
+      isToUpdatePlayList: false,
+      musicListenedNow: [],
+      maxNumberDataBase:0
 
     }),
     []
   );
+  const { userTakiTri, userFirebase } = React.useContext(TakiTriContext)
+
   const [state, dispatch] = useReducer(HomeReducer, initialState);
   const handleIsLoadingPage = useCallback((isLoading) => {
-      dispatch({ type: IS_LOADING_PAGE, payload: isLoading })
+    dispatch({ type: IS_LOADING_PAGE, payload: isLoading })
   }, [])
   const handleIsModalErrorVisible = useCallback((isVisible) => {
     dispatch({ type: IS_MODAL_ERROR_VISIBLE_PAGE, payload: isVisible })
-}, [])
-const handleMessageError = useCallback((message) => {
-  dispatch({ type: MESSAGE_ERROR_MODAL, payload: message })
-}, [])
+  }, [])
+  const handleMessageError = useCallback((message) => {
+    dispatch({ type: MESSAGE_ERROR_MODAL, payload: message })
+  }, [])
+  const handleMaxNumberDataBase = useCallback((maxNumber) => {
+    dispatch({ type: UPDATE_MAX_NUMBER_DATABASE, payload: maxNumber })
+  }, [])
+  const handleMusicPlayed = useCallback((musicPlayed, musicPlayedList,isFirsTime) => {
+    let musicListTemp = musicPlayedList;
+    if(isFirsTime){
+      musicListTemp=musicPlayed;
+    }else{
+      musicListTemp.push(musicPlayed);
+    }
+    
+    dispatch({ type: UPDATE_PLAYED_MUSIC, payload: musicListTemp })
+  }, []);
+
   const changePageStatus = useCallback((pageStatus) => {
     console.log("entra l dispatch")
     if (pageStatus == PLAY_MUSIC_HOME) {
@@ -70,6 +90,7 @@ const handleMessageError = useCallback((message) => {
       dispatch({ type: LOAD_CURRENT_MUSIC, payload: music })
       loadCurrentPlayList(playList);
       setisPlayingSound(true);
+     
 
     } else {
       console.log("mismo audio")
@@ -153,7 +174,7 @@ const handleMessageError = useCallback((message) => {
     dispatch({ type: PUSH_SELECTED_ITEM_LIST, payload: letSelectedList });
   }, [])
 
-  const handleDeleteSelectedList = useCallback(async (item, selectedList,deleteAll) => {
+  const handleDeleteSelectedList = useCallback(async (item, selectedList, deleteAll) => {
     let letSelectedList;
     if (deleteAll) {
       letSelectedList = [];
@@ -166,10 +187,10 @@ const handleMessageError = useCallback((message) => {
     dispatch({ type: PUSH_MUSIC_PLAYLIST_ADDED, payload: musicList });
   }, [])
   const handleIsToUpdatePlayList = useCallback(async (isToUpdate) => {
-    dispatch({ type:IS_TO_UPDATE_PLAYLIST, payload: isToUpdate });
+    dispatch({ type: IS_TO_UPDATE_PLAYLIST, payload: isToUpdate });
   }, [])
- 
- 
+
+
 
 
   return <HomeContext.Provider
@@ -181,11 +202,15 @@ const handleMessageError = useCallback((message) => {
       likedSongsList: state.likedSongsList,
       isOnLongPress: state.isOnLongPress,
       selectedList: state.selectedList,
-      isLoading:state.isLoading,
-      isModalErrorVisible:state.isModalErrorVisible,
-      messageError:state.messageError,
-      musicListPlayList:state.musicListPlayList,
-      isToUpdatePlayList:state.isToUpdatePlayList,
+      isLoading: state.isLoading,
+      isModalErrorVisible: state.isModalErrorVisible,
+      messageError: state.messageError,
+      musicListPlayList: state.musicListPlayList,
+      isToUpdatePlayList: state.isToUpdatePlayList,
+      musicListenedNow: state.musicListenedNow,
+      maxNumberDataBase:state.maxNumberDataBase,
+      handleMaxNumberDataBase,
+      handleMusicPlayed,
       handlePushPlayListMusicAdded,
       handleIsToUpdatePlayList,
       handleIsLoadingPage,
