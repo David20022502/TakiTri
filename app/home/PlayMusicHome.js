@@ -74,13 +74,15 @@ export const PlayMusicHome = ({ navigation }) => {
     console.log("currentDate",currentDate);
     if (musicListenedNow.length <= 0) {
       console.log("musica de arreglo listenednow vacio", musicListenedNow);
-      insertHistoryMusicDataBase(1, global.user_id, currentMusic.id,currentDate);
+     let numMax = maxNumberDataBase + 1;
+      insertHistoryMusicDataBase(numMax, global.user_id, currentMusic.id,currentDate);
       const value = {
-        "id_history": 1,
+        "id_history": numMax,
         "music_id": currentMusic.id,
         "user_id": global.user_id,
         "date":currentDate
       }
+      console.log("datos para data base",value);
       if (musicListenedNow.includes(currentMusic.id)) {
         deleteFromDatabeMusic(currentMusic.id, global.user_id,currentDate);
         handleMusicPlayed(value, musicListenedNow);

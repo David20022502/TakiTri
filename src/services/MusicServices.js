@@ -161,14 +161,14 @@ export const getAlbumes = async (resfreshFn, userOunerId) => {
     resfreshFn(tempSongsAlbum)
   }
   export const putLikedSong = async (likedSongId, loadLikedMusics) => {
-    await setDoc(doc(global.db_Firestore, "favorite", " DP3XfsWz0llXfYtU8UUO", "songs", likedSongId), {
+    await setDoc(doc(global.db_Firestore, "favorite",global.user_id, "songs", likedSongId), {
       id: likedSongId
     });
     loadLikedMusics()
     console.log("liked song put", likedSongId);
   }
   export const deleteLikedSong = async (likedSongId, loadLikedMusics) => {
-    await deleteDoc(doc(global.db_Firestore, "favorite", " DP3XfsWz0llXfYtU8UUO", "songs", likedSongId));
+    await deleteDoc(doc(global.db_Firestore, "favorite",global.user_id, "songs", likedSongId));
     loadLikedMusics()
     console.log("deleted liked song", likedSongId);
   }
@@ -187,3 +187,11 @@ export const getAlbumes = async (resfreshFn, userOunerId) => {
     await updateDoc(washingtonRef, values);
     backToPlayList();
   }
+  export const handleDeletePlayList = async (values,backToPlayList) => {
+    console.log("Eliminando datos",values);
+    for(let i=0;i<values.length;i++){
+      await deleteDoc(doc(global.db_Firestore, "albums", values[i]));
+    }
+    backToPlayList();
+  }
+

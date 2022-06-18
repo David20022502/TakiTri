@@ -64,7 +64,15 @@ export const TakiTriStates = ({ children }) => {
     const auth = getAuth();
     signOut(auth).then(() => {
       // Sign-out successful.
-      dispatch({ type: LOAD_TAKITRI_USER, payload: null })
+      let val={
+        "birthDate": "",
+        "id": "",
+        "lastName": "",
+        "names": "",
+        "user": "",
+      }
+     
+      dispatch({ type: LOAD_TAKITRI_USER, payload: val })
       handleIsAutenticated(false);
     }).catch((error) => {
       console.log("error al salir de la sesion")

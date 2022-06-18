@@ -5,9 +5,9 @@ import { Alert, BackHandler, Dimensions, FlatList, StyleSheet, Text, TouchableOp
 import HomeContext from "../../../context/HomeContext/HomeContext";
 import TakiTriContext from "../../../context/SecurityContext/TakiTriContext";
 import { AlbumItem } from "../../../src/Items/AlbumItem";
-import { getAlbumes } from "../../../src/services/MusicServices";
+import { getAlbumes, handleDeletePlayList } from "../../../src/services/MusicServices";
 export const MyPlayList = ({ navigation }) => {
-    const {handleIsToUpdatePlayList,isToUpdatePlayList,isOnLongPress, handleIsonlongPress, selectedList, handleDeleteSelectedList ,handleMessageError,handleIsModalErrorVisible} = useContext(HomeContext);
+    const {handlePushPlayListMusicAdded,handleIsToUpdatePlayList,isToUpdatePlayList,isOnLongPress, handleIsonlongPress, selectedList, handleDeleteSelectedList ,handleMessageError,handleIsModalErrorVisible} = useContext(HomeContext);
 
     const { userTakiTri } = useContext(TakiTriContext);
 
@@ -80,6 +80,20 @@ export const MyPlayList = ({ navigation }) => {
             handleIsModalErrorVisible(true)
         }
     }
+    const handleDeletePlayistDataBase=()=>{
+        let tempIds=[];
+        for(let i=0;i<selectedList.length;i++){
+            tempIds.push(selectedList[i].id);
+        }
+        console.log("datos de delete",tempIds);
+        handleDeletePlayList(tempIds,backToPlayList);
+    }
+    const backToPlayList=()=>{
+        handlePushPlayListMusicAdded([]);
+        handleIsonlongPress(false);
+        handleDeleteSelectedList({}, {}, true);
+        handleIsToUpdatePlayList(true);        
+    }
     return (
 
         <View styles={styles.containerMain}>
@@ -105,7 +119,21 @@ export const MyPlayList = ({ navigation }) => {
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                onPress={() => {console.log("eliminar cancinones",selectedList)}}
+                                onPress={() => {
+                                    Alert.alert("Alerta!", "Estas seguro de cancelar la operación?", [
+                                        {
+                                            text: "No",
+                                            onPress: () => null,
+                                            style: "cancel"
+                                        },
+                                        {
+                                            text: "Si", onPress: () => {
+                                                handleDeletePlayistDataBase();
+                                            }
+                                        }
+                                    ]);
+                                
+                                }}
                             >
                                 <View style={{ width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 25, paddingTop: 2 }}>
                                     <Icon name="trash" size={25} type="font-awesome" color={"white"} />

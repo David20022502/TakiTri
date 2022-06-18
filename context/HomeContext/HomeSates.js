@@ -134,7 +134,7 @@ export const HomeStates = ({ children }) => {
   const loadLikedMusics = useCallback(async () => {
     const songsLiked = collection(
       global.db_Firestore,
-      "favorite", " DP3XfsWz0llXfYtU8UUO", "songs"
+      "favorite", global.user_id, "songs"
     );
 
     const querySnapshot = await getDocs(songsLiked);

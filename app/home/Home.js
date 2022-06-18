@@ -88,7 +88,7 @@ const MainNavigation = () => {
 
     />
     <Stack.Screen name="PlayList"
-      component={Library}
+      component={LibraryNavigation}
       options={{ headerShown: false }}
 
     />

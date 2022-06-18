@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Dimensions,TouchableOpacity } from 'react-nativ
 
 import { PlayListsScreen } from './LibraryScreens/PlayListsScreen';
 import HomeContext from '../../context/HomeContext/HomeContext';
+import { MyPlayList } from './LibraryScreens/MyPlayList';
 export const Library = ({navigation}) => {
   const {pageStatus}=React.useContext(HomeContext)
 
@@ -15,7 +16,7 @@ export const Library = ({navigation}) => {
   }
   return (
     <View style={styles.container}>
-      <PlayListsScreen navigation={navigation}></PlayListsScreen>
+      <MyPlayList navigation={navigation}></MyPlayList>
     </View>
   );
 }

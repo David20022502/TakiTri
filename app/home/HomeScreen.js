@@ -63,7 +63,7 @@ export const HomeScreen = ({ navigation }) => {
     <View style={styles.container}>
         <AlbumItem onPresseAlbum={()=>{navigation.navigate("ListenedNow")}} title={"Ultimas Reproducciones"} imageUri={MusicRecent}></AlbumItem>
         <AlbumItem onPresseAlbum={()=>{navigation.navigate("Favorites",{itemAlbum:itemAlbumFavorite,typeAlbum:"FAVORITES"})}} title={"Favoritos"} imageUri={favorites}></AlbumItem>
-        <AlbumItem onPresseAlbum={()=>{navigation.navigate("madeForYou")}} title={"Mis PlayLists"} imageUri={playList}></AlbumItem>
+        <AlbumItem onPresseAlbum={()=>{navigation.navigate("PlayList")}} title={"Mis PlayLists"} imageUri={playList}></AlbumItem>
         <AlbumItem onPresseAlbum={()=>{navigation.navigate("madeForYou")}} title={"Hecho para ti"} imageUri={madeForYou}></AlbumItem>   
     </View>
   );
