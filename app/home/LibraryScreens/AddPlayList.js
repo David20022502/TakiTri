@@ -28,8 +28,7 @@ export const AddPlayList = (props) => {
 
         const backAction = () => {
             if (!isOnlongPressItem.current) {
-
-                console.log("navigation", navigation.canGoBack())
+                console.log("navigation123", navigation.canGoBack())
                 if (navigation.canGoBack()) {
                     Alert.alert("Alerta!", "Estas seguro de cancelar la operación?", [
                         {
@@ -39,8 +38,9 @@ export const AddPlayList = (props) => {
                         },
                         {
                             text: "Si", onPress: () => {
-                                handlePushPlayListMusicAdded([]);
                                 navigation.goBack();
+                                handlePushPlayListMusicAdded([]);
+                              
                             }
                         }
                     ]);
@@ -74,6 +74,7 @@ export const AddPlayList = (props) => {
             "hardwareBackPress",
             backAction
         );
+        return () => backHandler.remove();
     }, [])
 
     React.useEffect(() => {
@@ -86,7 +87,6 @@ export const AddPlayList = (props) => {
             setPlayListName(selectedList[0].name)
             setTypePlayList(selectedList[0].genre_name)
             getLikedSongById(setResultsMusics, selectedList[0].songList);
-            console.log("******", selectedList[0])
         }
     }, [selectedList])
     React.useEffect(() => {
@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         fontStyle: "normal",
         fontSize: 30,
-        color: "white",
+        color: "#12485B",
         textShadowColor: 'rgba(0, 0, 0, 0.25)',
         textShadowOffset: { width: 0, height: 4 },
         textShadowRadius: 4,

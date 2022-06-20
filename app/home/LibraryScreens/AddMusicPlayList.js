@@ -124,8 +124,8 @@ export const AddMusicPlayList = (props) => {
             style={{ flex: 1, flexDirection: "column", justifyContent: "center", alignItems: "center" }}
         >
             <Text
-                style={{ color: "white", fontSize: 20, marginHorizontal: 20, textAlign: "center" }}
-            >Busca la musica que te guste</Text>
+                style={{ color: "#12485B", fontSize: 20, marginHorizontal: 20, textAlign: "center" }}
+            >Busca la música que te guste</Text>
         </View>);
     }
     const NotFound = () => {
@@ -133,7 +133,7 @@ export const AddMusicPlayList = (props) => {
             style={{ flex: 1, flexDirection: "column", justifyContent: "center", alignItems: "center" }}
         >
             <Text
-                style={{ color: "white", fontSize: 20 }}
+                style={{ color: "#12485B", fontSize: 20 }}
             >Sin Resultados...</Text>
         </View>);
     }
@@ -171,7 +171,7 @@ export const AddMusicPlayList = (props) => {
                     }
                 </ScrollView>
             </View>
-            <View style={{ width: "100%", height: 1, backgroundColor: "white" }}>
+            <View style={{ width: "100%", height: 1, backgroundColor: "#12485B" }}>
 
             </View>
             <View style={{ flexDirection: "column", justifyContent: "center", width: "100%", height: 400, paddingTop: 20 }}>
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
         height: 50,
     },
     styleTextAddMusic: {
-        color: "white",
+        color: "#12485B",
         fontSize: 20,
         width: "100%",
         textAlign: "center",

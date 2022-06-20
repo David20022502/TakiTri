@@ -16,12 +16,14 @@ export const MyPlayList = ({ navigation }) => {
     React.useEffect(() => {
         getAlbumes(setAlbumes, userTakiTri.id);
         const backAction = () => {
+            console.log("datos de onlongs",isOnlongPressItem.current);
             if (!isOnlongPressItem.current) {
 
-                console.log("navigation", navigation.canGoBack())
+                console.log("navigation789", navigation.canGoBack())
                 if (navigation.canGoBack()) {
                     navigation.goBack();
                 } else {
+
                     BackHandler.exitApp();
                 }
 
@@ -173,7 +175,7 @@ const styles = StyleSheet.create({
         height: 50,
         position: "absolute",
         backgroundColor: "#12485B",
-        bottom: -50,
+        bottom: -5,
         right: 20,
         borderRadius: 25
     },
@@ -182,7 +184,7 @@ const styles = StyleSheet.create({
         height: 50,
         position: "absolute",
         backgroundColor: "#12485B",
-        bottom: 10,
+        bottom: 55,
         right: 20,
         borderRadius: 25
     },
@@ -192,7 +194,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         paddingHorizontal: 20,
-        position: "relative",
         height: 65,
         marginBottom: 10
     },
@@ -208,6 +209,7 @@ const styles = StyleSheet.create({
         height: 50,
     },
     scrollViewMusic: {
+        
         paddingBottom: 230,
         paddingHorizontal: 5,
         paddingTop: 0

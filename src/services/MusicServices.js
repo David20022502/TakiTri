@@ -149,7 +149,6 @@ export const getAlbumes = async (resfreshFn, userOunerId) => {
     if (likedSongsOrder.length <= 10) {
       likedSongsAll.push(likedSongsOrder);
     }
-    console.log("ordenados", likedSongsAll)
     let tempSongsAlbum = [];
     for (let i = 0; i < likedSongsAll.length; i++) {
       const songsLikeds = query(songsAlbumRef, where("id", "in", likedSongsAll[i]));

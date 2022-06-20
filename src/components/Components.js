@@ -100,7 +100,7 @@ export const InputTextAdd = ({
                 placeholder={placeholder}
                 placeholderTextColor={"#848282"}
                 editable={editable}
-                style={{ fontSize: 16, color: "white", paddingTop: 5 }}
+                style={{ fontSize: 16, color: "#12485B", paddingTop: 5 }}
 
             />
         </View>
@@ -208,7 +208,7 @@ export const InputAddLookFor = ({
             onPress={onPress}
         >
             <View style={{ height: 30 }}>
-                <Icon name="search" size={30} color={"white"} />
+                <Icon name="search" size={30} color={"#AAAAAA"} />
             </View>
         </TouchableOpacity>
 
@@ -216,13 +216,13 @@ export const InputAddLookFor = ({
             onChangeText={onChangeText}
             value={value}
             placeholder={placeholder}
-            style={{ color: "white", fontSize: 18 }}
-            placeholderTextColor="white"
+            style={{ color: "#12485B", fontSize: 18 }}
+            placeholderTextColor="#676767"
             placeholderStyle={{ fontFamily: "AnotherFont", borderColor: 'red' }}
         />
         <TouchableOpacity>
             <View style={{ height: 30 }}>
-                <Icon name="microphone" size={30} type={"font-awesome"} color={"white"} />
+                <Icon name="microphone" size={30} type={"font-awesome"} color={"#7DDAFF"} />
             </View>
         </TouchableOpacity>
 

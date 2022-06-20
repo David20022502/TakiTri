@@ -38,11 +38,17 @@ export const TakiTriStates = ({ children }) => {
   const [snackBarPadding, setsNackBarPadding] = React.useState(0);
   const [currentPlayList, setCurrentPlayList] = React.useState(null);
   const [isPlayingSoundInside, setIsPlayingSoundInside] = React.useState(false);
-
   const [audioPlayer, setAudioPlayer] = React.useState(null);
-  React.useEffect(() => {
-    console.log("456hola123", currentMusic);
-  }, [currentMusic])
+  const [isSnackVisible, setIsSnackVisible] = React.useState(false);
+  React.useEffect(()=>{
+    if(currentMusic!=null){
+      console.log("para hacer visible")
+      setIsSnackVisible(true)
+    }else{
+      setIsSnackVisible(false)
+    }
+  },[currentMusic])
+  let currentMusicRef = React.useRef(null);
   const currentAutenticatedUser = () => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
@@ -69,8 +75,6 @@ export const TakiTriStates = ({ children }) => {
         // ...
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
         console.log("error al inciar sesion")
       });
   }, [])
@@ -112,98 +116,84 @@ export const TakiTriStates = ({ children }) => {
   const handleDestroySnackBar = useCallback(async () => {
     setCurrentMusic(null);
   }, [])
+  const handleReopenSnackBar = useCallback(async () => {
+    setCurrentMusic(currentMusicRef.current);
+  }, [])
   const handlePaddingSnackBar = useCallback(async (value) => {
     setsNackBarPadding(value);
     console.log("cambia padding a", value)
   }, [])
+  const handleDestroyAllSnackBar =() => {
+    if(audioPlayer){
+      audioPlayer.stop();
+    }
 
+     setCurrentMusic(null);
+     currentMusicRef.current = currentMusic;
+    setAudioPlayer(null);
+    setCurrentPlayList(null);
+    setIsPlayingSoundInside(false);
+  };
   const handleShowSnackBar = useCallback(async (currentMusic, audioPlayer, currentPlayList, isPlaying) => {
+    console.log("-----data",currentMusic)
     setCurrentMusic(currentMusic);
     setAudioPlayer(audioPlayer);
     setCurrentPlayList(currentPlayList);
     setIsPlayingSoundInside(isPlaying);
   }, [])
-  const playMusic = useCallback(async (audioPlayer, currentMusic, music, playList) => {
-    if (audioPlayer == null) {
-      await TrackPlayer.setupPlayer()
-      console.log("crendo audio", music);
-      Sound.setCategory('Playback');
-      audioPlayer = new Sound(music.songURL, Sound.MAIN_BUNDLE, (error) => {
-        if (error) {
-          console.log('failed to load the sound', error);
-          return;
-        }
-        console.log("reproducido con ")
-
-        audioPlayer.play((success) => {
-          if (success) {
-            console.log('successfully finished playing');
-          } else {
-            console.log('playback failed due to audio decoding errors');
+  const playMusic = useCallback(async (audioPlayer, currentMusic, music) => {
+    Sound.setCategory('Playback');
+    if (music.id != currentMusic.id) {
+      if (audioPlayer.isLoaded()) {
+        console.log("si esta cargado");
+        audioPlayer.stop();
+        audioPlayer = new Sound(music.songURL, Sound.MAIN_BUNDLE, (error) => {
+          if (error) {
+            console.log('failed to load the sound', error);
+            return;
           }
-        });
-      });
-      setCurrentMusic(currentMusic);
-      setAudioPlayer(audioPlayer);
-      setCurrentPlayList(currentPlayList);
-      setIsPlayingSoundInside(true);
-    } else {
-      console.log("mismo audio")
-      if (music.id != currentMusic.id) {
-        console.log("diferente id", music)
-        if (audioPlayer.isLoaded()) {
-          audioPlayer.stop();
-          audioPlayer = new Sound(music.songURL, Sound.MAIN_BUNDLE, (error) => {
-            if (error) {
-              console.log('failed to load the sound', error);
-              return;
+          audioPlayer.play((success) => {
+            if (success) {
+
+              console.log('successfully finished playing');
+            } else {
+              console.log('playback failed due to audio decoding errors');
             }
-            audioPlayer.play((success) => {
-              if (success) {
-                console.log('successfully finished playing');
-              } else {
-                console.log('playback failed due to audio decoding errors');
-              }
-            });
           });
-         
-        }
+        });
         setAudioPlayer(audioPlayer);
-      } else {
-        if (!audioPlayer.isPlaying()) {
-          audioPlayer.play();
-        }
+      }
+
+    } else {
+      if (!audioPlayer.isPlaying()) {
+        audioPlayer.play();
       }
     }
+
+
   }, [])
   const handlePlayPause = () => {
     if (audioPlayer && audioPlayer.isPlaying()) {
       setIsPlayingSoundInside(false)
       audioPlayer.pause();
-      //finsihInterval();
-
     } else {
       setIsPlayingSoundInside(true)
       audioPlayer.play();
-      //initInterval();
-
     }
   }
   const handleNextMusic = () => {
-
     let index = currentPlayList.indexOf(currentMusic);
     index = index + 1;
     let tempCurrentMusic;
     if (index > currentPlayList.length - 1) {
       tempCurrentMusic = currentPlayList[0];
-      console.log("fin de lalista", tempCurrentMusic)
-      playMusic(audioPlayer, currentMusic, tempCurrentMusic, currentPlayList);
+      playMusic(audioPlayer, currentMusic, tempCurrentMusic);
     } else {
       tempCurrentMusic = currentPlayList[index];
-      playMusic(audioPlayer, currentMusic, tempCurrentMusic, currentPlayList);
+      playMusic(audioPlayer, currentMusic, tempCurrentMusic);
     }
-    console.log("current music123",tempCurrentMusic);
     setCurrentMusic(tempCurrentMusic);
+    currentMusicRef.current = tempCurrentMusic;
     setCurrentPlayList(currentPlayList);
     setIsPlayingSoundInside(true);
 
@@ -213,6 +203,8 @@ export const TakiTriStates = ({ children }) => {
       userFirebase: state.userFirebase,
       userTakiTri: state.userTakiTri,
       isAutenticated: state.isAutenticated,
+      handleDestroyAllSnackBar,
+      handleReopenSnackBar,
       handlePaddingSnackBar,
       handleDestroySnackBar,
       handleShowSnackBar,
@@ -230,7 +222,7 @@ export const TakiTriStates = ({ children }) => {
           surface: '#FFFFFF'
         }
       }}
-      visible={currentMusic != null}
+      visible={isSnackVisible}
       style={{
         backgroundColor: "#12485B",
         height: 60,
@@ -247,9 +239,8 @@ export const TakiTriStates = ({ children }) => {
         </View>
         <TouchableOpacity
           onPress={() => {
-            global.navigation.navigate("PlayMusicHome",{audioPlayer:audioPlayer,currentMusic:currentMusic,currentPlayList:currentPlayList})
+            global.navigation.navigate("PlayMusicHome", { audioPlayer: audioPlayer, currentMusic: currentMusic, currentPlayList: currentPlayList })
             handleDestroySnackBar();
-            //playMusic(audioPlayer, currentMusic, currentMusic, currentPlayList);
           }}
         >
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>

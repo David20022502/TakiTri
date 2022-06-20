@@ -17,6 +17,8 @@ import { AddMusicPlayList } from './LibraryScreens/AddMusicPlayList';
 import { ModalInfoError } from '../components/ModalInfoError';
 import { ProfileScreen } from './ProfileScreen';
 import { RecentPlayed } from './RecentPlayed';
+import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
+import { useDrawerStatus } from '@react-navigation/drawer';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -26,10 +28,12 @@ const StackLibrary = createNativeStackNavigator();
 
 export default function Home({ navigation }) {
   global.navigation = navigation;
-  const { loadLikedMusics ,isModalErrorVisible,messageError,handleIsModalErrorVisible} = useContext(HomeContext)
-  React.useEffect(()=>{
+  const { loadLikedMusics, isModalErrorVisible, messageError, handleIsModalErrorVisible } = useContext(HomeContext)
+
+
+  React.useEffect(() => {
     loadLikedMusics();
-  },[])
+  }, [])
   return (
     <>
       <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
@@ -37,9 +41,9 @@ export default function Home({ navigation }) {
         <Drawer.Screen name="Perfil" component={ProfileScreen} />
       </Drawer.Navigator>
       <ModalInfoError
-      modalVisible={isModalErrorVisible}
-      setModalVisible={handleIsModalErrorVisible}
-      message={messageError}
+        modalVisible={isModalErrorVisible}
+        setModalVisible={handleIsModalErrorVisible}
+        message={messageError}
       >
 
       </ModalInfoError>
@@ -48,6 +52,13 @@ export default function Home({ navigation }) {
   );
 }
 const RootHomeTab = () => {
+  const { handleReopenSnackBar,handleDestroySnackBar } = React.useContext(TakiTriContext);
+  const isDrawerOpen = useDrawerStatus();
+  if(isDrawerOpen=="open"){
+ // handleDestroySnackBar();
+  }else{
+  // handleReopenSnackBar();
+  }
   return <Tab.Navigator initialRouteName='Home'>
     <Tab.Screen name="Libreria" component={LibraryNavigation} options={{
       headerShown: false,
@@ -92,7 +103,7 @@ const MainNavigation = () => {
       options={{ headerShown: false }}
 
     />
-      <Stack.Screen name="madeForYou"
+    <Stack.Screen name="madeForYou"
       component={MadeForYou}
       options={{ headerShown: false }}
     />
@@ -125,7 +136,7 @@ const LibraryNavigation = () => {
       options={{ headerShown: false }}
 
     />
-    
-     
+
+
   </StackLibrary.Navigator>);
 }

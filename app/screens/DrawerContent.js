@@ -26,7 +26,9 @@ export function DrawerContent(props) {
 
     const paperTheme = useTheme();
 
-    const { handleLogOut,userTakiTri } = React.useContext(TakiTriContext);
+    const { handleLogOut,userTakiTri,handleDestroySnackBar } = React.useContext(TakiTriContext);
+
+  
 
     return(
         <View style={{flex:1,backgroundColor:"#12485B"}}>

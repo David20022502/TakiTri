@@ -27,7 +27,6 @@ export const HomeScreen = ({ navigation }) => {
   },[])
   React.useEffect(()=>{
     handleMusicPlayed(musicPlayed,musicPlayedList,true);
-    console.log("musicPlayed firt time",musicPlayed);
     if(musicPlayed.length>0){
       getMaxNumberDataBase(setMaxNumberDataBase);
       //handleMaxNumberDataBase
@@ -46,7 +45,7 @@ export const HomeScreen = ({ navigation }) => {
 
       global.dbStatus = openDatabase("historymusics");
     }
-  // deleteDataBase();
+     //deleteDataBase();
      createTableDatabase();
      getRecentPlayed(userTakiTri.id, setMusicPlayed);
   };

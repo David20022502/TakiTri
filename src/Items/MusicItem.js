@@ -9,14 +9,14 @@ import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
 export const MusicItem = ({ music, playList }) => {
 
     const { playMusic, audioPlayer, currentMusic } = useContext(HomeContext)
-    const {handleShowSnackBar,handleDestroySnackBar} = useContext(TakiTriContext)
+    const {handleShowSnackBar,handleDestroyAllSnackBar} = useContext(TakiTriContext)
 
     const changeAlbumPage = () => {
         //changePageStatus(PLAY_MUSIC_HOME);
-        handleDestroySnackBar();
+        handleDestroyAllSnackBar();
         global.navigation.navigate("PlayMusicHome")
         playMusic(audioPlayer, currentMusic, music, playList);
-        global.playMusic=playMusic;
+   
     }
     return (
         <View style={{ flexDirection: "row" }}>

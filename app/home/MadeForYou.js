@@ -14,15 +14,15 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
     if (item.item.length > 1) {
       return (
         <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 5 }}>
-          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic",{itemAlbum:item.item[0],typeAlbum:"ALBUM"}) }} imageUri={item.item[0].imageURL} title={item.item[0].name}></AlbumItem>
-          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic",{itemAlbum:item.item[1],typeAlbum:"ALBUM"}) }} imageUri={item.item[1].imageURL} title={item.item[1].name}></AlbumItem>
+          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic", { itemAlbum: item.item[0], typeAlbum: "ALBUM" }) }} imageUri={item.item[0].imageURL} title={item.item[0].name}></AlbumItem>
+          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic", { itemAlbum: item.item[1], typeAlbum: "ALBUM" }) }} imageUri={item.item[1].imageURL} title={item.item[1].name}></AlbumItem>
         </View>
 
       );
     } else {
       return (
         <View style={{ flexDirection: "row", justifyContent: "flex-start", paddingHorizontal: 5 }}>
-          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic",{itemAlbum:item.item[0],typeAlbum:"ALBUM"}) }} imageUri={item.item[0].imageURL} title={item.item[0].name}></AlbumItem>
+          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic", { itemAlbum: item.item[0], typeAlbum: "ALBUM" }) }} imageUri={item.item[0].imageURL} title={item.item[0].name}></AlbumItem>
         </View>
 
       );
@@ -33,12 +33,20 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
     <View style={{ flex: 1, }}>
 
       <View style={styles.containerItemsFinal}>
-        <View style={styles.conatinerTitleHeaderItem}>
-          <Text style={styles.textTitleItem}>
-            Hecho Para ti
-          </Text>
-        </View>
+        <View >
+          <View style={styles.conatinerTitleHeaderItem}>
+            <Text style={styles.textTitleItem}>
+              Hecho Para ti
+            </Text>
 
+          </View>
+          <View style={styles.conatinerTitleHeaderItem}>
+            <Text style={styles.textSubTitleItem}>
+              Todas los Álbumes y PlayLists lo encuentras en esta sección
+            </Text>
+
+          </View>
+        </View>
         <View style={styles.scrollViewMusic}>
           {
             albumes.length > 0 && <FlatList
@@ -71,6 +79,16 @@ const styles = StyleSheet.create({
     height: 65,
     marginBottom: 10
   },
+  textSubTitleItem:{
+    fontStyle: "normal",
+    textAlign:"center",
+    fontSize: 15,
+    color: "#12485B",
+    textShadowColor: 'rgba(0, 0, 0, 0.25)',
+    textShadowOffset: { width: 0, height: 4 },
+    textShadowRadius: 4,
+    height: 50,
+  },
   textTitleItem: {
     marginTop: 10,
     fontStyle: "normal",
@@ -97,6 +115,6 @@ const styles = StyleSheet.create({
   scrollViewMusic: {
     paddingBottom: 100,
     paddingHorizontal: 5,
-    paddingTop:0
+    paddingTop: 0
   }
 });
