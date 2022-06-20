@@ -38,9 +38,9 @@ export default function App() {
     dark: true,
     colors: {
       primary: 'rgb(255, 45, 85)',
-      background: '#3b4a54',
-      card: '#2a3942',
-      text: '#ffffff',
+      background: '#FDFDFD',
+      card: '#20DACA',
+      text: 'black',
       border: '#2a3942',
       notification: 'rgb(255, 69, 58)',
       color: "white"
@@ -51,7 +51,7 @@ export default function App() {
   return (
     <PaperProvider theme={CustomDarkTheme}>
       <NavigationContainer theme={MyTheme}>
-        <StatusBar backgroundColor='#fff'></StatusBar>
+        <StatusBar backgroundColor='#20DACA'></StatusBar>
         <TakiTriStates>
           <Navigation>
           </Navigation>

@@ -78,14 +78,14 @@ export const ProfileScreen = () => {
             onPress={() => {
               chooseFile();
             }}
-            style={{ backgroundColor: "#EF6F6C" }}
+            style={{ backgroundColor: "#7DDAFF" }}
             size={30}
           />
         </Avatar>
       </View>
 
 
-      <View style={{ width: "100%" }}>
+      <View style={{ width: "100%", marginVertical:10}}>
         <InputTextInfo
           text={"Nombres"}
           placeholder={"xxxx xxxx"}
@@ -94,7 +94,7 @@ export const ProfileScreen = () => {
         >
         </InputTextInfo>
       </View>
-      <View style={{ width: "100%" }}>
+      <View style={{ width: "100%", marginVertical:10}}>
         <InputTextInfo
           text={"Apelllidos"}
           placeholder={"xxxx xxxx "}
@@ -104,22 +104,23 @@ export const ProfileScreen = () => {
         </InputTextInfo>
       </View>
 
-      <View style={{ width: "100%" }}>
+      <View style={{ width: "100%", marginVertical:10}}>
         <InputTextInfo
           text={"Correo"}
           value={email}
-
+          editable={false}
           onChangeText={setEmail}
 
         >
         </InputTextInfo>
       </View>
-      <View style={{ width: "100%" }}>
+      <View style={{ width: "100%", marginVertical:10}}>
         <InputTextInfo
           text={"Fecha de Nacimiento"}
           placeholder={"xxxx xxxx "}
           value={birthDate}
           onChangeText={setBirhDate}
+          editable={false}
         >
         </InputTextInfo>
       </View>
@@ -130,7 +131,6 @@ export const ProfileScreen = () => {
                     >
                     </ButtonOwnAddPlayList>
                 </View>
-
     </View>
   )
 }

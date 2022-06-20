@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useContext } from 'react';
 import { View } from 'react-native';
+import { AlbumRender } from '../app/home/AlbumRender';
 import Home from '../app/home/Home';
 import { PlayMusicHome } from '../app/home/PlayMusicHome';
 import { FirstSplash } from '../app/screens/FirstSplash';
@@ -72,6 +73,10 @@ const AtenticatedUser = () => {
             />
              <Stack.Screen name="PlayMusicHome"
                 component={PlayMusicHome}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="AlbumListMusic"
+                component={AlbumRender}
                 options={{ headerShown: false }}
             />
         </StackAutenticated.Navigator>

@@ -13,13 +13,10 @@ export const ButtonOwn = ({ onPress, title }) => {
 
         </Button>
     </View>
-
-
-
     );
 }
-export const ButtonOwnAddPlayList= ({ onPress, title }) => {
-    return (<View style={{width:200}}>
+export const ButtonOwnAddPlayList = ({ onPress, title }) => {
+    return (<View style={{ width: 200 }}>
         <Button
             buttonStyle={styles.ButtonOwn1}
             onPress={onPress}
@@ -93,7 +90,7 @@ export const InputTextAdd = ({
         <View style={styles.fieldSetAdd}>
             <Text style={styles.legendAdd}>{text}</Text>
             <TextInput
-           
+
                 onChangeText={onChangeText}
                 value={value}
                 autoCapitalize={autoCapitalize}
@@ -124,24 +121,28 @@ export const InputTextInfo = ({
     editable,
     style,
 }) => {
-    return <View style={styles.fieldSet}>
-        <Text style={[styles.legend,{backgroundColor:"#3b4a54",fontSize:15}]}>{text}</Text>
-        <TextInput
-            keyboardType={keyboardType}
-            onChangeText={onChangeText}
-            value={value}
-            autoCapitalize={autoCapitalize}
-            maxLength={maxLength}
-            secureTextEntry={modify}
-            minLength={minLength}
-            placeholder={placeholder}
-            editable={editable}
-            style={style}
-            placeholderTextColor="white"
-            color={"white"}
+    return <View style={{ flexDirection: "column", }}>
+        <View style={styles.fieldSetInfoProfile}>
+            <Text style={[{ fontSize: 15, width: 100, color: "#848282" }]}>{text}</Text>
+            <TextInput
+                keyboardType={keyboardType}
+                onChangeText={onChangeText}
+                value={value}
+                autoCapitalize={autoCapitalize}
+                maxLength={maxLength}
+                secureTextEntry={modify}
+                minLength={minLength}
+                placeholder={placeholder}
+                editable={editable}
+                style={style}
+                placeholderTextColor="white"
+                color={"#12485B"}
 
-        />
+            />
+        </View>
+        <View style={styles.lineStyle}></View>
     </View>;
+
 
 }
 export const ButtonOwnHeader = ({ onPress, title, backgroundColor, textColor, color }) => {
@@ -173,7 +174,7 @@ export const InputLookFor = ({
             onPress={onPress}
         >
             <View style={{ height: 30 }}>
-                <Icon name="search" size={30} color={"white"} />
+                <Icon name="search" size={30} color={"#AAAAAA"} />
             </View>
         </TouchableOpacity>
 
@@ -182,12 +183,12 @@ export const InputLookFor = ({
             value={value}
             placeholder={placeholder}
             style={styles.styleInputLook}
-            placeholderTextColor="white"
+            placeholderTextColor="#676767"
             placeholderStyle={{ fontFamily: "AnotherFont", borderColor: 'red' }}
         />
         <TouchableOpacity>
             <View style={{ height: 30 }}>
-                <Icon name="microphone" size={30} type={"font-awesome"} color={"white"} />
+                <Icon name="microphone" size={30} type={"font-awesome"} color={"#7DDAFF"} />
             </View>
         </TouchableOpacity>
 
@@ -228,6 +229,43 @@ export const InputAddLookFor = ({
 
     </View>;
 }
+export const SwitchCase = ({
+    active,
+    setValueSwith
+}) => {
+    return <TouchableOpacity
+        onPress={() => {
+            setValueSwith(!active)
+        }}
+    >
+        <View style={{ width: 60, height: 30, flexDirection: "column", justifyContent: "center" }}>
+            <View style={{ height: 30, width: 60, backgroundColor: active ? "#12485B" : "#D9D9D9", borderRadius: 15, flexDirection: "row", justifyContent: active ? "flex-end" : "flex-start" }}>
+                <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: "#20DACA" }}>
+                </View>
+            </View>
+        </View>
+
+    </TouchableOpacity>
+        ;
+}
+export const InputLookForAlbumMusic = ({
+    value,
+    onChangeText
+}) => {
+    return <View>
+        <TextInput 
+        value={value}
+         onChangeText={onChangeText}
+         style={{ color: "#12485B", fontSize: 18,backgroundColor:"white",width:250,height:35,borderRadius:6,paddingLeft:10}}
+         placeholderTextColor="#AAAAAA"
+         placeholderStyle={{ fontFamily: "AnotherFont", borderColor: 'red' }}
+         placeholder="Buscar música"
+        >
+            
+        </TextInput>
+    </View>
+        ;
+}
 const styles = StyleSheet.create({
     fieldSetLookFor: {
         paddingHorizontal: 10,
@@ -238,6 +276,15 @@ const styles = StyleSheet.create({
         width: 320,
         flexDirection: "row",
         justifyContent: "space-between",
+        alignItems: "center"
+
+    },
+    fieldSetInfoProfile: {
+        paddingHorizontal: 10,
+        borderRadius: 15,
+        height: 60,
+        width: "100%",
+        flexDirection: "row",
         alignItems: "center"
 
     },
@@ -300,8 +347,8 @@ const styles = StyleSheet.create({
         height: 40,
 
     },
-    ButtonOwn1:{
-        backgroundColor: "#97DEF9",
+    ButtonOwn1: {
+        backgroundColor: "#20DACA",
         borderRadius: 15,
         width: 200,
         height: 40,

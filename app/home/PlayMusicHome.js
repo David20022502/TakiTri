@@ -5,24 +5,38 @@ import HomeContext from '../../context/HomeContext/HomeContext';
 import Sound from 'react-native-sound';
 import { deleteLikedSong, putLikedSong } from '../../src/services/MusicServices';
 import { deleteFromDatabeMusic, getMaxNumberDataBase, insertHistoryMusicDataBase } from '../../src/services/DataBase';
+import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
 
-export const PlayMusicHome = ({ navigation }) => {
-  const { handleMaxNumberDataBase,maxNumberDataBase,handleMusicPlayed,musicListenedNow,audioPlayer, currentMusic, isPlayingSound, playMusic, currentPlayList, likedSongsList, loadLikedMusics } = useContext(HomeContext)
+export const PlayMusicHome = (props) => {
+  const { navigation } = props;
+  const {handleSnackBarElement, handleMaxNumberDataBase, maxNumberDataBase, handleMusicPlayed, musicListenedNow, audioPlayer, currentMusic, isPlayingSound, playMusic, currentPlayList, likedSongsList, loadLikedMusics } = useContext(HomeContext)
   const [progresBar, setProgresBar] = React.useState(0);
+  const { handleShowSnackBar, handlePaddingSnackBar } = useContext(TakiTriContext)
   const [isPlayingSoundInside, setIsPlayingSoundInside] = React.useState(isPlayingSound);
-  const [progresBarVolume, setProgresBarVolume] = React.useState(20);
   const [progresTime, setProgresTime] = React.useState("00:00");
   const [duration, setDuration] = React.useState("00:00");
   const [isRandom, setIsRandom] = React.useState(false);
   const [isRepeatingButton, setIsRepeatingButton] = React.useState(false);
   const [isLiked, setIsLiked] = React.useState(false);
-
+  let currentMusicRef = useRef(null);
+  let audioPlayerRef = useRef(null);
+  let currentPlayListRef = useRef(null);
   let isRepeating = React.useRef(false)
   let isSliderChanging = React.useRef(false)
   let timeProgresInterval = useRef(null)
   React.useEffect(() => {
+    try {
+      let audioPlayer = props.route.params.audioPlayer;
+      let currentMusic = props.route.params.currentMusic;
+      let currentPlayList = props.route.params.currentPlayList;
+   
+      handleSnackBarElement(audioPlayer,currentMusic,currentPlayList);
+    } catch (e) {
+      console.log(e);
+    }
     const backAction = () => {
       navigation.goBack();
+      showSnackBarPlay();
       return true;
     };
 
@@ -48,10 +62,13 @@ export const PlayMusicHome = ({ navigation }) => {
       finsihInterval();
       initInterval();
     }
-    
+    audioPlayerRef.current = audioPlayer;
   }, [audioPlayer])
+  React.useEffect(() => {
+    currentPlayListRef.current = currentPlayList;
+  }, [currentPlayList])
 
-  
+
 
   React.useEffect(() => {
     if (currentMusic) {
@@ -64,27 +81,33 @@ export const PlayMusicHome = ({ navigation }) => {
       }
       loadToHistoryPlayed();
     }
+    currentMusicRef.current = currentMusic;
   }, [currentMusic])
+
+  const showSnackBarPlay = () => {
+    handleShowSnackBar(currentMusicRef.current, audioPlayerRef.current, currentPlayListRef.current, audioPlayerRef.current.isPlaying());
+    handlePaddingSnackBar(5);
+  }
   const loadToHistoryPlayed = () => {
     console.log("global.user_id", global.user_id);
     const date = new Date();
-    const dateFormated = new Date(date.getFullYear(),date.getMonth(),date.getDate(),date.getHours(),date.getMinutes(),date.getSeconds());
-   // const currentDate=date.getFullYear()+"/"+(date.getMonth()+1)+"/"+date.getDate()+":"+date.getHours()+"/"+date.getMinutes()+"/"+date.getSeconds();
-   const currentDate=dateFormated.toString();
-    console.log("currentDate",currentDate);
+    const dateFormated = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
+    // const currentDate=date.getFullYear()+"/"+(date.getMonth()+1)+"/"+date.getDate()+":"+date.getHours()+"/"+date.getMinutes()+"/"+date.getSeconds();
+    const currentDate = dateFormated.toString();
+    console.log("currentDate", currentDate);
     if (musicListenedNow.length <= 0) {
       console.log("musica de arreglo listenednow vacio", musicListenedNow);
-     let numMax = maxNumberDataBase + 1;
-      insertHistoryMusicDataBase(numMax, global.user_id, currentMusic.id,currentDate);
+      let numMax = maxNumberDataBase + 1;
+      insertHistoryMusicDataBase(numMax, global.user_id, currentMusic.id, currentDate);
       const value = {
         "id_history": numMax,
         "music_id": currentMusic.id,
         "user_id": global.user_id,
-        "date":currentDate
+        "date": currentDate
       }
-      console.log("datos para data base",value);
+      console.log("datos para data base", value);
       if (musicListenedNow.includes(currentMusic.id)) {
-        deleteFromDatabeMusic(currentMusic.id, global.user_id,currentDate);
+        deleteFromDatabeMusic(currentMusic.id, global.user_id, currentDate);
         handleMusicPlayed(value, musicListenedNow);
       } else {
         handleMusicPlayed(value, musicListenedNow);
@@ -100,28 +123,28 @@ export const PlayMusicHome = ({ navigation }) => {
         musicListPlayedMusicId.push(musicListenedNow[i].music_id);
       }
       var numMax = Math.max(...musicListPlayed);
-      console.log("maxNumberDataBase ates de enviarlos",maxNumberDataBase);
+      console.log("maxNumberDataBase ates de enviarlos", maxNumberDataBase);
       numMax = maxNumberDataBase + 1;
       console.log("numero maximo", numMax);
       const value = {
         "id_history": numMax,
         "music_id": currentMusic.id,
         "user_id": global.user_id,
-        "date":currentDate
+        "date": currentDate
       }
       if (musicListPlayedMusicId.includes(currentMusic.id)) {
         deleteFromDatabeMusic(currentMusic.id, global.user_id);
         handleMusicPlayed(value, musicListenedNow);
-        insertHistoryMusicDataBase(numMax, global.user_id, currentMusic.id,currentDate);
+        insertHistoryMusicDataBase(numMax, global.user_id, currentMusic.id, currentDate);
 
       } else {
         handleMusicPlayed(value, musicListenedNow);
-        insertHistoryMusicDataBase(numMax, global.user_id, currentMusic.id,currentDate);
+        insertHistoryMusicDataBase(numMax, global.user_id, currentMusic.id, currentDate);
 
       }
-     
+
     }
-    getMaxNumberDataBase(handleMaxNumberDataBase,true);
+    getMaxNumberDataBase(handleMaxNumberDataBase, true);
   }
   const onPlaybackStatusUpdate = () => {
     // console.log("cambiando")
@@ -238,7 +261,6 @@ export const PlayMusicHome = ({ navigation }) => {
   return (
     <>
       {currentMusic && <View style="allContainer">
-
         <Image
           source={{ uri: currentMusic.imageURL }}
           style={{ width: "100%", height: "100%" }}
@@ -363,7 +385,6 @@ export const PlayMusicHome = ({ navigation }) => {
 
 
           <View style={styles.containerItemsControlBottom}>
-
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: 200 }}>
               <TouchableOpacity>
                 <Icon name="volume-mute" size={25} type="fontisto" color={"#FDFDFD"} />

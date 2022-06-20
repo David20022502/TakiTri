@@ -96,10 +96,11 @@ const MainNavigation = () => {
       component={MadeForYou}
       options={{ headerShown: false }}
     />
+    {/* 
     <Stack.Screen name="AlbumListMusic"
       component={AlbumRender}
       options={{ headerShown: false }}
-    />
+    />*/}
   </Stack.Navigator>);
 }
 const LibraryNavigation = () => {

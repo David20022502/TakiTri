@@ -45,11 +45,11 @@ export const AlbumItem = ({ onPresseAlbum, title, imageUri ,item}) => {
                     {
                         (typeof (imageUri) == "string") ? <Image
                             source={{ uri: imageUri }}
-                            style={{ width: 180, height: 180, borderRadius: 4 }}
+                            style={{ width: 160, height: 160, borderRadius: 4 }}
                         >
                         </Image> : <Image
                             source={imageUri}
-                            style={{ width: 180, height: 180, borderRadius: 4 }}
+                            style={{ width: 160, height: 160, borderRadius: 4 }}
                         >
                         </Image>
 
@@ -68,10 +68,12 @@ export const AlbumItem = ({ onPresseAlbum, title, imageUri ,item}) => {
 }
 const styles = StyleSheet.create({
     containerAlbum: {
-        backgroundColor: '#334048',
+        backgroundColor: '#D9D9D9',
         flexDirection: "column",
+        alignItems:"center",
         position: "relative",
         marginTop: 50,
+        paddingTop:20,
         width: 180,
         height: 250,
         borderRadius: 15
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
         fontSize: 17,
         marginTop: 5,
         paddingHorizontal: 10,
-        color: "#FFFFFF",
+        color: "#12485B",
     },
     iconStyle: {
         position: "absolute",

@@ -18,7 +18,7 @@ export const LookFor = () => {
     style={{flex:1,flexDirection:"column",justifyContent:"center",alignItems:"center"}}
     > 
       <Text
-      style={{color:"white",fontSize:30, marginHorizontal:20,textAlign:"center"}}
+      style={{color:"#12485B",fontSize:30, marginHorizontal:20,textAlign:"center"}}
       >Siempre hay nuevas musicas para escuchar!</Text>
     </View>);
   }
@@ -27,7 +27,7 @@ export const LookFor = () => {
     style={{flex:1,flexDirection:"column",justifyContent:"center",alignItems:"center"}}
     > 
       <Text
-      style={{color:"white",fontSize:30}}
+      style={{color:"#12485B",fontSize:30}}
       >Sin Resultados...</Text>
     </View>);
   }
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     fontSize: 35,
     lineHeight: 52,
-    color: "white",
+    color: "#12485B",
     textShadowColor: 'rgba(0, 0, 0, 0.25)',
     textShadowOffset: { width: 0, height: 4 },
     textShadowRadius: 4,

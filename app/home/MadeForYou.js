@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontStyle: "normal",
     fontSize: 30,
-    color: "white",
+    color: "#12485B",
     textShadowColor: 'rgba(0, 0, 0, 0.25)',
     textShadowOffset: { width: 0, height: 4 },
     textShadowRadius: 4,

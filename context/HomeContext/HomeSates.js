@@ -1,13 +1,10 @@
 import React, { useCallback, useContext, useMemo, useReducer, useState } from "react";
 import HomeContext from "./HomeContext";
 import { HomeReducer } from "./HomeReducer";
-import { DELETE_SELECTED_ITEM_LIST, HOME_PAGE_USER, IS_LOADING_PAGE, IS_MODAL_ERROR_VISIBLE_PAGE, IS_ON_LONG_PRESS, IS_PLAYING_SOUND, IS_TO_UPDATE_PLAYLIST, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, LOAD_ISLIKE_SONG, MESSAGE_ERROR_MODAL, PLAY_MUSIC_HOME, PUSH_MUSIC_PLAYLIST_ADDED, PUSH_SELECTED_ITEM_LIST, UPDATE_MAX_NUMBER_DATABASE, UPDATE_PLAYED_MUSIC } from "./HomeTypes";
-import { Audio } from 'expo-av';
+import { DELETE_SELECTED_ITEM_LIST, IS_LOADING_PAGE, IS_MODAL_ERROR_VISIBLE_PAGE, IS_ON_LONG_PRESS, IS_PLAYING_SOUND, IS_TO_UPDATE_PLAYLIST, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, LOAD_ISLIKE_SONG, MESSAGE_ERROR_MODAL, PLAY_MUSIC_HOME, PUSH_MUSIC_PLAYLIST_ADDED, PUSH_SELECTED_ITEM_LIST, UPDATE_MAX_NUMBER_DATABASE, UPDATE_PLAYED_MUSIC } from "./HomeTypes";
 import Sound from 'react-native-sound';
-import { getLikedSong } from "../../src/services/MusicServices";
 import { collection, getDocs } from "firebase/firestore";
 import TrackPlayer from 'react-native-track-player';
-import { deleteFromDatabeMusic, insertHistoryMusicDataBase } from "../../src/services/DataBase";
 import TakiTriContext from "../SecurityContext/TakiTriContext";
 
 export const HomeStates = ({ children }) => {
@@ -56,16 +53,6 @@ export const HomeStates = ({ children }) => {
     
     dispatch({ type: UPDATE_PLAYED_MUSIC, payload: musicListTemp })
   }, []);
-
-  const changePageStatus = useCallback((pageStatus) => {
-    console.log("entra l dispatch")
-    if (pageStatus == PLAY_MUSIC_HOME) {
-      dispatch({ type: PLAY_MUSIC_HOME, payload: pageStatus })
-
-    } else {
-      dispatch({ type: HOME_PAGE_USER, payload: pageStatus })
-    }
-  }, [])
   const playMusic = useCallback(async (audioPlayer, currentMusic, music, playList) => {
     if (audioPlayer == null) {
       await TrackPlayer.setupPlayer()
@@ -153,6 +140,11 @@ export const HomeStates = ({ children }) => {
     const nuewLikedSongs = listLikedMusics.filter(item => item != songId);
     dispatch({ type: LOAD_ISLIKE_SONG, payload: nuewLikedSongs });
   }, [])
+  const handleSnackBarElement = useCallback(async (audioPlayer,currentMusic,currentPlayList) => {
+    dispatch({ type: LOAD_AUDIO_PLAYER, payload: audioPlayer })
+    dispatch({ type: LOAD_CURRENT_MUSIC, payload: currentMusic })
+    loadCurrentPlayList(currentPlayList);
+  }, [])
   const deleteLikedSong = useCallback(async (songId, listLikedMusics) => {
     const nuewLikedSongs = listLikedMusics;
     nuewLikedSongs.push(songId);
@@ -210,6 +202,7 @@ export const HomeStates = ({ children }) => {
       musicListenedNow: state.musicListenedNow,
       maxNumberDataBase:state.maxNumberDataBase,
       handleMaxNumberDataBase,
+      handleSnackBarElement,
       handleMusicPlayed,
       handlePushPlayListMusicAdded,
       handleIsToUpdatePlayList,

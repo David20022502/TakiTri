@@ -4,38 +4,50 @@ import example from "../../assets/images/example.jpg";
 import { Icon } from '@rneui/themed';
 import { PLAY_MUSIC_HOME } from "../../context/HomeContext/HomeTypes";
 import HomeContext from "../../context/HomeContext/HomeContext";
+import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
 
-export const MusicItem = ({music,playList}) => {
+export const MusicItem = ({ music, playList }) => {
 
-    const {playMusic,audioPlayer,currentMusic}=useContext(HomeContext)
-    const changeAlbumPage=()=>{
+    const { playMusic, audioPlayer, currentMusic } = useContext(HomeContext)
+    const {handleShowSnackBar,handleDestroySnackBar} = useContext(TakiTriContext)
+
+    const changeAlbumPage = () => {
         //changePageStatus(PLAY_MUSIC_HOME);
+        handleDestroySnackBar();
         global.navigation.navigate("PlayMusicHome")
-        playMusic(audioPlayer,currentMusic,music,playList);
+        playMusic(audioPlayer, currentMusic, music, playList);
+        global.playMusic=playMusic;
     }
     return (
-        <TouchableOpacity 
-        onPress={()=>{changeAlbumPage()}}
-        >
-            <View style={styles.containerMusic}>
-                <Image
-                    source={{uri:music.imageURL}}
-                    style={{ width: 80, height: 80, borderRadius: 0 }}
-                >
-                </Image>
-                <View style={styles.containerText}>
-                    <Text style={styles.title}>
-                        {music.song_name}
-                    </Text>
-                    <Text style={styles.subTitle}>
-                        {music.author}
-                    </Text>
+        <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity
+                onPress={() => { changeAlbumPage() }}
+            >
+                <View style={styles.containerMusic}>
+                    <Image
+                        source={{ uri: music.imageURL }}
+                        style={{ width: 60, height: 60, borderRadius: 6 }}
+                    >
+                    </Image>
+                    <View style={styles.containerText}>
+                        <Text style={styles.title}>
+                            {music.song_name}
+                        </Text>
+                        <Text style={styles.subTitle}>
+                            {music.author}
+                        </Text>
+                    </View>
+
                 </View>
-                <View style={styles.containerOPtions}>
-                    <Icon name="playcircleo" size={30} type="ant-design" color="white" onPress={() => { }} />
-                </View>
+            </TouchableOpacity>
+            <View style={styles.containerOPtions}>
+                <Icon name="heart" size={25} type="ant-design" color="#12485B" onPress={() => { }} />
             </View>
-        </TouchableOpacity>
+            <View style={styles.containerOPtions}>
+                <Icon name="dots-three-vertical" size={20} type="entypo"  color="#12485B" onPress={() => { }} />
+            </View>
+        </View>
+
 
 
 
@@ -43,11 +55,10 @@ export const MusicItem = ({music,playList}) => {
 }
 const styles = StyleSheet.create({
     containerMusic: {
-        backgroundColor: '#FDFDFD',
         flexDirection: "row",
         position: "relative",
         margin: 10,
-        width: 60,
+        width: 230,
     },
     containerText: {
         flexDirection: "column",
@@ -56,39 +67,23 @@ const styles = StyleSheet.create({
     },
     containerOPtions: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        marginHorizontal: 15,
         alignItems: "center",
-        width: 75,
-        marginLeft:30
-
     },
     title: {
         fontStyle: "normal",
-        fontSize: 18,
+        fontSize: 15,
         lineHeight: 22,
-        color: "white",
+        color: "#12485B",
         width: 180,
     },
     subTitle: {
         fontStyle: "normal",
-        fontSize: 15,
+        fontSize: 13,
         lineHeight: 22,
         color: "#848282",
         width: 180
     },
-    TextStyle: {
-        position: "absolute",
-        fontStyle: "normal",
-        fontSize: 25,
-        lineHeight: 24,
-        color: "#FFFFFF",
-        top: 20,
-        left: 30,
-    },
-    iconStyle: {
-        position: "absolute",
-        bottom: 10,
-        right: 10
-    }
+
 
 });

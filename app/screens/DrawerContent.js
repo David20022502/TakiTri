@@ -29,7 +29,7 @@ export function DrawerContent(props) {
     const { handleLogOut,userTakiTri } = React.useContext(TakiTriContext);
 
     return(
-        <View style={{flex:1,backgroundColor:"#202c33"}}>
+        <View style={{flex:1,backgroundColor:"#12485B"}}>
             <DrawerContentScrollView {...props}>
                 <View style={styles.drawerContent}>
                     <View style={styles.userInfoSection}>
