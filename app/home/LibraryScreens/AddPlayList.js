@@ -13,10 +13,11 @@ import {
 } from "expo-image-picker";
 import { MusicItem } from "../../../src/Items/MusicItem";
 import TakiTriContext from "../../../context/SecurityContext/TakiTriContext";
+import { getMessage } from "../../../src/components/Messages";
 export const AddPlayList = (props) => {
     const { navigation } = props;
     const { handleIsToUpdatePlayList,isOnLongPress,handlePushPlayListMusicAdded, musicListPlayList, handleIsonlongPress, selectedList, handleDeleteSelectedList, handleMessageError, handleIsModalErrorVisible } = useContext(HomeContext);
-    const { userTakiTri } = useContext(TakiTriContext);
+    const { userTakiTri,  handleLoading,handleError, } = useContext(TakiTriContext);
     const [imageUser, setImageUser] = React.useState(null);
     const [resultsMusics, setResultsMusics] = React.useState([]);
     const [playListName, setPlayListName] = React.useState("");
@@ -30,7 +31,7 @@ export const AddPlayList = (props) => {
             if (!isOnlongPressItem.current) {
                 console.log("navigation123", navigation.canGoBack())
                 if (navigation.canGoBack()) {
-                    Alert.alert("Alerta!", "Estas seguro de cancelar la operación?", [
+                    Alert.alert("Alerta!", "Estas seguro de que quieres cancelarlo?", [
                         {
                             text: "No",
                             onPress: () => null,
@@ -52,7 +53,7 @@ export const AddPlayList = (props) => {
 
             } else {
 
-                Alert.alert("Alerta!", "Estas seguro de cancelar la operación?", [
+                Alert.alert("Alerta!", "Estas seguro de que quieres cancelarlo?", [
                     {
                         text: "No",
                         onPress: () => null,
@@ -125,15 +126,18 @@ export const AddPlayList = (props) => {
 
         if (playListName.length <= 0 || typePlayList.length <= 0) {
             console.log("si hay error");
-            handleIsModalErrorVisible(true);
-            handleMessageError("Ingrese los campos");
+           // handleIsModalErrorVisible(true);
+            //handleMessageError("Ingrese los campos");
+            handleError(getMessage("dataRequired"),"red");
         } else {
             if (musicListPlayList.length < 3) {
                 handleIsModalErrorVisible(true);
-                handleMessageError("Mìnimo 3 canciones");
+                handleError(getMessage("min3musics","red"));
             } else {
                 console.log("values", values)
-                handleSubmitPlayList(values,backToPlayList);
+                handleLoading(true);
+                 await handleSubmitPlayList(values,backToPlayList);
+                 handleLoading(false);
 
             }
         }
@@ -313,7 +317,7 @@ export const AddPlayList = (props) => {
                     <ButtonOwnAddPlayList
                         title={"Cancelar"}
                         onPress={() => {
-                            Alert.alert("Alerta!", "Estas seguro de cancelar la operación?", [
+                            Alert.alert("Alerta!", "Estas seguro de que quieres cancelarlo?", [
                                 {
                                     text: "No",
                                     onPress: () => null,

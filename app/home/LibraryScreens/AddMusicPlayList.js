@@ -31,7 +31,6 @@ export const AddMusicPlayList = (props) => {
     React.useEffect(() => {
         const backAction = () => {
             if (!isOnlongPressItem.current) {
-
                 console.log("navigation", navigation.canGoBack())
                 if (navigation.canGoBack()) {
                     navigation.navigate("AddPlayList");
@@ -89,7 +88,7 @@ export const AddMusicPlayList = (props) => {
                     <TouchableOpacity
                         onPress={() => {handleAddMusic(item.item)}}
                     >
-                        <Icon name="plus" size={30} type="ant-design" color="white" />
+                        <Icon name="plus" size={30} type="ant-design" color="#12485B" />
                     </TouchableOpacity>
 
                 </View>
@@ -108,7 +107,7 @@ export const AddMusicPlayList = (props) => {
                     <TouchableOpacity
                         onPress={() => {handleDeleteMusic(item.item)}}
                     >
-                        <Icon name="minus" size={30} type="ant-design" color="white" />
+                        <Icon name="minus" size={30} type="ant-design" color="#12485B" />
                     </TouchableOpacity>
 
                 </View>

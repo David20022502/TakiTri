@@ -1,6 +1,6 @@
 import { Icon } from '@rneui/themed';
 import * as React from 'react';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList, BackHandler } from 'react-native';
 import { AlbumItem } from '../../src/Items/AlbumItem';
 import { getAlbumes } from '../../src/services/MusicServices';
 
@@ -9,6 +9,15 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
   const [albumes, setAlbumes] = React.useState([]);
   React.useEffect(() => {
     getAlbumes(setAlbumes);
+    const backAction = () => {
+      navigation.popToTop();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
   }, [])
   const renderItemMusic = (item) => {
     if (item.item.length > 1) {
@@ -79,9 +88,9 @@ const styles = StyleSheet.create({
     height: 65,
     marginBottom: 10
   },
-  textSubTitleItem:{
+  textSubTitleItem: {
     fontStyle: "normal",
-    textAlign:"center",
+    textAlign: "center",
     fontSize: 15,
     color: "#12485B",
     textShadowColor: 'rgba(0, 0, 0, 0.25)',

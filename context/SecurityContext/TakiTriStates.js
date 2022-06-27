@@ -1,4 +1,4 @@
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import React, { useCallback, useMemo, useReducer, useState } from "react";
 import { View, Image, StyleSheet, Text, TouchableOpacity } from "react-native";
@@ -9,8 +9,9 @@ import Sound from 'react-native-sound';
 
 import TakiTriContext from "./TakiTriContext";
 import { TakiTriReducer } from "./TakiTriReducer";
-import { IS_AUTENTICATED, LOAD_FIREBASE_USER, LOAD_TAKITRI_USER } from "./TakiTriTypes";
+import { IS_AUTENTICATED, LOADING_END, LOADING_START, LOAD_FIREBASE_USER, LOAD_TAKITRI_USER } from "./TakiTriTypes";
 import { Icon } from "@rneui/base";
+import { getMessage } from "../../src/components/Messages";
 
 
 export const TakiTriStates = ({ children }) => {
@@ -18,36 +19,28 @@ export const TakiTriStates = ({ children }) => {
     () => ({
       userFirebase: null,
       userTakiTri: null,
-      isAutenticated: false
+      isAutenticated: null,
+      isLoading: false,
     }),
     []
   );
   const [state, dispatch] = useReducer(TakiTriReducer, initialState);
-  const dat = {
-    "album_name": "Llorando Mi Sanjuanito",
-    "author": "Amor Paisano",
-    "genre_name": "Sanjuanito",
-    "id": "6Yl6eAhIUfopyDU5ZHW1",
-    "imageURL": "https://firebasestorage.googleapis.com/v0/b/borrador-a0724.appspot.com/o/albumes%2FLlorando%20mi%20sanjuanito.jpg?alt=media&token=1169b1e4-3904-4dc5-8528-538a381a1e00",
-    "songURL": "https://firebasestorage.googleapis.com/v0/b/borrador-a0724.appspot.com/o/songs%2FX2Download.com%20-%20Amor%20Paisano%20%20LLORANDO%20CON%20MI%20SANJUANITO%F0%9F%98%A2%F0%9F%98%A2%F0%9F%98%A2%202022%20covert%20(128%20kbps).mp3?alt=media&token=14919fcb-ff38-440f-a839-6e1abf82cf1a",
-    "song_name": "Llorando con mi Sanjuanito",
-    "song_reference": "songs/X2Download.com - Amor Paisano  LLORANDO CON MI SANJUANITO😢😢😢 2022 covert (128 kbps)",
-    "year": 2022,
-  }
   const [currentMusic, setCurrentMusic] = React.useState(null);
   const [snackBarPadding, setsNackBarPadding] = React.useState(0);
   const [currentPlayList, setCurrentPlayList] = React.useState(null);
   const [isPlayingSoundInside, setIsPlayingSoundInside] = React.useState(false);
   const [audioPlayer, setAudioPlayer] = React.useState(null);
   const [isSnackVisible, setIsSnackVisible] = React.useState(false);
-  React.useEffect(()=>{
-    if(currentMusic!=null){
+  const [color, setColor] = useState("white");
+  const [message, setMessage] = useState(null);
+  React.useEffect(() => {
+    if (currentMusic != null) {
       console.log("para hacer visible")
       setIsSnackVisible(true)
-    }else{
+    } else {
       setIsSnackVisible(false)
     }
-  },[currentMusic])
+  }, [currentMusic])
   let currentMusicRef = React.useRef(null);
   const currentAutenticatedUser = () => {
     const auth = getAuth();
@@ -57,6 +50,7 @@ export const TakiTriStates = ({ children }) => {
 
         handleUserFirebase(user)
       } else {
+        handleIsAutenticated(false);
         // User is signed out
         // ...
       }
@@ -64,6 +58,7 @@ export const TakiTriStates = ({ children }) => {
   }
   const singInWithEmailPassword = useCallback(async (values) => {
     const auth = getAuth();
+    handleLoading(true);
     signInWithEmailAndPassword(auth, values.email, values.password)
       .then((userCredential) => {
         // Signed in
@@ -72,10 +67,20 @@ export const TakiTriStates = ({ children }) => {
         console.log("ligon user", user.uid)
         dispatch({ type: LOAD_FIREBASE_USER, payload: user })
         handleUserFirebase(user)
+       
         // ...
       })
       .catch((error) => {
-        console.log("error al inciar sesion")
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log("errorCode",errorCode);
+        console.log("errorMessage",errorMessage);
+        handleLoading(false);
+        handleError(getMessage(error.code),"red");
+        console.log("error al inciar sesion",error)
+        const data =getMessage("notAutenticated");
+        console.log("mensaje obtenido",data)
+
       });
   }, [])
   const handleUserFirebase = useCallback(async (user) => {
@@ -86,6 +91,14 @@ export const TakiTriStates = ({ children }) => {
     dispatch({ type: LOAD_TAKITRI_USER, payload: docSnap.data() })
     handleIsAutenticated(true);
   }, [])
+  const handleError = useCallback((message, color) => {
+    setColor(color);
+    setMessage(message);
+}, []);
+
+  const handleLoading = useCallback((isLoading) => {
+    dispatch({ type: isLoading ? LOADING_START : LOADING_END });
+  }, []);
   const handleIsAutenticated = useCallback(async (isAutenticated) => {
     dispatch({ type: IS_AUTENTICATED, payload: isAutenticated })
 
@@ -109,6 +122,27 @@ export const TakiTriStates = ({ children }) => {
     });
 
   }, [])
+
+  const handleSendEmailPasswordReeset = useCallback(async (value) => {
+    const auth = getAuth();
+    console.log("dato de email", value)
+    try {
+      handleLoading(true);
+      const data = await sendPasswordResetEmail(auth, value).then((e) => {
+        console.log("datos de passworrd logro", e)
+        handleError("Se ha enviádo un email de verificación","green");
+      }).catch((e) => {
+        handleError("No se ha podido encontrar al usuario","red");
+        console.log("datos de passworrd error", e)
+      });
+
+    } catch (e) {
+      console.log("error al recuperar contraseña", e);
+    }finally{
+      handleLoading(false);
+    }
+
+  }, [])
   const handleUpdateUser = useCallback(async (values) => {
     const userRef = doc(global.db_Firestore, "users", values.id);
     await updateDoc(userRef, values);
@@ -123,19 +157,19 @@ export const TakiTriStates = ({ children }) => {
     setsNackBarPadding(value);
     console.log("cambia padding a", value)
   }, [])
-  const handleDestroyAllSnackBar =() => {
-    if(audioPlayer){
+  const handleDestroyAllSnackBar = () => {
+    if (audioPlayer) {
       audioPlayer.stop();
     }
 
-     setCurrentMusic(null);
-     currentMusicRef.current = currentMusic;
+    setCurrentMusic(null);
+    currentMusicRef.current = currentMusic;
     setAudioPlayer(null);
     setCurrentPlayList(null);
     setIsPlayingSoundInside(false);
   };
   const handleShowSnackBar = useCallback(async (currentMusic, audioPlayer, currentPlayList, isPlaying) => {
-    console.log("-----data",currentMusic)
+    console.log("-----data", currentMusic)
     setCurrentMusic(currentMusic);
     setAudioPlayer(audioPlayer);
     setCurrentPlayList(currentPlayList);
@@ -198,12 +232,17 @@ export const TakiTriStates = ({ children }) => {
     setIsPlayingSoundInside(true);
 
   }
+  const onDismissSnackBar = () => setMessage(null);
+
   return <TakiTriContext.Provider
     value={{
       userFirebase: state.userFirebase,
       userTakiTri: state.userTakiTri,
       isAutenticated: state.isAutenticated,
+      handleLoading,
+      handleError,
       handleDestroyAllSnackBar,
+      handleSendEmailPasswordReeset,
       handleReopenSnackBar,
       handlePaddingSnackBar,
       handleDestroySnackBar,
@@ -263,7 +302,30 @@ export const TakiTriStates = ({ children }) => {
 
       </View>
     </Snackbar>
-
+    <Modal visible={state.isLoading} style={{
+      backgroundColor: 'transparent',
+      elevation: 0
+    }}>
+      <ActivityIndicator size={80} />
+    </Modal>
+    <Snackbar
+                theme={{
+                    colors: {
+                        accent: '#FFFFFF',
+                        surface: '#FFFFFF'
+                    }
+                }}
+                style={{
+                    backgroundColor: color
+                }}
+                visible={message !== null}
+                onDismiss={onDismissSnackBar}
+                action={{
+                    label: 'OK',
+                    onPress: () => onDismissSnackBar(),
+                }}>
+                {message}
+            </Snackbar>
 
   </TakiTriContext.Provider>
 }

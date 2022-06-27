@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { BackHandler, FlatList, StyleSheet, View } from "react-native";
 import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
 import { MusicItem } from "../../src/Items/MusicItem";
 import { getRecentPlayed } from "../../src/services/DataBase";
@@ -9,8 +9,18 @@ export const RecentPlayed = () => {
     const [MusicList, SetMusics] = React.useState([]);
     const [musicListOrder, setMusicListOrder] = React.useState([]);
     const [musicsList, setMusicsList] = React.useState([]);
+    
     React.useEffect(() => {
         getRecentPlayed(userTakiTri.id, SetMusics);
+        const backAction = () => {
+            navigation.popToTop();
+            return true;
+          };
+          const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+          );
+          return () => backHandler.remove();
     }, [])
     React.useEffect(() => {
         console.log("canciones ya en historial", musicsList)

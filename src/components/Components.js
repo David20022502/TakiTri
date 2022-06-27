@@ -15,6 +15,19 @@ export const ButtonOwn = ({ onPress, title }) => {
     </View>
     );
 }
+export const ButtonOwnRegister = ({ onPress, title }) => {
+    return (<View style={styles.containerButtonRegister}>
+        <Button
+            buttonStyle={styles.ButtonOwnRegister}
+            onPress={onPress}
+            title={title}
+            titleStyle={[styles.titleStyle,{color:"#12485B"}]}
+        >
+
+        </Button>
+    </View>
+    );
+}
 export const ButtonOwnAddPlayList = ({ onPress, title }) => {
     return (<View style={{ width: 200 }}>
         <Button
@@ -55,6 +68,9 @@ export const InputText = ({
     placeholder,
     editable,
     style,
+    isPassword,
+    changeVisibility,
+    IconR
 }) => {
     return <View style={styles.fieldSet}>
         <Text style={styles.legend}>{text}</Text>
@@ -71,6 +87,15 @@ export const InputText = ({
             style={style}
 
         />
+        {
+            isPassword&& <TouchableOpacity
+            style={styles.percentageText}
+            onPress={changeVisibility}
+          >
+            <IconR />
+          </TouchableOpacity>
+        }
+       
     </View>;
 }
 export const InputTextAdd = ({
@@ -90,7 +115,6 @@ export const InputTextAdd = ({
         <View style={styles.fieldSetAdd}>
             <Text style={styles.legendAdd}>{text}</Text>
             <TextInput
-
                 onChangeText={onChangeText}
                 value={value}
                 autoCapitalize={autoCapitalize}
@@ -279,6 +303,11 @@ const styles = StyleSheet.create({
         alignItems: "center"
 
     },
+    percentageText:{
+        position:"absolute",
+        top:10,
+        right:20
+    },
     fieldSetInfoProfile: {
         paddingHorizontal: 10,
         borderRadius: 15,
@@ -308,6 +337,8 @@ const styles = StyleSheet.create({
         borderColor: "#83C8EA",
         height: 50,
         marginBottom: 20,
+        flexDirection:"row",
+
     },
     fieldSetAdd: {
         paddingHorizontal: 10,
@@ -326,7 +357,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: -13,
         left: 20,
-        backgroundColor: "#FFFFFF",
+        backgroundColor: "#F3F3F3",
         color: "#83C8EA",
         paddingHorizontal: 8
     },
@@ -337,14 +368,26 @@ const styles = StyleSheet.create({
         width: 100
     },
     containerButton: {
-        backgroundColor: "#97DEF9",
+        backgroundColor: "#20DACA",
         borderRadius: 15,
     },
     ButtonOwn: {
-        backgroundColor: "#97DEF9",
+        backgroundColor: "#20DACA",
         borderRadius: 15,
         width: 289,
-        height: 40,
+        height: 45,
+
+    },
+    containerButtonRegister: {
+        borderWidth:2,
+        borderColor:"#12485B",
+        borderRadius: 15,
+    },
+    ButtonOwnRegister: {
+        backgroundColor: "transparent",
+        borderRadius: 15,
+        width: 289,
+        height: 45,
 
     },
     ButtonOwn1: {
@@ -362,7 +405,7 @@ const styles = StyleSheet.create({
     firstIndicator: {
         width: 30,
         height: 10,
-        backgroundColor: "#97DEF9",
+        backgroundColor: "#20DACA",
         borderRadius: 15,
     },
     SecondIndicator: {

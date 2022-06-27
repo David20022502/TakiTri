@@ -1,16 +1,20 @@
 import { View, Text, StyleSheet, Image, Dimensions, ScrollView, TouchableOpacity } from "react-native";
 import React, { useContext, useState } from "react";
-import { ButtonOwn, Indicator, InputText } from "../../src/components/Components";
+import { StatusBar } from 'expo-status-bar';
+
+import { ButtonOwn, ButtonOwnRegister, Indicator, InputText } from "../../src/components/Components";
 import iconGoogle from "../../assets/images/iconGoogle.jpg";
 import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
-import {ModalInfoError} from "../components/ModalInfoError"
-
+import { ModalInfoError } from "../components/ModalInfoError"
+import imageHeader from "../../assets/images/HeaderLogo.jpg"
+import { Icon } from "@rneui/base";
 export const Login = ({ navigation }) => {
     const { singInWithEmailPassword } = useContext(TakiTriContext)
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [messageError, setMessageError] = useState("");
     const [modalErrorVisible, setmodalErrorVisible] = useState(false);
+    const [isPwdVisible, setIsPwdVisible] = useState(true);
 
     const onSubmit = () => {
         const user = {
@@ -20,80 +24,80 @@ export const Login = ({ navigation }) => {
         singInWithEmailPassword(user);
     }
     return (
-
-        <View style={styles.container}>
-            <ScrollView>
-                <View>
-                    <Text style={styles.title}>
-                        Mira lo que tenemos para ti
-                    </Text>
-                </View>
-                <View style={styles.containerImputs} >
-                    <InputText
-                        placeholder={"ejemplo123@gmail.com"}
-                        text={"Usuario"}
-                        value={userName}
-                        onChangeText={setUserName}
-                    >
-                    </InputText>
-                    <InputText
-                        placeholder={"**********"}
-                        text={"Contraseña"}
-                        value={password}
-                        onChangeText={setPassword}
-                        modify={true}
-                    >
-                    </InputText>
-                    <View style={styles.containerButton} >
-                        <ButtonOwn
-                            title={"Iniciar Sesión"}
-                            onPress={() => { onSubmit() }}
-                        >
-
-                        </ButtonOwn>
-                    </View>
-                </View>
-                <View style={styles.containerLine}>
-                    <View style={styles.lineStyle}>
-                    </View>
-                    <Text style={styles.legend}>
-                        Iniciar con
-                    </Text>
-                    <TouchableOpacity
-                        onPress={() => { }}
-                    >
-                        <Image
-                            source={iconGoogle}
-                        >
-                        </Image>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.containerOptions}>
-                    <TouchableOpacity
-                        onPress={() => { navigation.navigate("register") }}
-                    >
-                        <Text style={styles.optionsStyleText}>
-                            Registrarse
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => { navigation.navigate("ResetPasword") }}
-                    >
-                        <Text style={styles.optionsStyleText}>
-                            Olvidé la Contraseña
-                        </Text>
-                    </TouchableOpacity>
-
-
-                </View>
-                <ModalInfoError
-                message={setmodalErrorVisible}
-                setModalVisible={setmodalErrorVisible}
-                modalVisible={modalErrorVisible}
+        <View style={{ flex: 1 }}>
+            <StatusBar backgroundColor='#20DACA'></StatusBar>
+            <View style={{position:"relative"}}>
+                <Image
+                    source={imageHeader}
+                    style={{ width: Dimensions.get("window").width+20, height: 180, marginTop: 20,marginLeft:-20 }}
                 >
+                </Image>
+                <View style={{position:"absolute",marginHorizontal:30,top:20}}>
+                        <Text style={styles.title}>
+                            Mira lo que tenemos para ti
+                        </Text>
+                    </View>
+            </View>
 
-                </ModalInfoError>
-            </ScrollView>
+            <View style={styles.container}>
+
+                <ScrollView>
+
+                    
+                    <View style={styles.containerImputs} >
+                        <InputText
+                            placeholder={"ejemplo123@gmail.com"}
+                            text={"Usuario"}
+                            value={userName}
+                            onChangeText={setUserName}
+                        >
+                        </InputText>
+                        <InputText
+                            placeholder={"**********"}
+                            text={"Contraseña"}
+                            value={password}
+                            onChangeText={setPassword}
+                            modify={isPwdVisible}
+                            isPassword={true}
+                            changeVisibility={() => {setIsPwdVisible(!isPwdVisible)}}
+                            IconR ={()=>{return(<Icon name={isPwdVisible ? "eye-off" : "eye"} type="feather" />)}}
+                        >
+                        </InputText>
+                       
+                    </View>
+                    <View style={styles.containerButton} >
+                            <ButtonOwn
+                                title={"Iniciar Sesión"}
+                                onPress={() => { onSubmit() }}
+                            >
+
+                            </ButtonOwn>
+                            <ButtonOwnRegister
+                             title={"Registrarse"}
+                             onPress={() => { navigation.navigate("register")  }}
+                            >
+
+                            </ButtonOwnRegister>
+                        </View>
+                        <View style={styles.containerOptions}>
+                        
+                        <Text style={[styles.optionsStyleText,{color:"#9E9E9E",marginRight:5}]}>
+                            ¿Olvidaste la Contraseña? 
+                            </Text>
+                        <TouchableOpacity
+                            onPress={() => { navigation.navigate("ResetPasword") }}
+                        >
+                            <Text style={styles.optionsStyleText}>
+                             Deseas recuperarla?
+                            </Text>
+                        </TouchableOpacity>
+                      
+
+
+                    </View>
+                </ScrollView>
+
+            </View>
 
         </View>
 
@@ -106,12 +110,12 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: 'center',
         position: "relative",
-        paddingHorizontal: 50,
+       
     },
     containerOptions: {
         marginTop: 50,
         flexDirection: "row",
-        justifyContent: "space-between"
+        justifyContent:"center"
     },
     optionsStyleText: {
         fontStyle: "normal",
@@ -150,7 +154,10 @@ const styles = StyleSheet.create({
         color: "#838383"
     },
     containerButton: {
-        marginTop: 30
+        flexDirection:"column",
+        justifyContent:"space-between",
+        height:120,
+        paddingHorizontal: 50,
     },
     title: {
         fontStyle: "normal",
@@ -162,6 +169,7 @@ const styles = StyleSheet.create({
         textShadowOffset: { width: 0, height: 4 },
         textShadowRadius: 4,
         marginTop: 80,
+        width:300
     },
     subTitle: {
         fontStyle: "normal",
@@ -173,9 +181,16 @@ const styles = StyleSheet.create({
         textShadowRadius: 4,
     },
     containerImputs: {
+        backgroundColor:"#F3F3F3",
         flexDirection: "column",
         justifyContent: "space-between",
-        height: 250,
-        marginTop: 110
+        height: 240,
+        paddingVertical:40,
+        marginTop: 80,
+        paddingHorizontal: 50,
+        marginHorizontal:10,
+        borderRadius:20,
+        marginBottom:20
+
     }
 });

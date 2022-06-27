@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Dimensions, TouchableOpacity, FlatList } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, TouchableOpacity, FlatList, BackHandler } from 'react-native';
 import { ButtonOwnHeader, InputLookFor } from '../../src/components/Components';
 import { MusicItem } from '../../src/Items/MusicItem';
 import { lokForSongs } from '../../src/services/MusicServices';
@@ -7,6 +7,18 @@ import { lokForSongs } from '../../src/services/MusicServices';
 export const LookFor = () => {
   const [inputLookFor, setInputLookFor] = React.useState("");
   const [resultsMusics, setResultsMusics] = React.useState(null);
+  React.useEffect(() => {
+
+    const backAction = () => {
+      navigation.popToTop();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
+  }, [])
   const handleLookForMusics = () => {
     lokForSongs(setResultsMusics, inputLookFor)
   }

@@ -1,12 +1,15 @@
 import { View, Text, StyleSheet, Image, Dimensions, ScrollView, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 import { ButtonOwn, Indicator, InputText } from "../../src/components/Components";
 import iconGoogle from "../../assets/images/iconGoogle.jpg";
 import { createUserDatabases } from "../../src/services/UserServices";
+import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
+import { getMessage } from "../../src/components/Messages";
 
 export const Register = ({ navigation }) => {
+    const { handleLoading, handleError, } = useContext(TakiTriContext)
     const [userName, setUser] = useState("");
     const [password, setpassword] = useState("");
     const [names, setNames] = useState("");
@@ -15,6 +18,7 @@ export const Register = ({ navigation }) => {
     
     const registerFunction = () => {
         const auth = getAuth();
+        handleLoading(true);
         createUserWithEmailAndPassword(auth, userName, password)
             .then((userCredential) => {
                 // Signed in
@@ -30,12 +34,18 @@ export const Register = ({ navigation }) => {
                 }
                 createUserDatabases(userTemp);
                 // ...
+                handleLoading(true);
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.log("error al autenticarse",error);
-                // ..
+                console.log("errorCode",errorCode);
+                console.log("errorMessage",errorMessage);
+                handleLoading(false);
+                handleError(getMessage(error.code),"red");
+                console.log("error al inciar sesion",error)
+                const data =getMessage("notAutenticated");
+                console.log("mensaje obtenido",data)
             });
     }
    
@@ -84,7 +94,10 @@ export const Register = ({ navigation }) => {
                         onChangeText={setBirthdate}
                     >
                     </InputText>
-                    <View style={styles.containerButton} >
+                    
+
+                </View>
+                <View style={styles.containerButton} >
                         <ButtonOwn
                             title={"Iniciar Sesión"}
                             onPress={() => {registerFunction();}}
@@ -92,23 +105,6 @@ export const Register = ({ navigation }) => {
 
                         </ButtonOwn>
                     </View>
-
-                </View>
-                <View style={styles.containerLine}>
-                    <View style={styles.lineStyle}>
-                    </View>
-                    <Text style={styles.legend}>
-                        Iniciar con
-                    </Text>
-                    <TouchableOpacity
-                        onPress={() => { }}
-                    >
-                        <Image
-                            source={iconGoogle}
-                        >
-                        </Image>
-                    </TouchableOpacity>
-                </View>
                 <View style={styles.containerOptions}>
                     <Text style={[styles.optionsStyleText, { color: "#9E9E9E", marginRight: 10 }]}>
                         Ya tienes una cuenta?
@@ -136,10 +132,11 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: 'center',
         position: "relative",
-        paddingHorizontal: 50,
+        
     },
     containerOptions: {
         marginTop: 20,
+      
         flexDirection: "row",
         justifyContent: "center"
     },
@@ -180,19 +177,20 @@ const styles = StyleSheet.create({
         color: "#838383"
     },
     containerButton: {
-        marginTop: 10
+        marginTop: 10,
+        paddingHorizontal: 50,
     },
     title: {
         fontStyle: "normal",
         fontWeight: "400",
-        fontSize: 35,
+        fontSize: 30,
         lineHeight: 52,
         color: "#000000",
         textShadowColor: 'rgba(0, 0, 0, 0.25)',
         textShadowOffset: { width: 0, height: 4 },
         textShadowRadius: 4,
-        marginTop: 10,
-        
+        marginTop: 50,
+        paddingHorizontal: 50,
 
     },
     subTitle: {
@@ -205,9 +203,14 @@ const styles = StyleSheet.create({
         textShadowRadius: 4,
     },
     containerImputs: {
+        backgroundColor:"#F3F3F3",
         flexDirection: "column",
         justifyContent: "space-between",
-        height: 380,
-        marginTop: 30
+        height: 450,
+        paddingVertical:30,
+        marginTop: 30,
+        paddingHorizontal: 50,
+        marginHorizontal:10,
+        borderRadius:20
     }
 });

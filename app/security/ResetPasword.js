@@ -1,9 +1,15 @@
 import { View, Text, StyleSheet, Image, Dimensions, ScrollView, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { ButtonOwn, Indicator, InputText } from "../../src/components/Components";
 import logo from "../../assets/images/logo.jpg";
+import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
 
 export const ResetPasword = ({ navigation }) => {
+    const { handleSendEmailPasswordReeset } = useContext(TakiTriContext)
+    const [emailUser,setEmailUser]=React.useState("");
+    const handleSendEmailPasswordReset = () => {
+        handleSendEmailPasswordReeset(emailUser);
+    }
     return (
 
         <View style={styles.container}>
@@ -11,7 +17,7 @@ export const ResetPasword = ({ navigation }) => {
                 <View style={styles.conatinerHeader}>
                     <Image
                         source={logo}
-                        style={{width:150,height:150}}
+                        style={{ width: 150, height: 150 }}
                     >
                     </Image>
                     <Text style={styles.title}>
@@ -22,14 +28,16 @@ export const ResetPasword = ({ navigation }) => {
                     <InputText
                         placeholder={"ejemplo123@gmail.com"}
                         text={"Usuario"}
+                        value={emailUser}
+                        onChangeText={setEmailUser}
                     >
                     </InputText>
-                    
+
 
                     <View style={styles.containerButton} >
                         <ButtonOwn
                             title={"Enviar Código"}
-                            onPress={() => {navigation.navigate("ConfirmPassword")}}
+                            onPress={() => { handleSendEmailPasswordReset(); }}
                         >
 
                         </ButtonOwn>
@@ -39,8 +47,8 @@ export const ResetPasword = ({ navigation }) => {
                 <View style={styles.containerLine}>
                     <View style={styles.lineStyle}>
                     </View>
-                   
-                 
+
+
                 </View>
                 <View style={styles.containerOptions}>
                     <Text style={[styles.optionsStyleText, { color: "#9E9E9E", marginRight: 10 }]}>
@@ -71,10 +79,10 @@ const styles = StyleSheet.create({
         position: "relative",
         paddingHorizontal: 50,
     },
-    conatinerHeader:{
-        marginTop:75,
-        flexDirection:"column",
-        alignItems:"center"
+    conatinerHeader: {
+        marginTop: 75,
+        flexDirection: "column",
+        alignItems: "center"
     },
     containerOptions: {
         marginTop: 80,

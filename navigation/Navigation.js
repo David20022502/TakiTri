@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useContext } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { AlbumRender } from '../app/home/AlbumRender';
 import Home from '../app/home/Home';
 import { PlayMusicHome } from '../app/home/PlayMusicHome';
@@ -12,24 +12,32 @@ import { Register } from '../app/security/Register';
 import { ResetPasword } from '../app/security/ResetPasword';
 import { HomeStates } from '../context/HomeContext/HomeSates';
 import TakiTriContext from '../context/SecurityContext/TakiTriContext';
+import { WaitPage } from '../src/components/WaitPage';
 
 const Stack = createNativeStackNavigator();
 const StackAutenticated = createNativeStackNavigator();
 
 
 export const Navigation = () => {
-    const { isAutenticated,currentAutenticatedUser } = useContext(TakiTriContext)
-    React.useEffect(()=>{
+    const { isAutenticated, currentAutenticatedUser, handleLoading } = useContext(TakiTriContext)
+    React.useEffect(() => {
         //currentAutenticatedUser();
-        setTimeout(currentAutenticatedUser,1000)
-      },[])
+        setTimeout(currentAutenticatedUser, 1000)
+    }, [])
+    React.useEffect(() => {
+
+        handleLoading(false);
+
+    }, [isAutenticated])
     return (
         <HomeStates>
-
             {
-                isAutenticated === true ? <AtenticatedUser /> : <UnAtenticatedUser />
+                 isAutenticated ===null?<WaitPage></WaitPage> :isAutenticated==true?<AtenticatedUser />:<UnAtenticatedUser />
             }
-
+            {
+                //isAutenticated === true ? <AtenticatedUser /> : <UnAtenticatedUser />
+            }
+           
         </HomeStates>
     );
 }
@@ -65,13 +73,14 @@ const UnAtenticatedUser = () => {
     );
 }
 const AtenticatedUser = () => {
+
     return (
         <StackAutenticated.Navigator initialRouteName='Home'>
             <Stack.Screen name="Home"
                 component={Home}
                 options={{ headerShown: false }}
             />
-             <Stack.Screen name="PlayMusicHome"
+            <Stack.Screen name="PlayMusicHome"
                 component={PlayMusicHome}
                 options={{ headerShown: false }}
             />

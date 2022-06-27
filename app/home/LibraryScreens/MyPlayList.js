@@ -1,4 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
+import { FAB } from "@rneui/base";
+import { FloatingAction } from "react-native-floating-action";
+
 import { Icon } from "@rneui/themed";
 import React, { useContext } from "react";
 import { Alert, BackHandler, Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -16,7 +19,7 @@ export const MyPlayList = ({ navigation }) => {
     React.useEffect(() => {
         getAlbumes(setAlbumes, userTakiTri.id);
         const backAction = () => {
-            console.log("datos de onlongs",isOnlongPressItem.current);
+            console.log("datos de onlongs", isOnlongPressItem.current);
             if (!isOnlongPressItem.current) {
 
                 console.log("navigation789", navigation.canGoBack())
@@ -96,73 +99,92 @@ export const MyPlayList = ({ navigation }) => {
         handleDeleteSelectedList({}, {}, true);
         handleIsToUpdatePlayList(true);
     }
+    const actions = [
+        {
+            text: "Accessibility",
+            icon: require("../../../assets/images/iconGoogle.jpg"),
+            name: "bt_accessibility",
+            position: 2
+        },
+        {
+            text: "Language",
+            icon: require("../../../assets/images/iconGoogle.jpg"),
+            name: "bt_language",
+            position: 1
+        }
+
+    ];
     return (
+        <>
+            <View styles={styles.containerMain}>
+                <View style={styles.containerItemsFinal}>
+                    <View style={styles.conatinerTitleHeaderItem}>
+                        <Text style={styles.textTitleItem}>
+                            Tus PlayLists
+                        </Text>
+                    </View>
 
-        <View styles={styles.containerMain}>
-            <View style={styles.containerItemsFinal}>
-                <View style={styles.conatinerTitleHeaderItem}>
-                    <Text style={styles.textTitleItem}>
-                        Tus PlayLists
-                    </Text>
-                </View>
+                    <View style={styles.scrollViewMusic}>
+                        {
+                            albumes.length > 0 && <FlatList
+                                data={albumes}
+                                renderItem={(item) => renderItemMusic(item)}
+                                key={item => item.id}
+                            />
+                        }
 
-                <View style={styles.scrollViewMusic}>
-                    {
-                        albumes.length > 0 && <FlatList
-                            data={albumes}
-                            renderItem={(item) => renderItemMusic(item)}
-                            key={item => item.id}
-                        />
-                    }
+                    </View>
                 </View>
+              
+
             </View>
             {
-                isOnLongPress && <View style={styles.optionsEdit}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            Alert.alert("Alerta!", "Estas seguro de cancelar la operación?", [
-                                {
-                                    text: "No",
-                                    onPress: () => null,
-                                    style: "cancel"
-                                },
-                                {
-                                    text: "Si", onPress: () => {
-                                        handleDeletePlayistDataBase();
+                    isOnLongPress && <View style={styles.optionsEdit}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                Alert.alert("Alerta!", "Estas seguro de eliminar el Álbum?", [
+                                    {
+                                        text: "No",
+                                        onPress: () => null,
+                                        style: "cancel"
+                                    },
+                                    {
+                                        text: "Si", onPress: () => {
+                                            handleDeletePlayistDataBase();
+                                        }
                                     }
-                                }
-                            ]);
+                                ]);
 
-                        }}
-                    >
-                        <View style={{ width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 25, paddingTop: 2 }}>
-                            <Icon name="trash" size={25} type="font-awesome" color={"white"} />
-                        </View>
-                    </TouchableOpacity>
+                            }}
+                        >
+                            <View style={{ width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 25, paddingTop: 2 }}>
+                                <Icon name="trash" size={25} type="font-awesome" color={"white"} />
+                            </View>
+                        </TouchableOpacity>
+
+                    </View>
+                }
+                <View style={styles.optionsPlus}>
+                    {
+                        isOnLongPress ? <TouchableOpacity
+                            onPress={() => { handleUpdatePlayList() }}
+                        >
+                            <View style={{ width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 25, paddingTop: 2 }}>
+                                <Icon name="edit" size={25} color={"#F3F3F3"} />
+                            </View>
+                        </TouchableOpacity> : <TouchableOpacity
+                            onPress={() => { navigation.navigate("AddPlayList") }}
+                        >
+                            <View style={{ width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 25, paddingTop: 2 }}>
+                                <Icon name="plus" size={25} type="font-awesome" color={"#F3F3F3"} />
+                            </View>
+                        </TouchableOpacity>
+                    }
+
 
                 </View>
-            }
-
-            <View style={styles.optionsPlus}>
-                {
-                    isOnLongPress ? <TouchableOpacity
-                        onPress={() => { handleUpdatePlayList() }}
-                    >
-                        <View style={{ width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 25, paddingTop: 2 }}>
-                            <Icon name="edit" size={25} color={"#F3F3F3"} />
-                        </View>
-                    </TouchableOpacity> : <TouchableOpacity
-                        onPress={() => { navigation.navigate("AddPlayList") }}
-                    >
-                        <View style={{ width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 25, paddingTop: 2 }}>
-                            <Icon name="plus" size={25} type="font-awesome" color={"#F3F3F3"} />
-                        </View>
-                    </TouchableOpacity>
-                }
-
-
-            </View>
-        </View>
+            
+        </>
     );
 }
 const styles = StyleSheet.create({
@@ -175,7 +197,7 @@ const styles = StyleSheet.create({
         height: 50,
         position: "absolute",
         backgroundColor: "#12485B",
-        bottom: -5,
+        bottom: 70,
         right: 20,
         borderRadius: 25
     },
@@ -184,7 +206,7 @@ const styles = StyleSheet.create({
         height: 50,
         position: "absolute",
         backgroundColor: "#12485B",
-        bottom: 55,
+        bottom: 130,
         right: 20,
         borderRadius: 25
     },
@@ -209,9 +231,10 @@ const styles = StyleSheet.create({
         height: 50,
     },
     scrollViewMusic: {
-        
+
         paddingBottom: 230,
         paddingHorizontal: 5,
-        paddingTop: 0
+        paddingTop: 0,
+        position: "relative"
     }
 })

@@ -24,6 +24,7 @@ const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 const StackLibrary = createNativeStackNavigator();
+const StackLookFor = createNativeStackNavigator();
 
 
 export default function Home({ navigation }) {
@@ -73,7 +74,7 @@ const RootHomeTab = () => {
         <Icon name="home" size={25} type="ant-design" color={color} />
       )
     }} />
-    <Tab.Screen name="Buscar" component={LookFor} options={{
+    <Tab.Screen name="Buscar" component={LookForMusics} options={{
       headerShown: false,
       tabBarIcon: ({ color, size }) => (
         <Icon name="search" size={25} color={color} />
@@ -98,7 +99,7 @@ const MainNavigation = () => {
       options={{ headerShown: false }}
 
     />
-    <Stack.Screen name="PlayList"
+    <Stack.Screen name="PlayListOther"
       component={LibraryNavigation}
       options={{ headerShown: false }}
 
@@ -107,20 +108,10 @@ const MainNavigation = () => {
       component={MadeForYou}
       options={{ headerShown: false }}
     />
-    {/* 
-    <Stack.Screen name="AlbumListMusic"
-      component={AlbumRender}
-      options={{ headerShown: false }}
-    />*/}
   </Stack.Navigator>);
 }
 const LibraryNavigation = () => {
   return (<StackLibrary.Navigator initialRouteName='PlayList'>
-    <StackLibrary.Screen name="Favorites"
-      component={AlbumRender}
-      options={{ headerShown: false }}
-
-    />
     <StackLibrary.Screen name="PlayList"
       component={MyPlayList}
       options={{ headerShown: false }}
@@ -139,4 +130,14 @@ const LibraryNavigation = () => {
 
 
   </StackLibrary.Navigator>);
+}
+
+const LookForMusics = () => {
+  return (<StackLookFor.Navigator initialRouteName='LookFor'>
+    <StackLookFor.Screen name="LookFor"
+      component={LookFor}
+      options={{ headerShown: false }}
+
+    />
+  </StackLookFor.Navigator>);
 }
