@@ -14,12 +14,12 @@ import {
 import { MusicItem } from "../../../src/Items/MusicItem";
 import { Icon } from "@rneui/base";
 export const AddMusicPlayList = (props) => {
+    global.pageStatus="AddMusicPlayList";
     const{navigation}=props;
     let musicList1=React.useRef([]);
     try{
         musicList1.current=props.route.params.musicList;
     }catch(e){
-
 
     }
     const { handlePushPlayListMusicAdded,musicListPlayList, handleIsonlongPress, selectedList, handleDeleteSelectedList,handlePushSelectedList } = useContext(HomeContext);
@@ -124,7 +124,7 @@ export const AddMusicPlayList = (props) => {
         >
             <Text
                 style={{ color: "#12485B", fontSize: 20, marginHorizontal: 20, textAlign: "center" }}
-            >Busca la música que te guste</Text>
+            ></Text>
         </View>);
     }
     const NotFound = () => {
@@ -132,7 +132,7 @@ export const AddMusicPlayList = (props) => {
             style={{ flex: 1, flexDirection: "column", justifyContent: "center", alignItems: "center" }}
         >
             <Text
-                style={{ color: "#12485B", fontSize: 20 }}
+                style={{ color: "#AAAAAA", fontSize: 20,marginTop:20 }}
             >Sin Resultados...</Text>
         </View>);
     }
@@ -146,10 +146,10 @@ export const AddMusicPlayList = (props) => {
     return (
         <View styles={styles.containerMain}>
             <View style={{ flexDirection: "column", justifyContent: "center", width: "100%", height: 370, paddingTop: 20 }}>
-                <Text style={styles.styleTextAddMusic}>Agrega las canciones a tu PlayList!</Text>
+                <Text style={styles.styleTextAddMusic}>Agrega las canciones a tu PlayList</Text>
                 <View style={{ flexDirection: "row", justifyContent: "center" }}>
                     <InputAddLookFor
-                        placeholder={"Busca tu cancion favorita..."}
+                        placeholder={"Busca tu canción favorita..."}
                         value={inputLookFor}
                         onChangeText={setInputLookFor}
                         onPress={handleLookForMusics}
@@ -174,7 +174,7 @@ export const AddMusicPlayList = (props) => {
 
             </View>
             <View style={{ flexDirection: "column", justifyContent: "center", width: "100%", height: 400, paddingTop: 20 }}>
-                <Text style={styles.styleTextAddMusic}>Musicas agregadas</Text>
+                <Text style={styles.styleTextAddMusic}>Canciones agregadas</Text>
 
                 <ScrollView>
                     {
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
         height: 50,
     },
     styleTextAddMusic: {
-        color: "#12485B",
+        color: "#AAAAAA",
         fontSize: 20,
         width: "100%",
         textAlign: "center",

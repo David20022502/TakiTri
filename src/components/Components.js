@@ -2,13 +2,14 @@ import React from "react";
 import { StyleSheet, View, Dimensions, TextInput, TouchableOpacity } from "react-native";
 import { Button, ButtonGroup, withTheme, Text } from '@rneui/themed';
 import { Icon } from "@rneui/base";
-export const ButtonOwn = ({ onPress, title }) => {
+export const ButtonOwn = ({ onPress, title ,disabled}) => {
     return (<View style={styles.containerButton}>
         <Button
             buttonStyle={styles.ButtonOwn}
             onPress={onPress}
             title={title}
             titleStyle={styles.titleStyle}
+            disabled={disabled}
         >
 
         </Button>
@@ -70,7 +71,9 @@ export const InputText = ({
     style,
     isPassword,
     changeVisibility,
-    IconR
+    IconR,
+    showDate,
+    isDate
 }) => {
     return <View style={styles.fieldSet}>
         <Text style={styles.legend}>{text}</Text>
@@ -89,6 +92,14 @@ export const InputText = ({
         />
         {
             isPassword&& <TouchableOpacity
+            style={styles.percentageText}
+            onPress={changeVisibility}
+          >
+            <IconR />
+          </TouchableOpacity>
+        }
+        {
+            isDate&&<TouchableOpacity
             style={styles.percentageText}
             onPress={changeVisibility}
           >
@@ -124,7 +135,7 @@ export const InputTextAdd = ({
                 placeholder={placeholder}
                 placeholderTextColor={"#848282"}
                 editable={editable}
-                style={{ fontSize: 16, color: "#12485B", paddingTop: 5 }}
+                style={{ fontSize: 16, color: value!=0?"#12485B":"#848282", paddingTop: 5 }}
 
             />
         </View>
@@ -362,7 +373,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8
     },
     legendAdd: {
-        fontSize: 23,
+        fontSize: 18,
         color: "#83C8EA",
         marginRight: 20,
         width: 100
@@ -374,7 +385,7 @@ const styles = StyleSheet.create({
     ButtonOwn: {
         backgroundColor: "#20DACA",
         borderRadius: 15,
-        width: 289,
+        width: 293,
         height: 45,
 
     },
@@ -399,7 +410,7 @@ const styles = StyleSheet.create({
     titleStyle: {
 
 
-        textShadowOffset: { width: 0, height: 3 },
+        textShadowOffset: { width: 0, height: 2 },
         textShadowRadius: 4
     },
     firstIndicator: {

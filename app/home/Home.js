@@ -19,6 +19,7 @@ import { ProfileScreen } from './ProfileScreen';
 import { RecentPlayed } from './RecentPlayed';
 import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
 import { useDrawerStatus } from '@react-navigation/drawer';
+import { AboutInfo } from '../screens/AboutInfo';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -28,18 +29,23 @@ const StackLookFor = createNativeStackNavigator();
 
 
 export default function Home({ navigation }) {
+  global.pageStatus = "Home";
   global.navigation = navigation;
   const { loadLikedMusics, isModalErrorVisible, messageError, handleIsModalErrorVisible } = useContext(HomeContext)
-
-
+  const { handlePaddingSnackBar } = React.useContext(TakiTriContext)
+  //handlePaddingSnackBar("Home")
   React.useEffect(() => {
+    // handlePaddingSnackBar("Home")
     loadLikedMusics();
   }, [])
+
   return (
     <>
       <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
         <Drawer.Screen name="Inicio" component={RootHomeTab} />
         <Drawer.Screen name="Perfil" component={ProfileScreen} />
+        <Drawer.Screen name="Historial" component={RecentPlayed} />
+        <Drawer.Screen name="Información" component={AboutInfo} />
       </Drawer.Navigator>
       <ModalInfoError
         modalVisible={isModalErrorVisible}
@@ -53,12 +59,12 @@ export default function Home({ navigation }) {
   );
 }
 const RootHomeTab = () => {
-  const { handleReopenSnackBar,handleDestroySnackBar } = React.useContext(TakiTriContext);
+  const { handleReopenSnackBar, handleDestroySnackBar } = React.useContext(TakiTriContext);
   const isDrawerOpen = useDrawerStatus();
-  if(isDrawerOpen=="open"){
- // handleDestroySnackBar();
-  }else{
-  // handleReopenSnackBar();
+  if (isDrawerOpen == "open") {
+    // handleDestroySnackBar();
+  } else {
+    // handleReopenSnackBar();
   }
   return <Tab.Navigator initialRouteName='Home'>
     <Tab.Screen name="Libreria" component={LibraryNavigation} options={{
@@ -73,6 +79,7 @@ const RootHomeTab = () => {
       tabBarIcon: ({ color, size }) => (
         <Icon name="home" size={25} type="ant-design" color={color} />
       )
+
     }} />
     <Tab.Screen name="Buscar" component={LookForMusics} options={{
       headerShown: false,
@@ -94,11 +101,7 @@ const MainNavigation = () => {
       options={{ headerShown: false }}
 
     />
-    <Stack.Screen name="Favorites"
-      component={AlbumRender}
-      options={{ headerShown: false }}
 
-    />
     <Stack.Screen name="PlayListOther"
       component={LibraryNavigation}
       options={{ headerShown: false }}

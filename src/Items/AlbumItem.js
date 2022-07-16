@@ -3,9 +3,12 @@ import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
 import example from "../../assets/images/example.jpg";
 import { Icon } from '@rneui/themed';
 import HomeContext from "../../context/HomeContext/HomeContext";
+import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
 
 export const AlbumItem = ({ onPresseAlbum, title, imageUri ,item}) => {
     const { isOnLongPress, handleIsonlongPress,handlePushSelectedList,handleDeleteSelectedList,selectedList} = useContext(HomeContext);
+    
+
     const [isSelecting, setIsSelecting] = useState(false);
     React.useEffect(() => {
         if(!isOnLongPress){
@@ -72,7 +75,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         alignItems:"center",
         position: "relative",
-        marginTop: 50,
+        marginTop: 20,
         paddingTop:20,
         width: 180,
         height: 250,
@@ -82,7 +85,7 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(0, 117, 103, 0.53)",
         flexDirection: "column",
         position: "absolute",
-        marginTop: 50,
+        marginTop: 20,
         width: 180,
         height: 250,
         borderRadius: 15,

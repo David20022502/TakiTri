@@ -47,7 +47,7 @@ export const Login = ({ navigation }) => {
                     <View style={styles.containerImputs} >
                         <InputText
                             placeholder={"ejemplo123@gmail.com"}
-                            text={"Usuario"}
+                            text={"Correo electrónico"}
                             value={userName}
                             onChangeText={setUserName}
                         >
@@ -60,7 +60,7 @@ export const Login = ({ navigation }) => {
                             modify={isPwdVisible}
                             isPassword={true}
                             changeVisibility={() => {setIsPwdVisible(!isPwdVisible)}}
-                            IconR ={()=>{return(<Icon name={isPwdVisible ? "eye-off" : "eye"} type="feather" />)}}
+                            IconR ={()=>{return(<Icon name={isPwdVisible ? "eye-off" : "eye"} type="feather" color={"#AAAAAA"}/>)}}
                         >
                         </InputText>
                        
@@ -88,7 +88,7 @@ export const Login = ({ navigation }) => {
                             onPress={() => { navigation.navigate("ResetPasword") }}
                         >
                             <Text style={styles.optionsStyleText}>
-                             Deseas recuperarla?
+                             ¿Deseas recuperarla?
                             </Text>
                         </TouchableOpacity>
                       
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
         lineHeight: 52,
         color: "#000000",
         textShadowColor: 'rgba(0, 0, 0, 0.25)',
-        textShadowOffset: { width: 0, height: 4 },
+        textShadowOffset: { width: 0, height: 3 },
         textShadowRadius: 4,
         marginTop: 80,
         width:300

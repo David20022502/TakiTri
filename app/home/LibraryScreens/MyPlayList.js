@@ -10,6 +10,7 @@ import TakiTriContext from "../../../context/SecurityContext/TakiTriContext";
 import { AlbumItem } from "../../../src/Items/AlbumItem";
 import { getAlbumes, handleDeletePlayList } from "../../../src/services/MusicServices";
 export const MyPlayList = ({ navigation }) => {
+    global.pageStatus = "MyPlayList";
     const { handlePushPlayListMusicAdded, handleIsToUpdatePlayList, isToUpdatePlayList, isOnLongPress, handleIsonlongPress, selectedList, handleDeleteSelectedList, handleMessageError, handleIsModalErrorVisible } = useContext(HomeContext);
 
     const { userTakiTri } = useContext(TakiTriContext);
@@ -48,6 +49,7 @@ export const MyPlayList = ({ navigation }) => {
     React.useEffect(() => {
         isOnlongPressItem.current = isOnLongPress;
     }, [isOnLongPress])
+
     React.useEffect(() => {
         if (isToUpdatePlayList) {
             getAlbumes(setAlbumes, userTakiTri.id);
@@ -61,15 +63,15 @@ export const MyPlayList = ({ navigation }) => {
 
             return (
                 <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 5 }}>
-                    <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic", { itemAlbum: item.item[0], typeAlbum: "ALBUM" }) }} imageUri={item.item[0].imageURL} title={item.item[0].name} item={item.item[0]}></AlbumItem>
-                    <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic", { itemAlbum: item.item[1], typeAlbum: "ALBUM" }) }} imageUri={item.item[1].imageURL} title={item.item[1].name} item={item.item[1]}></AlbumItem>
+                    <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic", { itemAlbum: item.item[0], typeAlbum: "ALBUM", isSwitchVisibleType: true }) }} imageUri={item.item[0].imageURL} title={item.item[0].name} item={item.item[0]}></AlbumItem>
+                    <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic", { itemAlbum: item.item[1], typeAlbum: "ALBUM", isSwitchVisibleType: true }) }} imageUri={item.item[1].imageURL} title={item.item[1].name} item={item.item[1]}></AlbumItem>
                 </View>
 
             );
         } else {
             return (
                 <View style={{ flexDirection: "row", justifyContent: "flex-start", paddingHorizontal: 5 }}>
-                    <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic", { itemAlbum: item.item[0], typeAlbum: "ALBUM" }) }} imageUri={item.item[0].imageURL} title={item.item[0].name} item={item.item[0]}></AlbumItem>
+                    <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic", { itemAlbum: item.item[0], typeAlbum: "ALBUM", isSwitchVisibleType: true }) }} imageUri={item.item[0].imageURL} title={item.item[0].name} item={item.item[0]}></AlbumItem>
                 </View>
 
             );
@@ -117,6 +119,12 @@ export const MyPlayList = ({ navigation }) => {
     return (
         <>
             <View styles={styles.containerMain}>
+                <View style={{ position: "absolute", top: 10, left: 20 }}>
+
+                    <Icon name="back" size={30} type="ant-design" color="black" onPress={() => { navigation.goBack() }} />
+
+
+                </View>
                 <View style={styles.containerItemsFinal}>
                     <View style={styles.conatinerTitleHeaderItem}>
                         <Text style={styles.textTitleItem}>
@@ -135,55 +143,55 @@ export const MyPlayList = ({ navigation }) => {
 
                     </View>
                 </View>
-              
+
 
             </View>
             {
-                    isOnLongPress && <View style={styles.optionsEdit}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                Alert.alert("Alerta!", "Estas seguro de eliminar el Álbum?", [
-                                    {
-                                        text: "No",
-                                        onPress: () => null,
-                                        style: "cancel"
-                                    },
-                                    {
-                                        text: "Si", onPress: () => {
-                                            handleDeletePlayistDataBase();
-                                        }
+                isOnLongPress && <View style={styles.optionsEdit}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            Alert.alert("Alerta!", "Estas seguro de eliminar el Álbum?", [
+                                {
+                                    text: "No",
+                                    onPress: () => null,
+                                    style: "cancel"
+                                },
+                                {
+                                    text: "Si", onPress: () => {
+                                        handleDeletePlayistDataBase();
                                     }
-                                ]);
+                                }
+                            ]);
 
-                            }}
-                        >
-                            <View style={{ width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 25, paddingTop: 2 }}>
-                                <Icon name="trash" size={25} type="font-awesome" color={"white"} />
-                            </View>
-                        </TouchableOpacity>
-
-                    </View>
-                }
-                <View style={styles.optionsPlus}>
-                    {
-                        isOnLongPress ? <TouchableOpacity
-                            onPress={() => { handleUpdatePlayList() }}
-                        >
-                            <View style={{ width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 25, paddingTop: 2 }}>
-                                <Icon name="edit" size={25} color={"#F3F3F3"} />
-                            </View>
-                        </TouchableOpacity> : <TouchableOpacity
-                            onPress={() => { navigation.navigate("AddPlayList") }}
-                        >
-                            <View style={{ width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 25, paddingTop: 2 }}>
-                                <Icon name="plus" size={25} type="font-awesome" color={"#F3F3F3"} />
-                            </View>
-                        </TouchableOpacity>
-                    }
-
+                        }}
+                    >
+                        <View style={{ width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 25, paddingTop: 2 }}>
+                            <Icon name="trash" size={25} type="font-awesome" color={"white"} />
+                        </View>
+                    </TouchableOpacity>
 
                 </View>
-            
+            }
+            <View style={styles.optionsPlus}>
+                {
+                    isOnLongPress ? <TouchableOpacity
+                        onPress={() => { handleUpdatePlayList() }}
+                    >
+                        <View style={{ width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 25, paddingTop: 2 }}>
+                            <Icon name="edit" size={25} color={"#F3F3F3"} />
+                        </View>
+                    </TouchableOpacity> : <TouchableOpacity
+                        onPress={() => { navigation.navigate("AddPlayList") }}
+                    >
+                        <View style={{ width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 25, paddingTop: 2 }}>
+                            <Icon name="plus" size={25} type="font-awesome" color={"#F3F3F3"} />
+                        </View>
+                    </TouchableOpacity>
+                }
+
+
+            </View>
+
         </>
     );
 }
@@ -196,7 +204,7 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         position: "absolute",
-        backgroundColor: "#12485B",
+        backgroundColor: "#7DDAFF",
         bottom: 70,
         right: 20,
         borderRadius: 25
@@ -205,7 +213,7 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         position: "absolute",
-        backgroundColor: "#12485B",
+        backgroundColor: "#7DDAFF",
         bottom: 130,
         right: 20,
         borderRadius: 25
@@ -226,7 +234,7 @@ const styles = StyleSheet.create({
         fontSize: 30,
         color: "#12485B",
         textShadowColor: 'rgba(0, 0, 0, 0.25)',
-        textShadowOffset: { width: 0, height: 4 },
+        textShadowOffset: { width: 0, height: 3 },
         textShadowRadius: 4,
         height: 50,
     },

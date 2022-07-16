@@ -1,12 +1,19 @@
 import { Icon } from '@rneui/themed';
 import * as React from 'react';
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList, BackHandler } from 'react-native';
+import { InputLookForAlbumMusic } from '../../src/components/Components';
 import { AlbumItem } from '../../src/Items/AlbumItem';
 import { getAlbumes } from '../../src/services/MusicServices';
 
 
 export const MadeForYou = ({ onPresseAlbum, navigation }) => {
+  global.pageStatus = "MadeForYou";
   const [albumes, setAlbumes] = React.useState([]);
+  const [isLookingFor, setIslookingFor] = React.useState(false)
+  const [textLookFor, setTextLookFor] = React.useState("")
+  const [datasLookFor, setDatasLookFor] = React.useState(null)
+  let isLookingForRef = React.useRef(false);
+
   React.useEffect(() => {
     getAlbumes(setAlbumes);
     const backAction = () => {
@@ -19,6 +26,66 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
     );
     return () => backHandler.remove();
   }, [])
+  React.useEffect(() => {
+    isLookingForRef.current = isLookingFor;
+    if (!isLookingFor) {
+      setDatasLookFor(null);
+      setTextLookFor("");
+    }
+  }, [isLookingFor])
+  React.useEffect(() => {
+    if (isLookingFor) {
+      lookForAlbum();
+    } else {
+      setDatasLookFor(null);
+    }
+
+  }, [textLookFor])
+  const lookForAlbum = () => {
+    if (textLookFor.length > 0) {
+      let tempAlbumOriginal = [];
+      for (let i = 0; i < albumes.length; i++) {
+        let tempdata = albumes[i];
+        for (let j = 0; j < tempdata.length; j++) {
+          tempAlbumOriginal.push(tempdata[j])
+        }
+      }
+      //let albumes=tempAlbumOriginal;
+      let tempAlbumesOrder = [];
+      console.log("totl de albumes", tempAlbumOriginal.length - 1);
+      for (let i = 0; i < tempAlbumOriginal.length; i++) {
+        let item = tempAlbumOriginal[i];
+        const NOMBRE = item.genre_name;
+        const AUTOR = item.author;
+        let itemAlbum = [];
+        if (i % 2 == 0) {
+
+
+          itemAlbum.push(tempAlbumOriginal[i]);
+
+
+          if (i + 1 < tempAlbumOriginal.length) {
+            if (NOMBRE.toLowerCase().includes(textLookFor.toLowerCase()) ||
+              AUTOR.toLowerCase().includes(textLookFor.toLowerCase())) {
+              itemAlbum.push(tempAlbumOriginal[i + 1]);
+            }
+
+          }
+          if (NOMBRE.toLowerCase().includes(textLookFor.toLowerCase()) ||
+            AUTOR.toLowerCase().includes(textLookFor.toLowerCase())) {
+            itemAlbum.push(tempAlbumOriginal[i + 1]);
+          }
+          tempAlbumesOrder.push(itemAlbum);
+
+        }
+
+      }
+      //  resfreshFn(tempAlbumesOrder)
+      setDatasLookFor(tempAlbumesOrder);
+    } else {
+      setDatasLookFor(null)
+    }
+  }
   const renderItemMusic = (item) => {
     if (item.item.length > 1) {
       return (
@@ -39,8 +106,13 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
 
   }
   return (
-    <View style={{ flex: 1, }}>
+    <View style={{ flex: 1,position:"relative" }}>
+      <View style={{ position: "absolute", top: 10, left: 20 }}>
 
+        <Icon name="back" size={30} type="ant-design" color="black" onPress={() => { navigation.goBack()}} />
+
+
+      </View>
       <View style={styles.containerItemsFinal}>
         <View >
           <View style={styles.conatinerTitleHeaderItem}>
@@ -55,10 +127,41 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
             </Text>
 
           </View>
+          {
+            isLookingFor ? <>
+              <InputLookForAlbumMusic
+                onChangeText={setTextLookFor}
+                value={textLookFor}
+              >
+
+              </InputLookForAlbumMusic>
+              <View style={{ width: 30, marginRight: 50 }}>
+                <Icon name="search" size={30} color="#12485B" onPress={() => { }} />
+              </View>
+            </> : <>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+
+              </View>
+              <View style={{ width: 30, marginRight: 50 }}>
+                <Icon name="search" size={30} color="#12485B" onPress={() => { setIslookingFor(!isLookingFor) }} />
+              </View>
+            </>
+          }
+
+
         </View>
         <View style={styles.scrollViewMusic}>
           {
-            albumes.length > 0 && <FlatList
+            /* (datasLookFor ) ? <FlatList
+               data={datasLookFor}
+               renderItem={(item) => renderItemMusic(item)}
+               key={item => item.id}
+             /> : albumes.length > 0 && <FlatList
+               data={albumes}
+               renderItem={(item) => renderItemMusic(item)}
+               key={item => item.id}
+             />*/
+            <FlatList
               data={albumes}
               renderItem={(item) => renderItemMusic(item)}
               key={item => item.id}
@@ -94,7 +197,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#12485B",
     textShadowColor: 'rgba(0, 0, 0, 0.25)',
-    textShadowOffset: { width: 0, height: 4 },
+    textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
     height: 50,
   },
@@ -104,7 +207,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: "#12485B",
     textShadowColor: 'rgba(0, 0, 0, 0.25)',
-    textShadowOffset: { width: 0, height: 4 },
+    textShadowOffset: { width: 0, height: 3 },
     textShadowRadius: 4,
     height: 50,
   },

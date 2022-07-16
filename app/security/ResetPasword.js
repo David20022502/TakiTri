@@ -1,5 +1,7 @@
 import { View, Text, StyleSheet, Image, Dimensions, ScrollView, TouchableOpacity } from "react-native";
 import React, { useContext } from "react";
+import { StatusBar } from 'expo-status-bar';
+
 import { ButtonOwn, Indicator, InputText } from "../../src/components/Components";
 import logo from "../../assets/images/logo.jpg";
 import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
@@ -13,6 +15,8 @@ export const ResetPasword = ({ navigation }) => {
     return (
 
         <View style={styles.container}>
+                         <StatusBar backgroundColor='#FDFDFD'></StatusBar>
+
             <ScrollView>
                 <View style={styles.conatinerHeader}>
                     <Image
@@ -27,7 +31,7 @@ export const ResetPasword = ({ navigation }) => {
                 <View style={styles.containerImputs} >
                     <InputText
                         placeholder={"ejemplo123@gmail.com"}
-                        text={"Usuario"}
+                        text={"Correo electrónico"}
                         value={emailUser}
                         onChangeText={setEmailUser}
                     >
@@ -135,7 +139,7 @@ const styles = StyleSheet.create({
         lineHeight: 52,
         color: "#000000",
         textShadowColor: 'rgba(0, 0, 0, 0.25)',
-        textShadowOffset: { width: 0, height: 4 },
+        textShadowOffset: { width: 0, height: 3 },
         textShadowRadius: 4,
         marginTop: 30,
 

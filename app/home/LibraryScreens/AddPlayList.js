@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { Avatar } from "@rneui/themed";
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 import { Alert, BackHandler, Dimensions, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import HomeContext from "../../../context/HomeContext/HomeContext";
 import { ButtonOwn, ButtonOwnAddPlayList, ButtonOwnHeader, InputAddLookFor, InputLookFor, InputTextAdd } from "../../../src/components/Components";
@@ -11,18 +11,24 @@ import {
     MediaTypeOptions,
     useMediaLibraryPermissions,
 } from "expo-image-picker";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
 import { MusicItem } from "../../../src/Items/MusicItem";
 import TakiTriContext from "../../../context/SecurityContext/TakiTriContext";
 import { getMessage } from "../../../src/components/Messages";
 export const AddPlayList = (props) => {
+    global.pageStatus = "AddPlayList";
     const { navigation } = props;
-    const { handleIsToUpdatePlayList,isOnLongPress,handlePushPlayListMusicAdded, musicListPlayList, handleIsonlongPress, selectedList, handleDeleteSelectedList, handleMessageError, handleIsModalErrorVisible } = useContext(HomeContext);
-    const { userTakiTri,  handleLoading,handleError, } = useContext(TakiTriContext);
+    const { handleIsToUpdatePlayList, isOnLongPress, handlePushPlayListMusicAdded, musicListPlayList, handleIsonlongPress, selectedList, handleDeleteSelectedList, handleMessageError, handleIsModalErrorVisible } = useContext(HomeContext);
+    const { userTakiTri, handleLoading, handleError, } = useContext(TakiTriContext);
     const [imageUser, setImageUser] = React.useState(null);
     const [resultsMusics, setResultsMusics] = React.useState([]);
     const [playListName, setPlayListName] = React.useState("");
     const [typePlayList, setTypePlayList] = React.useState("");
     const [itemSelectedEdit, setItemSelectedEdit] = React.useState(null);
+    const [userImageUrl, setUserImageUrl] = React.useState(null);
+    let checkUpdateCreate = useRef("");
+    let docIdPlayList = useRef("");
     let isOnlongPressItem = React.useRef(false);
     let canNavigateToNext = React.useRef(false);
     React.useEffect(() => {
@@ -41,7 +47,7 @@ export const AddPlayList = (props) => {
                             text: "Si", onPress: () => {
                                 navigation.goBack();
                                 handlePushPlayListMusicAdded([]);
-                              
+
                             }
                         }
                     ]);
@@ -81,9 +87,62 @@ export const AddPlayList = (props) => {
     React.useEffect(() => {
         isOnlongPressItem.current = isOnLongPress;
     }, [isOnLongPress])
+    React.useEffect(async () => {
+        let date = new Date();
+        if (userImageUrl) {
+            try {
+               
+                if (checkUpdateCreate.current == "UPDATING") {
+                    const values = {
+                        id: itemSelectedEdit[0].id,
+                        genre_name: typePlayList,
+                        idUserOwn: userTakiTri.id,
+                        imageURL: userImageUrl,
+                        image_references: "albumes/selección de capishcas",
+                        name: playListName,
+                        songList: itemSelectedEdit[0].songList,
+                        state:"PRIVATE"
+                    }
+            
+                    console.log("actualizando....")
+
+                    await handleUpdatePlayList(values, backToPlayList);
+                }
+                if (checkUpdateCreate.current == "CREATING") {
+                    const values = {
+                        author: userTakiTri.names + " " + userTakiTri.lastName,
+                        genre_name: typePlayList,
+                        id:  docIdPlayList.current,
+                        idUserOwn: userTakiTri.id,
+                        imageURL: userImageUrl,
+                        image_references: "albumes/selección de capishcas",
+                        name: playListName,
+                        year: date.getFullYear(),
+                        songList: musicListPlayList,
+                        state:"PRIVATE"
+
+                    }
+                    console.log("creando....123")
+                    //let idAlbum=await handleSubmitPlayList(values, backToPlayList);
+                    console.log("idAlbum", docIdPlayList.current)
+                    await handleUpdatePlayList(values, backToPlayList);
+
+                }
+                handleLoading(false);
+                checkUpdateCreate.current = "";
+            } catch (e) {
+                handleError(getMessage("*"), "red");
+                handleLoading(false);
+                checkUpdateCreate.current = "";
+            }
+
+
+        }
+    }, [userImageUrl])
     React.useEffect(() => {
         console.log("cambiando a nuevo de agregar");
         if (selectedList.length > 0) {
+            setImageUser(selectedList[0].imageURL);
             setItemSelectedEdit(selectedList)
             setPlayListName(selectedList[0].name)
             setTypePlayList(selectedList[0].genre_name)
@@ -111,59 +170,107 @@ export const AddPlayList = (props) => {
         return lettersImg;
     };
     const onSubmit = async () => {
-        let date = new Date();
-        const values = {
-            author: userTakiTri.names + " " + userTakiTri.lastName,
-            genre_name: typePlayList,
-            id: "",
-            idUserOwn: userTakiTri.id,
-            imageURL: "https://firebasestorage.googleapis.com/v0/b/borrador-a0724.appspot.com/o/albumes%2Fselecci%C3%B3n%20de%20capishcas.jpg?alt=media&token=5a67bb96-6f7b-4fad-9d2c-32c333883d9d",
-            image_references: "albumes/selección de capishcas",
-            name: playListName,
-            year: date.getFullYear(),
-            songList: musicListPlayList
-        }
 
         if (playListName.length <= 0 || typePlayList.length <= 0) {
             console.log("si hay error");
-           // handleIsModalErrorVisible(true);
+            // handleIsModalErrorVisible(true);
             //handleMessageError("Ingrese los campos");
-            handleError(getMessage("dataRequired"),"red");
+            handleError(getMessage("dataRequired"), "red");
         } else {
             if (musicListPlayList.length < 3) {
-                handleIsModalErrorVisible(true);
-                handleError(getMessage("min3musics","red"));
+                // handleIsModalErrorVisible(true);
+                handleError(getMessage("min3musics"), "red");
             } else {
-                console.log("values", values)
                 handleLoading(true);
-                 await handleSubmitPlayList(values,backToPlayList);
-                 handleLoading(false);
+                if (imageUser != null) {
+                    checkUpdateCreate.current = "CREATING";
+
+                    uploadFile();
+
+                } else {
+                    handleLoading(false);
+                    handleError(getMessage("*"), "red");
+                }
+
 
             }
         }
     }
-    const updatePlayList = () => {
-        const values = {
-            id: itemSelectedEdit[0].id,
-            genre_name: typePlayList,
-            idUserOwn: userTakiTri.id,
-            imageURL: "https://firebasestorage.googleapis.com/v0/b/borrador-a0724.appspot.com/o/albumes%2Fselecci%C3%B3n%20de%20capishcas.jpg?alt=media&token=5a67bb96-6f7b-4fad-9d2c-32c333883d9d",
-            image_references: "albumes/selección de capishcas",
-            name: playListName,
-            songList: itemSelectedEdit[0].songList
+    const uploadFile = async () => {
+        try {
+            const blob = await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = function () {
+                    resolve(xhr.response);
+                };
+                xhr.onerror = function (e) {
+                    reject(new TypeError("Network request failed"));
+                };
+                xhr.responseType = "blob";
+                xhr.open("GET", imageUser, true);
+                xhr.send(null);
+            });
+
+            const storage = getStorage();
+            let fileStorage;
+            if(checkUpdateCreate.current == "CREATING"){
+                const values={
+                    id:""
+                }
+                let docId=await handleSubmitPlayList(values, backToPlayList);
+                docIdPlayList.current=docId;
+                 fileStorage = ref(
+                    storage,
+                    "imagesPlayList/" + docId + ".jpg"
+                );
+            }else{
+                 fileStorage = ref(
+                    storage,
+                    "imagesPlayList/" + selectedList[0].id + ".jpg"
+                );
+            }
+            const uploadResult = await uploadBytes(fileStorage, blob);
+
+            blob.close();
+
+            const url = await getDownloadURL(fileStorage);
+            setUserImageUrl(url);
+            console.log("url--", url)
+            global.urlProfile = url;
+        } catch (e) {
+            console.log("error subir", e)
+            handleLoading(false)
+            handleError(getMessage("*"), "red");
+
         }
+
+    };
+    const updatePlayList = async () => {
+
 
         if (playListName.length <= 0 || typePlayList.length <= 0) {
             console.log("si hay error");
-            handleIsModalErrorVisible(true);
-            handleMessageError("Ingrese los campos");
+            //handleIsModalErrorVisible(true);
+            //handleMessageError("Ingrese los campos");
+            handleError(getMessage("dataRequired"), "red");
         } else {
             if (itemSelectedEdit[0].songList.length < 3) {
-                handleIsModalErrorVisible(true);
-                handleMessageError("Mìnimo 3 canciones");
+                //handleMessageError("Mìnimo 3 canciones","red");
+                handleError(getMessage("min3musics"), "red");
             } else {
-                console.log("values a actualizar", values)
-                handleUpdatePlayList(values,backToPlayList);
+
+                handleLoading(true);
+                if (imageUser != null) {
+                    checkUpdateCreate.current = "UPDATING";
+
+                    uploadFile();
+                } else {
+                    handleLoading(false);
+                    handleError(getMessage("*"), "red");
+                }
+
+
+
             }
         }
     }
@@ -183,13 +290,13 @@ export const AddPlayList = (props) => {
     const canContinue = () => {
         navigation.navigate("AddMusicPlayList", { musicList: resultsMusics });
     }
-    const backToPlayList=()=>{
+    const backToPlayList = () => {
         handlePushPlayListMusicAdded([]);
         handleIsonlongPress(false);
         handleDeleteSelectedList({}, {}, true);
         handleIsToUpdatePlayList(true);
         navigation.navigate("PlayList");
-        
+
     }
     return (
         <View styles={styles.containerMain}>
@@ -238,7 +345,7 @@ export const AddPlayList = (props) => {
                         onPress={() => {
                             chooseFile();
                         }}
-                        style={{ backgroundColor: "#EF6F6C" }}
+                        style={{ backgroundColor: "#7DDAFF", marginBottom: 7, marginRight: 5 }}
                         size={30}
                     />
                 </Avatar>
@@ -267,18 +374,18 @@ export const AddPlayList = (props) => {
             <View style={{ flexDirection: "row", justifyContent: "center", marginBottom: 20 }}>
                 {
                     (itemSelectedEdit && itemSelectedEdit.length > 0 && itemSelectedEdit[0]) ? <InputTextAdd
-                        text={"Musicas:"}
+                        text={"Canciones:"}
                         placeholder={"Total de canciones"}
                         maxLength={30}
                         editable={false}
-                        value={itemSelectedEdit[0].songList.length + ""}
+                        value={itemSelectedEdit[0].songList.length + " "}
                     >
                     </InputTextAdd> : <InputTextAdd
-                        text={"Musicas:"}
+                        text={"Canciones:"}
                         placeholder={"Total de canciones"}
                         maxLength={30}
                         editable={false}
-                        value={musicListPlayList.length + ""}
+                        value={musicListPlayList.length + " "}
                     >
                     </InputTextAdd>
                 }
@@ -323,12 +430,14 @@ export const AddPlayList = (props) => {
                                     onPress: () => null,
                                     style: "cancel"
                                 },
-                                { text: "Si", onPress: () => {
-                                    handlePushPlayListMusicAdded([]);
-                                    handleIsonlongPress(false);
-                                    handleDeleteSelectedList({}, {}, true);
-                                    navigation.goBack() 
-                                }}
+                                {
+                                    text: "Si", onPress: () => {
+                                        handlePushPlayListMusicAdded([]);
+                                        handleIsonlongPress(false);
+                                        handleDeleteSelectedList({}, {}, true);
+                                        navigation.goBack()
+                                    }
+                                }
                             ]);
 
                         }}
@@ -360,7 +469,7 @@ const styles = StyleSheet.create({
         fontSize: 30,
         color: "#12485B",
         textShadowColor: 'rgba(0, 0, 0, 0.25)',
-        textShadowOffset: { width: 0, height: 4 },
+        textShadowOffset: { width: 0, height: 3 },
         textShadowRadius: 4,
         height: 50,
     },

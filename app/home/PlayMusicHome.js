@@ -8,10 +8,11 @@ import { deleteFromDatabeMusic, getMaxNumberDataBase, insertHistoryMusicDataBase
 import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
 
 export const PlayMusicHome = (props) => {
+  
   const { navigation } = props;
   const {handleSnackBarElement, handleMaxNumberDataBase, maxNumberDataBase, handleMusicPlayed, musicListenedNow, audioPlayer, currentMusic, isPlayingSound, playMusic, currentPlayList, likedSongsList, loadLikedMusics } = useContext(HomeContext)
   const [progresBar, setProgresBar] = React.useState(0);
-  const { handleShowSnackBar, handlePaddingSnackBar } = useContext(TakiTriContext)
+  const { handleShowSnackBar, handlePaddingSnackBar,handleShowInformationMusic } = useContext(TakiTriContext)
   const [isPlayingSoundInside, setIsPlayingSoundInside] = React.useState(isPlayingSound);
   const [progresTime, setProgresTime] = React.useState("00:00");
   const [duration, setDuration] = React.useState("00:00");
@@ -35,6 +36,7 @@ export const PlayMusicHome = (props) => {
       console.log(e);
     }
     const backAction = () => {
+     
       navigation.goBack();
       showSnackBarPlay();
       return true;
@@ -86,7 +88,7 @@ export const PlayMusicHome = (props) => {
 
   const showSnackBarPlay = () => {
     handleShowSnackBar(currentMusicRef.current, audioPlayerRef.current, currentPlayListRef.current, audioPlayerRef.current.isPlaying());
-    handlePaddingSnackBar(5);
+    //handlePaddingSnackBar(5);
   }
   const loadToHistoryPlayed = () => {
     console.log("global.user_id", global.user_id);
@@ -305,7 +307,7 @@ export const PlayMusicHome = (props) => {
 
                 </TouchableOpacity>
                 <TouchableOpacity>
-                  <Icon name="dots-three-vertical" size={25} type="entypo" color={"#FDFDFD"} />
+                  <Icon name="dots-three-vertical" size={25} type="entypo" color={"#FDFDFD"} onPress={()=>{handleShowInformationMusic(currentMusic)}} />
 
                 </TouchableOpacity>
               </View>

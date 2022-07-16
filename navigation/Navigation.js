@@ -32,12 +32,12 @@ export const Navigation = () => {
     return (
         <HomeStates>
             {
-                 isAutenticated ===null?<WaitPage></WaitPage> :isAutenticated==true?<AtenticatedUser />:<UnAtenticatedUser />
+                isAutenticated === null ? <WaitPage></WaitPage> : isAutenticated == true ? <AtenticatedUser /> : <UnAtenticatedUser />
             }
             {
                 //isAutenticated === true ? <AtenticatedUser /> : <UnAtenticatedUser />
             }
-           
+
         </HomeStates>
     );
 }
@@ -87,6 +87,11 @@ const AtenticatedUser = () => {
             <Stack.Screen name="AlbumListMusic"
                 component={AlbumRender}
                 options={{ headerShown: false }}
+            />
+            <Stack.Screen name="Favorites"
+                component={AlbumRender}
+                options={{ headerShown: false }}
+
             />
         </StackAutenticated.Navigator>
     );

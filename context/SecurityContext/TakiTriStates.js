@@ -1,6 +1,8 @@
 import { getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import React, { useCallback, useMemo, useReducer, useState } from "react";
+import { Button } from '@rneui/themed';
+
 import { View, Image, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { ActivityIndicator, Modal, Snackbar } from "react-native-paper";
 import disco from "../../assets/images/disco.jpeg";
@@ -9,7 +11,7 @@ import Sound from 'react-native-sound';
 
 import TakiTriContext from "./TakiTriContext";
 import { TakiTriReducer } from "./TakiTriReducer";
-import { IS_AUTENTICATED, LOADING_END, LOADING_START, LOAD_FIREBASE_USER, LOAD_TAKITRI_USER } from "./TakiTriTypes";
+import { IS_AUTENTICATED, LOADING_END, LOADING_START, LOAD_FIREBASE_USER, LOAD_TAKITRI_USER, SHOW_INFORMATION_SONG } from "./TakiTriTypes";
 import { Icon } from "@rneui/base";
 import { getMessage } from "../../src/components/Messages";
 
@@ -21,6 +23,7 @@ export const TakiTriStates = ({ children }) => {
       userTakiTri: null,
       isAutenticated: null,
       isLoading: false,
+      informationVisible: null
     }),
     []
   );
@@ -33,6 +36,9 @@ export const TakiTriStates = ({ children }) => {
   const [isSnackVisible, setIsSnackVisible] = React.useState(false);
   const [color, setColor] = useState("white");
   const [message, setMessage] = useState(null);
+  const [isInformationVisible, setIsInformationVisible] = useState(false);
+  const [itemInformation, setItemInformation] = useState(null);
+
   React.useEffect(() => {
     if (currentMusic != null) {
       console.log("para hacer visible")
@@ -67,25 +73,25 @@ export const TakiTriStates = ({ children }) => {
         console.log("ligon user", user.uid)
         dispatch({ type: LOAD_FIREBASE_USER, payload: user })
         handleUserFirebase(user)
-       
+
         // ...
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log("errorCode",errorCode);
-        console.log("errorMessage",errorMessage);
+        console.log("errorCode", errorCode);
+        console.log("errorMessage", errorMessage);
         handleLoading(false);
-        handleError(getMessage(error.code),"red");
-        console.log("error al inciar sesion",error)
-        const data =getMessage("notAutenticated");
-        console.log("mensaje obtenido",data)
+        handleError(getMessage(error.code), "red");
+        console.log("error al inciar sesion", error)
+        const data = getMessage("notAutenticated");
+        console.log("mensaje obtenido", data)
 
       });
   }, [])
   const handleUserFirebase = useCallback(async (user) => {
-    global.user_id = user.uid;
-    const docRef = doc(global.db_Firestore, "users", user.uid);
+    global.user_id = user.uid||user.id;
+    const docRef = doc(global.db_Firestore, "users", user.uid||user.id);
     const docSnap = await getDoc(docRef);
     console.log("usuario firestore", docSnap.data())
     dispatch({ type: LOAD_TAKITRI_USER, payload: docSnap.data() })
@@ -94,7 +100,13 @@ export const TakiTriStates = ({ children }) => {
   const handleError = useCallback((message, color) => {
     setColor(color);
     setMessage(message);
-}, []);
+  }, []);
+  const handleShowInformationMusic = useCallback((music) => {
+    setIsInformationVisible(true);
+    setItemInformation(music);
+    console.log(music)
+  }, []);
+  SHOW_INFORMATION_SONG
 
   const handleLoading = useCallback((isLoading) => {
     dispatch({ type: isLoading ? LOADING_START : LOADING_END });
@@ -130,15 +142,15 @@ export const TakiTriStates = ({ children }) => {
       handleLoading(true);
       const data = await sendPasswordResetEmail(auth, value).then((e) => {
         console.log("datos de passworrd logro", e)
-        handleError("Se ha enviádo un email de verificación","green");
+        handleError("Se ha enviádo un email de verificación", "green");
       }).catch((e) => {
-        handleError("No se ha podido encontrar al usuario","red");
+        handleError("No se ha podido encontrar al usuario", "red");
         console.log("datos de passworrd error", e)
       });
 
     } catch (e) {
       console.log("error al recuperar contraseña", e);
-    }finally{
+    } finally {
       handleLoading(false);
     }
 
@@ -146,6 +158,7 @@ export const TakiTriStates = ({ children }) => {
   const handleUpdateUser = useCallback(async (values) => {
     const userRef = doc(global.db_Firestore, "users", values.id);
     await updateDoc(userRef, values);
+    handleUserFirebase(values);
   }, [])
   const handleDestroySnackBar = useCallback(async () => {
     setCurrentMusic(null);
@@ -154,6 +167,70 @@ export const TakiTriStates = ({ children }) => {
     setCurrentMusic(currentMusicRef.current);
   }, [])
   const handlePaddingSnackBar = useCallback(async (value) => {
+    /*switch (value || global.pageStatus) {
+      case "AddMusicPlayList": {
+        setsNackBarPadding(54);
+        break;
+      }
+      case "AddPlayList": {
+        setsNackBarPadding(54);
+        break;
+      }
+      case "FavoriteScreen": {
+        setsNackBarPadding(5);
+        break;
+      }
+      case "LibraryPlayLists": {
+        setsNackBarPadding(54);
+        break;
+      }
+      case "MyPlayList": {
+        setsNackBarPadding(54);
+        break;
+      }
+      case "PlayListsScreen": {
+        setsNackBarPadding(54);
+        break;
+      }
+      case "AlbumRender": {
+        setsNackBarPadding(5);
+        break;
+      }
+      case "Home": {
+        setsNackBarPadding(54);
+        break;
+      }
+      case "HomeScreen": {
+        setsNackBarPadding(54);
+        break;
+      }
+      case "Library": {
+        setsNackBarPadding(54);
+        break;
+      }
+      case "LookFor": {
+        setsNackBarPadding(54);
+        break;
+      }
+      case "MadeForYou": {
+        setsNackBarPadding(54);
+        break;
+      }
+      case "ProfileScreen": {
+        setsNackBarPadding(5);
+
+        break;
+      }
+      case "RecentPlayed": {
+        setsNackBarPadding(54);
+        break;
+      }
+      case "AboutInfo": {
+        setsNackBarPadding(5);
+        break;
+      }
+    }*/
+
     setsNackBarPadding(value);
     console.log("cambia padding a", value)
   }, [])
@@ -239,6 +316,7 @@ export const TakiTriStates = ({ children }) => {
       userFirebase: state.userFirebase,
       userTakiTri: state.userTakiTri,
       isAutenticated: state.isAutenticated,
+      handleShowInformationMusic,
       handleLoading,
       handleError,
       handleDestroyAllSnackBar,
@@ -308,28 +386,151 @@ export const TakiTriStates = ({ children }) => {
     }}>
       <ActivityIndicator size={80} />
     </Modal>
+    <Modal visible={isInformationVisible} style={{
+      backgroundColor: 'transparent',
+      flex: 1,
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      elevation: 0
+    }}
+    >
+      <View style={styles.modalInside}>
+        <Image
+          source={{ uri: itemInformation ? itemInformation.imageURL : "" }}
+          style={{ width: "100%", height: "100%", position: "absolute", borderRadius: 20, }}
+          resizeMode="cover"
+          blurRadius={30}
+        >
+        </Image>
+        <Image
+          source={{ uri: itemInformation ? itemInformation.imageURL : "" }}
+          style={{ width: 150, height: 150, borderRadius: 2, marginBottom: 20 }}
+        >
+        </Image>
+
+        <View style={{ flexDirection: "row", alignItems: "center", height: 40, justifyContent: "center", width: 300 }}>
+          <View style={{ width: 150, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Text style={styles.styleTitle}>
+              Título:{"  "}
+            </Text>
+          </View>
+          <View style={{ width: 150, flexDirection: "row", justifyContent: "flex-start" }}>
+            <Text style={styles.styleTitleText}>
+              {itemInformation && itemInformation.song_name}
+            </Text>
+          </View>
+        </View>
+        <View style={{ flexDirection: "row", alignItems: "center", height: 40, justifyContent: "center", width: 300 }}>
+          <View style={{ width: 150, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Text style={styles.styleTitle}>
+              Artista:{"  "}
+            </Text>
+          </View>
+          <View style={{ width: 150, flexDirection: "row", justifyContent: "flex-start" }}>
+            <Text style={styles.styleTitleText}>
+              {itemInformation && itemInformation.author}
+            </Text>
+          </View>
+        </View>
+
+        <View style={{ flexDirection: "row", alignItems: "center", height: 40, justifyContent: "center", width: 300 }}>
+          <View style={{ width: 150, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Text style={styles.styleTitle}>
+              Género:{"  "}
+            </Text>
+          </View>
+          <View style={{ width: 150, flexDirection: "row", justifyContent: "flex-start" }}>
+            <Text style={styles.styleTitleText}>
+              {itemInformation && itemInformation.genre_name}
+            </Text>
+          </View>
+
+
+        </View>
+        <View style={{ flexDirection: "row", alignItems: "center", height: 40, justifyContent: "center", width: 300 }}>
+          <View style={{ width: 150, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Text style={styles.styleTitle}>
+              Álbum:{"  "}
+            </Text>
+          </View>
+          <View style={{ width: 150, flexDirection: "row", justifyContent: "flex-start" }}>
+            <Text style={styles.styleTitleText}>
+              {itemInformation && itemInformation.album_name}
+            </Text>
+          </View>
+        </View>
+        <View style={{ flexDirection: "row", alignItems: "center", height: 40, justifyContent: "center", width: 300 }}>
+          <View style={{ width: 150, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Text style={styles.styleTitle}>
+              Año:{"  "}
+            </Text>
+          </View>
+          <View style={{ width: 150, flexDirection: "row", justifyContent: "flex-start" }}>
+            <Text style={styles.styleTitleText}>
+              {itemInformation && itemInformation.year}
+            </Text>
+          </View>
+        </View>
+
+      </View>
+      <View style={{width:50,position:"absolute",top:20,right:20}}>
+        <Button
+          title="Ok"
+          titleStyle={{color:"#12485B"}}
+          onPress={() => {
+            setIsInformationVisible(!isInformationVisible)
+            setItemInformation(null);
+          }}
+         
+          buttonStyle={{ backgroundColor:"#C4BFBF",borderRadius:20}}
+        >
+
+        </Button>
+      </View>
+
+    </Modal>
     <Snackbar
-                theme={{
-                    colors: {
-                        accent: '#FFFFFF',
-                        surface: '#FFFFFF'
-                    }
-                }}
-                style={{
-                    backgroundColor: color
-                }}
-                visible={message !== null}
-                onDismiss={onDismissSnackBar}
-                action={{
-                    label: 'OK',
-                    onPress: () => onDismissSnackBar(),
-                }}>
-                {message}
-            </Snackbar>
+      theme={{
+        colors: {
+          accent: '#FFFFFF',
+          surface: '#FFFFFF'
+        }
+      }}
+      style={{
+        backgroundColor: color
+      }}
+      visible={message !== null}
+      onDismiss={onDismissSnackBar}
+      action={{
+        label: 'OK',
+        onPress: () => onDismissSnackBar(),
+      }}>
+      {message}
+    </Snackbar>
 
   </TakiTriContext.Provider>
 }
 const styles = StyleSheet.create({
+  modalInside: {
+    backgroundColor: "#AAAAAA",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    width: 350,
+    height: 400,
+    position: "relative"
+  },
+  styleTitle: {
+    fontSize: 20,
+    color: "#F0E5E5",
+  },
+  styleTitleText: {
+    color: "#F3F3F3",
+
+    fontSize: 15
+  },
   containerMusic: {
     flexDirection: "row",
     position: "relative",

@@ -12,6 +12,7 @@ import rock from "../../../assets/images/rock.jpg";
 import { getAlbumes } from '../../../src/services/MusicServices';
 
 export const PlayListsScreen = ({onPresseAlbum,navigation}) => {
+  global.pageStatus="PlayListsScreen";
   const[data1,setData1]=React.useState([]);
   React.useEffect(()=>{
     getAlbumes(setData1);

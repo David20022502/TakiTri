@@ -1,30 +1,31 @@
+import { Icon } from "@rneui/base";
 import React from "react";
-import { BackHandler, FlatList, StyleSheet, View } from "react-native";
+import { BackHandler, FlatList, StyleSheet, Text, View } from "react-native";
 import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
 import { MusicItem } from "../../src/Items/MusicItem";
 import { getRecentPlayed } from "../../src/services/DataBase";
 import { getLikedSongById } from "../../src/services/MusicServices";
 export const RecentPlayed = () => {
-    const { userTakiTri } = React.useContext(TakiTriContext);
+    global.pageStatus = "RecentPlayed";
+    const { userTakiTri, handlePaddingSnackBar } = React.useContext(TakiTriContext);
+    // handlePaddingSnackBar("RecentPlayed")
     const [MusicList, SetMusics] = React.useState([]);
     const [musicListOrder, setMusicListOrder] = React.useState([]);
     const [musicsList, setMusicsList] = React.useState([]);
-    
+
     React.useEffect(() => {
+        console.log("hola de nuevo");
         getRecentPlayed(userTakiTri.id, SetMusics);
         const backAction = () => {
             navigation.popToTop();
             return true;
-          };
-          const backHandler = BackHandler.addEventListener(
+        };
+        const backHandler = BackHandler.addEventListener(
             "hardwareBackPress",
             backAction
-          );
-          return () => backHandler.remove();
+        );
+        return () => backHandler.remove();
     }, [])
-    React.useEffect(() => {
-        console.log("canciones ya en historial", musicsList)
-    }, [musicsList])
     React.useEffect(() => {
         if (musicListOrder.length > 0) {
             console.log("musicListOrder", musicListOrder);
@@ -74,8 +75,18 @@ export const RecentPlayed = () => {
     const renderItemMusic = (item) => {
         return (<MusicItem music={item.item} playList={musicsList} ></MusicItem>);
     }
-    return <View style={{ flex: 1, }}>
+    return <View style={{ flex: 1,position:"relative" }}>
+        <View style={{ position: "absolute", top: 10, left: 20 }}>
+
+            <Icon name="back" size={30} type="ant-design" color="black" onPress={() => { navigation.navigate("HomeScreen") }} />
+
+
+        </View>
+        <Text style={styles.styleTextTitle}>
+            Tus últimas reproducciones
+        </Text>
         <View style={styles.scrollViewMusic}>
+
             <FlatList
                 data={musicsList}
                 renderItem={(item) => renderItemMusic(item)}
@@ -88,6 +99,13 @@ export const RecentPlayed = () => {
 const styles = StyleSheet.create({
     containerItems: {
         flexDirection: "column",
+    },
+    styleTextTitle: {
+        color: "#AAAAAA",
+        fontSize: 20,
+        width: "100%",
+        textAlign: "center",
+        marginVertical: 25
     },
     containerItemsFinal: {
         flexDirection: "column",

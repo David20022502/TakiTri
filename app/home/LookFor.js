@@ -5,6 +5,7 @@ import { MusicItem } from '../../src/Items/MusicItem';
 import { lokForSongs } from '../../src/services/MusicServices';
 
 export const LookFor = () => {
+  global.pageStatus="LookFor";
   const [inputLookFor, setInputLookFor] = React.useState("");
   const [resultsMusics, setResultsMusics] = React.useState(null);
   React.useEffect(() => {
@@ -27,19 +28,19 @@ export const LookFor = () => {
   }
   const NotLookedFor = () => {
     return (<View
-    style={{flex:1,flexDirection:"column",justifyContent:"center",alignItems:"center"}}
-    > 
+      style={{ flex: 1, flexDirection: "column", justifyContent: "center", alignItems: "center" }}
+    >
       <Text
-      style={{color:"#12485B",fontSize:30, marginHorizontal:20,textAlign:"center"}}
-      >Siempre hay nuevas musicas para escuchar!</Text>
+        style={{ color: "#AAAAAA", fontSize: 20, marginHorizontal: 20, textAlign: "center" }}
+      >¡Siempre hay nueva música para escuchar!</Text>
     </View>);
   }
-  const NotFound= () => {
+  const NotFound = () => {
     return (<View
-    style={{flex:1,flexDirection:"column",justifyContent:"center",alignItems:"center"}}
-    > 
+      style={{ flex: 1, flexDirection: "column", justifyContent: "center", alignItems: "center" }}
+    >
       <Text
-      style={{color:"#12485B",fontSize:30}}
+        style={{ color: "#12485B", fontSize: 30 }}
       >Sin Resultados...</Text>
     </View>);
   }
@@ -53,23 +54,23 @@ export const LookFor = () => {
       <View style={styles.containerMain}>
         <View style={styles.lookForConatiner}>
           <InputLookFor
-            placeholder={"Busca tu cancion favorita..."}
+            placeholder={"Busca tu canción favorita..."}
             value={inputLookFor}
             onChangeText={setInputLookFor}
             onPress={handleLookForMusics}
           >
           </InputLookFor>
         </View>
-        
-        {
-          resultsMusics !=null? resultsMusics.length <= 0 ? <NotFound/>:<View style={styles.scrollViewMusic}>
-          <FlatList
-            data={resultsMusics}
-            renderItem={(item) => renderItemMusic(item)}
-            key={item => item.id}
-          />
 
-        </View>:<NotLookedFor></NotLookedFor>
+        {
+          resultsMusics != null ? resultsMusics.length <= 0 ? <NotFound /> : <View style={styles.scrollViewMusic}>
+            <FlatList
+              data={resultsMusics}
+              renderItem={(item) => renderItemMusic(item)}
+              key={item => item.id}
+            />
+
+          </View> : <NotLookedFor></NotLookedFor>
         }
       </View>
 
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
     lineHeight: 52,
     color: "#12485B",
     textShadowColor: 'rgba(0, 0, 0, 0.25)',
-    textShadowOffset: { width: 0, height: 4 },
+    textShadowOffset: { width: 0, height: 3 },
     textShadowRadius: 4,
   },
   scrollViewMusic: {

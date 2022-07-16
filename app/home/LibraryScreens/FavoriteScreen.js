@@ -6,6 +6,8 @@ import { MusicItem } from '../../../src/Items/MusicItem';
 import { getMusics } from '../../../src/services/MusicServices';
 
 export const FavoriteScreen = () => {
+  global.pageStatus="FavoriteScreen";
+
   const[datas,setDatas]=React.useState(null)
 
   React.useEffect(()=>{

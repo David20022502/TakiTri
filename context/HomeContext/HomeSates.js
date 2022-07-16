@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useMemo, useReducer, useState } from "react";
 import HomeContext from "./HomeContext";
 import { HomeReducer } from "./HomeReducer";
-import { DELETE_SELECTED_ITEM_LIST, IS_LOADING_PAGE, IS_MODAL_ERROR_VISIBLE_PAGE, IS_ON_LONG_PRESS, IS_PLAYING_SOUND, IS_TO_UPDATE_PLAYLIST, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, LOAD_ISLIKE_SONG, MESSAGE_ERROR_MODAL, PLAY_MUSIC_HOME, PUSH_MUSIC_PLAYLIST_ADDED, PUSH_SELECTED_ITEM_LIST, UPDATE_MAX_NUMBER_DATABASE, UPDATE_PLAYED_MUSIC } from "./HomeTypes";
+import { DELETE_SELECTED_ITEM_LIST, IS_LOADING_PAGE, IS_MODAL_ERROR_VISIBLE_PAGE, IS_ON_LONG_PRESS, IS_PLAYING_SOUND, IS_TO_UPDATE_PLAYLIST, LOAD_AUDIO_PLAYER, LOAD_CURRENT_MUSIC, LOAD_CURRENT_PLAYLIST, LOAD_ISLIKE_SONG, MESSAGE_ERROR_MODAL, PLAY_MUSIC_HOME, PUSH_MUSIC_PLAYLIST_ADDED, PUSH_SELECTED_ITEM_LIST, UPDATE_ALBUM_STATE, UPDATE_MAX_NUMBER_DATABASE, UPDATE_PLAYED_MUSIC } from "./HomeTypes";
 import Sound from 'react-native-sound';
 import { collection, getDocs } from "firebase/firestore";
 import TrackPlayer from 'react-native-track-player';
@@ -23,7 +23,12 @@ export const HomeStates = ({ children }) => {
       musicListPlayList: [],
       isToUpdatePlayList: false,
       musicListenedNow: [],
-      maxNumberDataBase:0
+      maxNumberDataBase:0,
+      isUpdatingStateAlbum:{
+        type:"PlayList",
+        author:null,
+        isPlayList:false
+      }
 
     }),
     []
@@ -36,6 +41,9 @@ export const HomeStates = ({ children }) => {
   }, [])
   const handleIsModalErrorVisible = useCallback((isVisible) => {
     dispatch({ type: IS_MODAL_ERROR_VISIBLE_PAGE, payload: isVisible })
+  }, [])
+  const handleIsUpdatingAlbum = useCallback((isUpdatingState) => {
+    dispatch({ type: UPDATE_ALBUM_STATE, payload: isUpdatingState })
   }, [])
   const handleMessageError = useCallback((message) => {
     dispatch({ type: MESSAGE_ERROR_MODAL, payload: message })
@@ -201,6 +209,8 @@ export const HomeStates = ({ children }) => {
       isToUpdatePlayList: state.isToUpdatePlayList,
       musicListenedNow: state.musicListenedNow,
       maxNumberDataBase:state.maxNumberDataBase,
+      isUpdatingStateAlbum:state.isUpdatingStateAlbum,
+      handleIsUpdatingAlbum,
       handleMaxNumberDataBase,
       handleSnackBarElement,
       handleMusicPlayed,

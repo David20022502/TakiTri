@@ -8,7 +8,7 @@ export const SecondSplash = ({ navigation }) => {
             <ScrollView>
                 <View>
                     <Text style={styles.title}>
-                        Conocenos
+                        Conócenos
                     </Text>
                 </View>
                 <View style={styles.containerItemInformation} >
@@ -16,15 +16,15 @@ export const SecondSplash = ({ navigation }) => {
                         Quiénes somos?
                     </Text>
                     <Text style={styles.textStyle}>
-                        Somos un grupo de desarrolladores que buscamos lo mejor para nuestros usuarios
+                        Somos un grupo de desarrolladores que buscamos lo mejor para nuestros usuarios.
                     </Text>
                 </View>
                 <View style={styles.containerItemInformation} >
                     <Text style={styles.subTitle}>
-                        Generos Musicales
+                        Géneros Musicales
                     </Text>
                     <Text style={styles.textStyle}>
-                        Los generos musicales que encontraras en en la Aplicación Móvil, son propios del Ecuador
+                        Los géneros musicales que encontraras en en la Aplicación Móvil, son propios del Ecuador.
                     </Text>
                 </View>
 
@@ -33,7 +33,7 @@ export const SecondSplash = ({ navigation }) => {
                         Misión
                     </Text>
                     <Text style={styles.textStyle}>
-                        Dar un espacio a los ecuatorianos para que ouedan oresentar sus músicas
+                        Dar un espacio a los ecuatorianos para que puedan presentar su música.
                     </Text>
                 </View>
 
@@ -42,7 +42,7 @@ export const SecondSplash = ({ navigation }) => {
                         Visión
                     </Text>
                     <Text style={[styles.textStyle, { marginBottom: 30 }]}>
-                        Ser la APP mas usada en Ecuador
+                        Ser la app más usada en Ecuador.
                     </Text>
                 </View>
 
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
         lineHeight: 52,
         color: "#12485B",
         textShadowColor: 'rgba(0, 0, 0, 0.25)',
-        textShadowOffset: { width: 0, height: 4 },
+        textShadowOffset: { width: 0, height: 3 },
         textShadowRadius: 4,
         marginTop: 50,
         marginBottom: 0

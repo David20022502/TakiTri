@@ -1,5 +1,7 @@
 import { View, Text, StyleSheet, Image, Dimensions, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
+import { StatusBar } from 'expo-status-bar';
+
 import { ButtonOwn, Indicator, InputText } from "../../src/components/Components";
 import logo from "../../assets/images/logo.jpg";
 
@@ -7,6 +9,8 @@ export const ConfirmPassword = ({ navigation }) => {
     return (
 
         <View style={styles.container}>
+                         <StatusBar backgroundColor='#FDFDFD'></StatusBar>
+
             <ScrollView>
                 <View style={styles.conatinerHeader}>
                     <Image

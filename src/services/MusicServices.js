@@ -52,7 +52,15 @@ export const getAlbumes = async (resfreshFn, userOunerId) => {
       let tempAlbumes = [];
 
       querySnapshot.forEach((doc) => {
-        tempAlbumes.push(doc.data());
+        let item=doc.data();
+        if(item.state==undefined){
+          tempAlbumes.push(item);
+          }else{
+            if(item.state=="PUBLIC"){
+              tempAlbumes.push(item);
+
+            }
+          }
       });
       let tempAlbumesOrder = [];
       console.log("totl de albumes", tempAlbumes.length - 1);
@@ -132,6 +140,7 @@ export const getAlbumes = async (resfreshFn, userOunerId) => {
 
   }
   export const getLikedSongById = async (resfreshFn, listMusicsId) => {
+    console.log("listMusicsId",listMusicsId);
     const songsAlbumRef = collection(
       global.db_Firestore,
       "/songs"
@@ -146,11 +155,12 @@ export const getAlbumes = async (resfreshFn, userOunerId) => {
         likedSongsOrder = [];
       }
     }
-    if (likedSongsOrder.length <= 10) {
+    if (likedSongsOrder.length>0&&likedSongsOrder.length <= 10) {
       likedSongsAll.push(likedSongsOrder);
     }
     let tempSongsAlbum = [];
     for (let i = 0; i < likedSongsAll.length; i++) {
+      console.log("likedSongsAll",likedSongsAll)
       const songsLikeds = query(songsAlbumRef, where("id", "in", likedSongsAll[i]));
       const querySnapshot = await getDocs(songsLikeds);
       querySnapshot.forEach((doc) => {
@@ -179,8 +189,11 @@ export const getAlbumes = async (resfreshFn, userOunerId) => {
     await updateDoc(washingtonRef, {
       id: docRef.id
     });
-    backToPlayList();
+    return docRef.id;
+    //backToPlayList();
   }
+
+
   export const handleUpdatePlayList = async (values,backToPlayList) => {
     const washingtonRef = doc(global.db_Firestore, "albums", values.id);
     await updateDoc(washingtonRef, values);
@@ -194,3 +207,10 @@ export const getAlbumes = async (resfreshFn, userOunerId) => {
     backToPlayList();
   }
 
+  export const handleUpdateStateAlbum = async (value,idAlbum) => {
+    const washingtonRef = doc(global.db_Firestore, "albums", idAlbum);
+    await updateDoc(washingtonRef, {
+      state: value
+    });
+    //backToPlayList();
+  }

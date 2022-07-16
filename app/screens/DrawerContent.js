@@ -38,7 +38,7 @@ export function DrawerContent(props) {
                         <View style={{flexDirection:'row',marginTop: 15}}>
                             <Avatar.Image 
                                 source={{
-                                    uri: 'https://zipmex.com/static/d1af016df3c4adadee8d863e54e82331/1bbe7/Twitter-NFT-profile.jpg'
+                                    uri: userTakiTri.imageUser
                                 }}
                                 size={50}
                             />
@@ -93,7 +93,7 @@ export function DrawerContent(props) {
                             labelStyle={{color:darkThemText}}
 
                             label="Historial"
-                            onPress={() => {props.navigation.navigate('')}}
+                            onPress={() => {props.navigation.navigate('ListenedNow')}}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (
@@ -107,7 +107,7 @@ export function DrawerContent(props) {
                             labelStyle={{color:darkThemText}}
 
                             label="Acerca de"
-                            onPress={() => {props.navigation.navigate('')}}
+                            onPress={() => {props.navigation.navigate('Información')}}
                         />
                     </Drawer.Section>
                   
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
       
     },
     caption: {
-      fontSize: 14,
+      fontSize: 12,
       lineHeight: 14,
     },
     row: {

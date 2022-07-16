@@ -5,6 +5,7 @@ import { PlayListsScreen } from './LibraryScreens/PlayListsScreen';
 import HomeContext from '../../context/HomeContext/HomeContext';
 import { MyPlayList } from './LibraryScreens/MyPlayList';
 export const Library = ({navigation}) => {
+  global.pageStatus="Library";
   const {pageStatus}=React.useContext(HomeContext)
 
   const [isSelected, setIsSelected] = React.useState("Favorites");

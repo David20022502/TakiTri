@@ -18,6 +18,7 @@ import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
 
 export const HomeScreen = ({ navigation }) => {
   //const [isSelected, setIsSelected] = React.useState("MainPage");
+  global.pageStatus="HomeScreen";
   const { handleMaxNumberDataBase,audioPlayer,handleMusicPlayed ,musicPlayedList} = React.useContext(HomeContext)
   const { userTakiTri } = React.useContext(TakiTriContext);
   const [musicPlayed,setMusicPlayed]=React.useState([]);
@@ -60,10 +61,10 @@ export const HomeScreen = ({ navigation }) => {
   }
   return (
     <View style={styles.container}>
-        <AlbumItem onPresseAlbum={()=>{navigation.navigate("ListenedNow")}} title={"Ultimas Reproducciones"} imageUri={MusicRecent}></AlbumItem>
+        <AlbumItem onPresseAlbum={()=>{navigation.navigate("ListenedNow")}} title={"Últimas Reproducciones"} imageUri={MusicRecent}></AlbumItem>
         <AlbumItem onPresseAlbum={()=>{navigation.navigate("Favorites",{itemAlbum:itemAlbumFavorite,typeAlbum:"FAVORITES"})}} title={"Favoritos"} imageUri={favorites}></AlbumItem>
         <AlbumItem onPresseAlbum={()=>{navigation.navigate("PlayListOther")}} title={"Mis PlayLists"} imageUri={playList}></AlbumItem>
-        <AlbumItem onPresseAlbum={()=>{navigation.navigate("madeForYou")}} title={"Hecho para ti"} imageUri={madeForYou}></AlbumItem>   
+        <AlbumItem onPresseAlbum={()=>{navigation.navigate("madeForYou",{isSwitchVisibleType:false})}} title={"Hecho para ti"} imageUri={madeForYou}></AlbumItem>   
     </View>
   );
 }
@@ -75,6 +76,7 @@ const styles = StyleSheet.create({
     flexWrap:"wrap",
     justifyContent:"space-around",
     position: "relative",
+    paddingTop:50
   },
   body: {
     flex: 1,

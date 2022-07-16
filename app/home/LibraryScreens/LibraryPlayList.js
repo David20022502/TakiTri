@@ -6,6 +6,7 @@ import { MusicItem } from '../../../src/Items/MusicItem';
 import { getMusics } from '../../../src/services/MusicServices';
 
 export const LibraryPlayLists = () => {
+  global.pageStatus="LibraryPlayLists";
   const[datas,setDatas]=React.useState(null)
 
   React.useEffect(()=>{
