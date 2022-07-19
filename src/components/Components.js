@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View, Dimensions, TextInput, TouchableOpacity } from "react-native";
 import { Button, ButtonGroup, withTheme, Text } from '@rneui/themed';
 import { Icon } from "@rneui/base";
-export const ButtonOwn = ({ onPress, title ,disabled}) => {
+export const ButtonOwn = ({ onPress, title, disabled }) => {
     return (<View style={styles.containerButton}>
         <Button
             buttonStyle={styles.ButtonOwn}
@@ -22,20 +22,21 @@ export const ButtonOwnRegister = ({ onPress, title }) => {
             buttonStyle={styles.ButtonOwnRegister}
             onPress={onPress}
             title={title}
-            titleStyle={[styles.titleStyle,{color:"#12485B"}]}
+            titleStyle={[styles.titleStyle, { color: "#12485B" }]}
         >
 
         </Button>
     </View>
     );
 }
-export const ButtonOwnAddPlayList = ({ onPress, title }) => {
+export const ButtonOwnAddPlayList = ({ onPress, title,disabled }) => {
     return (<View style={{ width: 200 }}>
         <Button
             buttonStyle={styles.ButtonOwn1}
             onPress={onPress}
             title={title}
             titleStyle={styles.titleStyle}
+            disabled={disabled}
         >
 
         </Button>
@@ -91,22 +92,22 @@ export const InputText = ({
 
         />
         {
-            isPassword&& <TouchableOpacity
-            style={styles.percentageText}
-            onPress={changeVisibility}
-          >
-            <IconR />
-          </TouchableOpacity>
+            isPassword && <TouchableOpacity
+                style={styles.percentageText}
+                onPress={changeVisibility}
+            >
+                <IconR />
+            </TouchableOpacity>
         }
         {
-            isDate&&<TouchableOpacity
-            style={styles.percentageText}
-            onPress={changeVisibility}
-          >
-            <IconR />
-          </TouchableOpacity>
+            isDate && <TouchableOpacity
+                style={styles.percentageText}
+                onPress={changeVisibility}
+            >
+                <IconR />
+            </TouchableOpacity>
         }
-       
+
     </View>;
 }
 export const InputTextAdd = ({
@@ -135,7 +136,7 @@ export const InputTextAdd = ({
                 placeholder={placeholder}
                 placeholderTextColor={"#848282"}
                 editable={editable}
-                style={{ fontSize: 16, color: value!=0?"#12485B":"#848282", paddingTop: 5 }}
+                style={{ fontSize: 16, color: value != 0 ? "#12485B" : "#848282", paddingTop: 5 }}
 
             />
         </View>
@@ -155,6 +156,9 @@ export const InputTextInfo = ({
     placeholder,
     editable,
     style,
+    isDate,
+    changeVisibility,
+    IconR
 }) => {
     return <View style={{ flexDirection: "column", }}>
         <View style={styles.fieldSetInfoProfile}>
@@ -174,6 +178,14 @@ export const InputTextInfo = ({
                 color={"#12485B"}
 
             />
+            {
+                isDate && <TouchableOpacity
+                    style={styles.percentageText}
+                    onPress={changeVisibility}
+                >
+                    <IconR />
+                </TouchableOpacity>
+            }
         </View>
         <View style={styles.lineStyle}></View>
     </View>;
@@ -288,15 +300,15 @@ export const InputLookForAlbumMusic = ({
     onChangeText
 }) => {
     return <View>
-        <TextInput 
-        value={value}
-         onChangeText={onChangeText}
-         style={{ color: "#12485B", fontSize: 18,backgroundColor:"white",width:250,height:35,borderRadius:6,paddingLeft:10}}
-         placeholderTextColor="#AAAAAA"
-         placeholderStyle={{ fontFamily: "AnotherFont", borderColor: 'red' }}
-         placeholder="Buscar música"
+        <TextInput
+            value={value}
+            onChangeText={onChangeText}
+            style={{ color: "#12485B", fontSize: 18, backgroundColor: "#D9D9D9", width: 250, height: 35, borderRadius: 6, paddingLeft: 10 }}
+            placeholderTextColor="#AAAAAA"
+            placeholderStyle={{ fontFamily: "AnotherFont", borderColor: 'red' }}
+            placeholder="Buscar música"
         >
-            
+
         </TextInput>
     </View>
         ;
@@ -314,10 +326,10 @@ const styles = StyleSheet.create({
         alignItems: "center"
 
     },
-    percentageText:{
-        position:"absolute",
-        top:10,
-        right:20
+    percentageText: {
+        position: "absolute",
+        top: 10,
+        right: 20
     },
     fieldSetInfoProfile: {
         paddingHorizontal: 10,
@@ -348,7 +360,7 @@ const styles = StyleSheet.create({
         borderColor: "#83C8EA",
         height: 50,
         marginBottom: 20,
-        flexDirection:"row",
+        flexDirection: "row",
 
     },
     fieldSetAdd: {
@@ -390,8 +402,8 @@ const styles = StyleSheet.create({
 
     },
     containerButtonRegister: {
-        borderWidth:2,
-        borderColor:"#12485B",
+        borderWidth: 2,
+        borderColor: "#12485B",
         borderRadius: 15,
     },
     ButtonOwnRegister: {

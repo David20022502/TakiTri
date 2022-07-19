@@ -1,10 +1,10 @@
 import { StyleSheet, TouchableOpacity, View, TextInput } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { useTheme, Text } from 'react-native-paper'
-import * as styles from '../../assets/styles/appStyles'
+//import * as styles from '../../assets/styles/appStyles'
 import Feather from 'react-native-vector-icons/Feather'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import { Avatar } from '@rneui/themed'
+import { Avatar, Icon } from '@rneui/themed'
 import {
   launchImageLibraryAsync,
   MediaTypeOptions,
@@ -15,24 +15,38 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { ButtonOwn, ButtonOwnAddPlayList, InputTextInfo } from '../../src/components/Components'
 import TakiTriContext from '../../context/SecurityContext/TakiTriContext'
 import { getMessage } from '../../src/components/Messages'
+import DatePicker from 'react-native-date-picker'
+import { validateName } from '../../src/services/Validations'
 
 export const ProfileScreen = () => {
   global.pageStatus = "ProfileScreen";
-  const { userTakiTri, handleLoading, handleUpdateUser, handlePaddingSnackBar,handleError } = React.useContext(TakiTriContext)
+  const { userTakiTri, handleLoading, handleUpdateUser, handlePaddingSnackBar, handleError } = React.useContext(TakiTriContext)
   const [imageUser, setImageUser] = React.useState(userTakiTri.imageUser);
   const [nameUser, setNameUser] = React.useState(userTakiTri.names);
   const [lastNameUser, setLastNameUser] = React.useState(userTakiTri.lastName);
   const [birthDate, setBirhDate] = React.useState(userTakiTri.birthDate);
   const [email, setEmail] = React.useState(userTakiTri.user);
   const [userImageUrl, setUserImageUrl] = React.useState(null);
+  const [isNotErrorStyleImputTextname, setIsNotErrorStyleImputTextname] = React.useState(true);
+  const [errorTextImputMessagename, setErrorTextImputMessagename] = React.useState("");
+  const [isNotErrorStyleImputlastname, setIsNotErrorStyleImputTextlastname] = React.useState(true);
+  const [errorTextImputMessagelastname, setErrorTextImputMessagelastname] = React.useState("");
+  const [isNotErrorStyleImputTextdate, setIsNotErrorStyleImputTextdate] = React.useState(true);
+  const [errorTextImputMessagedate, setErrorTextImputMessagedate] = React.useState("");
+  const [open, setOpen] = React.useState(false)
+  const [isButtonDisbled, setIsButtonDisabled] = React.useState(true);
+
+  //const [birthdate, setBirthdate] = useState(new Date());
+  const [initBirthdate, setInitBirthdate] = useState(new Date());
+
   React.useEffect(() => {
     console.log("userTakiTri", userTakiTri)
     handlePaddingSnackBar(5);
     console.log("----------------------- dentro de profile");
   }, []);
-  React.useEffect(async() => {
+  React.useEffect(async () => {
     if (userImageUrl) {
-      try{
+      try {
         const values = {
           "birthDate": birthDate,
           "id": userTakiTri.id,
@@ -44,14 +58,22 @@ export const ProfileScreen = () => {
         await handleUpdateUser(values);
         handleLoading(false)
         handleError("Se ha actualizado su perfíl correctamente", "green");
-      }catch(e){
+      } catch (e) {
         handleError(getMessage("*"), "red");
       }
-     
-      
+
+
 
     }
   }, [userImageUrl]);
+  React.useEffect(()=>{
+    if(isNotErrorStyleImputTextname&&isNotErrorStyleImputTextdate&&isNotErrorStyleImputlastname){
+        setIsButtonDisabled(false);
+    }else{
+        setIsButtonDisabled(true);
+    }
+},[isNotErrorStyleImputTextname,isNotErrorStyleImputTextdate,isNotErrorStyleImputlastname])
+
   const chooseFile = async () => {
     let options = {
       mediaTypes: MediaTypeOptions.Images,
@@ -73,12 +95,12 @@ export const ProfileScreen = () => {
     if (imageUser != null) {
       handleLoading(true)
       uploadFile();
-    }else{
+    } else {
     }
 
   }
   const uploadFile = async () => {
-    try{
+    try {
       const blob = await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.onload = function () {
@@ -91,26 +113,26 @@ export const ProfileScreen = () => {
         xhr.open("GET", imageUser, true);
         xhr.send(null);
       });
-  
+
       const storage = getStorage();
       const fileStorage = ref(
         storage,
         "ProfileImagesAvatars/" + userTakiTri.id + ".jpg"
       );
       const uploadResult = await uploadBytes(fileStorage, blob);
-  
+
       blob.close();
-  
+
       const url = await getDownloadURL(fileStorage);
       setUserImageUrl(url);
       console.log("url--", url)
       global.urlProfile = url;
-    }catch(e){
+    } catch (e) {
       handleLoading(false)
       handleError(getMessage("*"), "red");
 
     }
-   
+
   };
   return (
     <View style={{ flex: 1, marginHorizontal: 20 }}>
@@ -158,23 +180,51 @@ export const ProfileScreen = () => {
       <View style={{ width: "100%", marginVertical: 10 }}>
         <InputTextInfo
           text={"Nombres"}
-          editable={false}
+          editable={true}
           placeholder={"xxxx xxxx"}
           value={nameUser}
-          onChangeText={setNameUser}
+          onChangeText={(e)=>{
+           // e=e.trim();
+            let validation = validateName(e);
+            if (validation.resultValidation) {
+            
+              setNameUser(e);
+                
+            }
+            console.log(validation);
+            setErrorTextImputMessagename(validation.message)
+            setIsNotErrorStyleImputTextname(validation.Result)
+            
+          }}
         >
         </InputTextInfo>
       </View>
+      {isNotErrorStyleImputTextname == false && (
+        <Text style={styles.errorStyleImputText}>{errorTextImputMessagename}</Text>
+      )}
       <View style={{ width: "100%", marginVertical: 10 }}>
         <InputTextInfo
           text={"Apelllidos"}
           placeholder={"xxxx xxxx "}
           value={lastNameUser}
-          editable={false}
-          onChangeText={setLastNameUser}
+          editable={true}
+          onChangeText={(e)=>{
+            let validation = validateName(e);
+            if (validation.resultValidation) {
+              setLastNameUser(e);
+            }
+            console.log(validation);
+            setErrorTextImputMessagelastname(validation.message)
+            setIsNotErrorStyleImputTextlastname(validation.Result)
+            
+          }}
         >
         </InputTextInfo>
       </View>
+      {isNotErrorStyleImputlastname == false && (
+        <Text style={styles.errorStyleImputText}>{errorTextImputMessagelastname}</Text>
+      )}
+
 
       <View style={{ width: "100%", marginVertical: 10 }}>
         <InputTextInfo
@@ -193,16 +243,77 @@ export const ProfileScreen = () => {
           value={birthDate}
           onChangeText={setBirhDate}
           editable={false}
+          isDate={true}
+
+          changeVisibility={() => { setOpen(!open) }}
+          IconR={() => { return (<Icon name="date" type="fontisto" color={"#AAAAAA"} />) }}
+
         >
         </InputTextInfo>
       </View>
+
+      {isNotErrorStyleImputTextdate == false && (
+        <Text style={styles.errorStyleImputText}>{errorTextImputMessagedate}</Text>
+      )}
+
+
       <View style={{ marginVertical: 30, width: "100%", flexDirection: "row", justifyContent: "center" }}>
         <ButtonOwnAddPlayList
           title={"Actualizar"}
           onPress={() => { onSubmit() }}
+          disabled={isButtonDisbled}
         >
         </ButtonOwnAddPlayList>
       </View>
+
+      <DatePicker
+        modal
+        open={open}
+        mode="date"
+        date={new Date(birthDate)}
+        onConfirm={(date) => {
+          console.log("-----")
+          setOpen(false)
+          let currentDate = initBirthdate
+          console.log("current date",Date.parse(currentDate))
+          console.log(" date",Date.parse(date))
+
+          if (Date.parse(date) <= Date.parse(currentDate)) {
+            
+            console.log("no es mayor")
+            setIsNotErrorStyleImputTextdate(true);
+            setErrorTextImputMessagedate("");
+          } else {
+            console.log("si es mayor")
+            setIsNotErrorStyleImputTextdate(false);
+            setErrorTextImputMessagedate("La fecha no puede ser mayor a la fecha actual");
+          }
+          console.log("date", date)
+          console.log("current date", currentDate)
+          date = date.toJSON();
+          let tempDat = date.split("T");
+          tempDat = tempDat[0].split("-");
+          tempDat[0] = parseInt(tempDat[0])
+          tempDat[1] = parseInt(tempDat[1])
+          tempDat[2] = parseInt(tempDat[2])
+          tempDat[2] = tempDat[2];
+          let dateD = tempDat[0] + "/" + tempDat[1] + "/" + tempDat[2];
+          setBirhDate(dateD)
+        }}
+        onCancel={() => {
+          setOpen(false)
+        }}
+      />
     </View>
   )
 }
+
+
+const styles = StyleSheet.create({
+  errorStyleImputText: {
+    color: "red",
+    top: -10,
+    marginLeft: 20,
+    fontSize: 11,
+  },
+})

@@ -1,6 +1,7 @@
 import { Icon } from '@rneui/themed';
 import * as React from 'react';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList, BackHandler } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList, BackHandler, Dimensions } from 'react-native';
+import HomeContext from '../../context/HomeContext/HomeContext';
 import { InputLookForAlbumMusic } from '../../src/components/Components';
 import { AlbumItem } from '../../src/Items/AlbumItem';
 import { getAlbumes } from '../../src/services/MusicServices';
@@ -8,16 +9,24 @@ import { getAlbumes } from '../../src/services/MusicServices';
 
 export const MadeForYou = ({ onPresseAlbum, navigation }) => {
   global.pageStatus = "MadeForYou";
+  const { loadAlbumAll,albumAll  } = React.useContext(HomeContext)
+
   const [albumes, setAlbumes] = React.useState([]);
   const [isLookingFor, setIslookingFor] = React.useState(false)
   const [textLookFor, setTextLookFor] = React.useState("")
   const [datasLookFor, setDatasLookFor] = React.useState(null)
+  const [datasOrderAlbum, setDatasOrderAlbum] = React.useState([]);
   let isLookingForRef = React.useRef(false);
+  let maxNumberToSearch = React.useRef(11);
 
   React.useEffect(() => {
-    getAlbumes(setAlbumes);
+    getAlbumes(setAlbumes, null, maxNumberToSearch.current);
     const backAction = () => {
-      navigation.popToTop();
+      if (isLookingForRef.current == true) {
+        setIslookingFor(false)
+      } else {
+        navigation.popToTop();
+      }
       return true;
     };
     const backHandler = BackHandler.addEventListener(
@@ -26,6 +35,14 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
     );
     return () => backHandler.remove();
   }, [])
+  React.useEffect(() => {
+    // console.log("datasLookFor", datasLookFor);
+  }, [datasLookFor])
+  React.useEffect(() => {
+    if (albumes.length > 0) {
+      handleOrderAlbum();
+    }
+  }, [albumes])
   React.useEffect(() => {
     isLookingForRef.current = isLookingFor;
     if (!isLookingFor) {
@@ -41,52 +58,55 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
     }
 
   }, [textLookFor])
+  const handleOrderAlbum = () => {
+    let tempAlbumOriginal = [];
+    for (let i = 0; i < albumAll.length; i++) {
+      let tempdata = albumAll[i];
+      for (let j = 0; j < tempdata.length; j++) {
+        tempAlbumOriginal.push(tempdata[j])
+      }
+    }
+    setDatasOrderAlbum(tempAlbumOriginal);
+  }
   const lookForAlbum = () => {
     if (textLookFor.length > 0) {
-      let tempAlbumOriginal = [];
-      for (let i = 0; i < albumes.length; i++) {
-        let tempdata = albumes[i];
-        for (let j = 0; j < tempdata.length; j++) {
-          tempAlbumOriginal.push(tempdata[j])
+      let textLook = textLookFor.trim();
+      const datasTempResult = [];
+      for (let i = 0; i < datasOrderAlbum.length; i++) {
+        let item = datasOrderAlbum[i];
+        if (item.genre_name && item.author) {
+          let NOMBRE = item.genre_name;
+          let AUTOR = item.author;
+          let NAME = item.name;
+          if (NOMBRE.toLowerCase().includes(textLook.toLowerCase()) ||
+            AUTOR.toLowerCase().includes(textLook.toLowerCase()) ||
+            NAME.toLowerCase().includes(textLook.toLowerCase())
+          ) {
+            datasTempResult.push(datasOrderAlbum[i]);
+          }
         }
       }
-      //let albumes=tempAlbumOriginal;
-      let tempAlbumesOrder = [];
-      console.log("totl de albumes", tempAlbumOriginal.length - 1);
-      for (let i = 0; i < tempAlbumOriginal.length; i++) {
-        let item = tempAlbumOriginal[i];
-        const NOMBRE = item.genre_name;
-        const AUTOR = item.author;
+      const resultData = [];
+      for (let i = 0; i < datasTempResult.length; i++) {
         let itemAlbum = [];
         if (i % 2 == 0) {
-
-
-          itemAlbum.push(tempAlbumOriginal[i]);
-
-
-          if (i + 1 < tempAlbumOriginal.length) {
-            if (NOMBRE.toLowerCase().includes(textLookFor.toLowerCase()) ||
-              AUTOR.toLowerCase().includes(textLookFor.toLowerCase())) {
-              itemAlbum.push(tempAlbumOriginal[i + 1]);
-            }
-
+          itemAlbum.push(datasTempResult[i]);
+          if (i + 1 < datasTempResult.length) {
+            itemAlbum.push(datasTempResult[i + 1]);
           }
-          if (NOMBRE.toLowerCase().includes(textLookFor.toLowerCase()) ||
-            AUTOR.toLowerCase().includes(textLookFor.toLowerCase())) {
-            itemAlbum.push(tempAlbumOriginal[i + 1]);
-          }
-          tempAlbumesOrder.push(itemAlbum);
-
+          resultData.push(itemAlbum);
         }
 
       }
-      //  resfreshFn(tempAlbumesOrder)
-      setDatasLookFor(tempAlbumesOrder);
+      setDatasLookFor(resultData)
+
+      //console.log("resultado:---", resultData);
     } else {
       setDatasLookFor(null)
     }
   }
   const renderItemMusic = (item) => {
+
     if (item.item.length > 1) {
       return (
         <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 5 }}>
@@ -105,11 +125,18 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
     }
 
   }
+  const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+    const paddingToBottom = 0;
+   
+
+    return layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom;
+  };
   return (
-    <View style={{ flex: 1,position:"relative" }}>
+    <View style={{ flex: 1, position: "relative" }}>
       <View style={{ position: "absolute", top: 10, left: 20 }}>
 
-        <Icon name="back" size={30} type="ant-design" color="black" onPress={() => { navigation.goBack()}} />
+        <Icon name="back" size={30} type="ant-design" color="black" onPress={() => { navigation.goBack() }} />
 
 
       </View>
@@ -128,46 +155,64 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
 
           </View>
           {
-            isLookingFor ? <>
+            isLookingFor ? <View style={{ width: Dimensions.get("window").width, flexDirection: "row", justifyContent: "flex-end", marginBottom: 10 }}>
               <InputLookForAlbumMusic
-                onChangeText={setTextLookFor}
+                onChangeText={(e) => { setTextLookFor(e) }}
                 value={textLookFor}
               >
 
               </InputLookForAlbumMusic>
-              <View style={{ width: 30, marginRight: 50 }}>
-                <Icon name="search" size={30} color="#12485B" onPress={() => { }} />
+              <View style={{ width: 30, marginRight: 50, marginLeft: 10, marginBottom: 10 }}>
+                <Icon name="search" size={30} color="#12485B" onPress={() => { lookForAlbum() }} />
               </View>
-            </> : <>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
+            </View>
 
+              : <View style={{ width: Dimensions.get("window").width, flexDirection: "row", justifyContent: "flex-end", marginBottom: 10 }}>
+
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+
+                </View>
+                <View style={{ width: 30, marginRight: 50, marginLeft: 10, marginBottom: 10 }}>
+                  <Icon name="search" size={30} color="#12485B" onPress={() => { setIslookingFor(true) }} />
+                </View>
               </View>
-              <View style={{ width: 30, marginRight: 50 }}>
-                <Icon name="search" size={30} color="#12485B" onPress={() => { setIslookingFor(!isLookingFor) }} />
-              </View>
-            </>
           }
 
 
         </View>
         <View style={styles.scrollViewMusic}>
           {
-            /* (datasLookFor ) ? <FlatList
-               data={datasLookFor}
-               renderItem={(item) => renderItemMusic(item)}
-               key={item => item.id}
-             /> : albumes.length > 0 && <FlatList
-               data={albumes}
-               renderItem={(item) => renderItemMusic(item)}
-               key={item => item.id}
-             />*/
-            <FlatList
+            (datasLookFor) ? <FlatList
+              contentContainerStyle={{ paddingBottom: 270 }}
+              data={datasLookFor}
+              renderItem={(item) => renderItemMusic(item)}
+              key={item => item.id}
+            /> : albumes.length > 0 && <FlatList
+              contentContainerStyle={{ paddingBottom: 270 }}
+              onScroll={({ nativeEvent }) => {
+                if (isCloseToBottom(nativeEvent)) {
+                  //enableSomeButton();
+                  console.log("ha llegado al fn")
+                  maxNumberToSearch.current= maxNumberToSearch.current+10;
+                  getAlbumes(setAlbumes, null, maxNumberToSearch.current);
+
+                }
+              }}
               data={albumes}
               renderItem={(item) => renderItemMusic(item)}
               key={item => item.id}
             />
-          }
 
+          }
+          {
+            /*
+             <FlatList
+                        data={albumes}
+                        renderItem={(item) => renderItemMusic(item)}
+                        key={item => item.id}
+                      />
+             */
+          }
 
         </View>
       </View>
@@ -225,8 +270,9 @@ const styles = StyleSheet.create({
     paddingLeft: 10
   },
   scrollViewMusic: {
-    paddingBottom: 100,
+    paddingBottom: 0,
     paddingHorizontal: 5,
-    paddingTop: 0
+    paddingTop: 0,
+
   }
 });

@@ -43,6 +43,7 @@ export const Register = ({ navigation }) => {
     const [resultValidation2, setResultValidation2] = React.useState(false);
     const [isButtonDisbled, setIsButtonDisabled] = React.useState(true);
     const [pwdsValid, setPwdsValid] = React.useState(false);
+    const [initBirthdate, setInitBirthdate] = useState(new Date());
 
     React.useEffect(()=>{
         if(isNotErrorStyleImputTextEmail&&isNotErrorStyleImputTextname&&isNotErrorStyleImputTextdate&&isNotErrorStyleImputlastname&&pwdsValid&&birthdate.length>0){
@@ -262,29 +263,34 @@ export const Register = ({ navigation }) => {
                         modal
                         open={open}
                         mode="date"
-                        date={new Date()}
+                        date={initBirthdate}
                         onConfirm={(date) => {
-                            let d=new Date();
-                            let year=d.getFullYear();
-                            let month=d.getMonth()+1;
-                            let day=d.getDate();
                             setOpen(false)
-                            console.log("date",date)
-                            date=date.toJSON();
-                            let tempDat=date.split("T");
-                            tempDat=tempDat[0].split("-");
-                            if(parseInt(tempDat[0])>year||parseInt(tempDat[1])>month||parseInt(tempDat[2])>day){
-                                console.log("si es mayor")
-                                setIsNotErrorStyleImputTextdate(false);
-                                setErrorTextImputMessagedate("La fecha no puede ser mayor a la fecha actual");
-                            }else{
-                                console.log("no es mayor")
-                                setIsNotErrorStyleImputTextdate(true);
-                                setErrorTextImputMessagedate("");
-                          
+                            let currentDate = initBirthdate
+                            console.log("current date",Date.parse(currentDate))
+                            console.log(" date",Date.parse(date))
+                  
+                            if (Date.parse(date) <= Date.parse(currentDate)) {
+                              
+                              console.log("no es mayor")
+                              setIsNotErrorStyleImputTextdate(true);
+                              setErrorTextImputMessagedate("");
+                            } else {
+                              console.log("si es mayor")
+                              setIsNotErrorStyleImputTextdate(false);
+                              setErrorTextImputMessagedate("La fecha no puede ser mayor a la fecha actual");
                             }
-                            let dateD=tempDat[0]+"/"+tempDat[1]+"/"+tempDat[2];
+                            console.log("date", date)
+                            date = date.toJSON();
+                            let tempDat = date.split("T");
+                            tempDat = tempDat[0].split("-");
+                            tempDat[0] = parseInt(tempDat[0])
+                            tempDat[1] = parseInt(tempDat[1])
+                            tempDat[2] = parseInt(tempDat[2])
+                            tempDat[2] = tempDat[2];
+                            let dateD = tempDat[0] + "/" + tempDat[1] + "/" + tempDat[2];
                             setBirthdate(dateD)
+                            setInitBirthdate(new Date(dateD));
                         }}
                         onCancel={() => {
                             setOpen(false)

@@ -15,16 +15,19 @@ import madeForYou from "../../assets/images/madeForYou.jpg";
 import HomeContext from '../../context/HomeContext/HomeContext';
 import { createTableDatabase, deleteDataBase, getMaxNumberDataBase, getRecentPlayed } from '../../src/services/DataBase';
 import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
+import { getAlbumes } from '../../src/services/MusicServices';
 
 export const HomeScreen = ({ navigation }) => {
   //const [isSelected, setIsSelected] = React.useState("MainPage");
   global.pageStatus="HomeScreen";
-  const { handleMaxNumberDataBase,audioPlayer,handleMusicPlayed ,musicPlayedList} = React.useContext(HomeContext)
+
+  const { loadAlbumAll,handleMaxNumberDataBase,audioPlayer,handleMusicPlayed ,musicPlayedList} = React.useContext(HomeContext)
   const { userTakiTri } = React.useContext(TakiTriContext);
   const [musicPlayed,setMusicPlayed]=React.useState([]);
   const [maxNumberDataBase,setMaxNumberDataBase]=React.useState([]);
   React.useEffect(()=>{
     fillAppStatus();
+    getAlbumes(loadAlbumAll,null,1000);
   },[])
   React.useEffect(()=>{
     handleMusicPlayed(musicPlayed,musicPlayedList,true);

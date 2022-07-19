@@ -1,5 +1,5 @@
 import { async } from "@firebase/util";
-import { collection, getDocs, getDoc, query, where, doc, setDoc, deleteDoc, addDoc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, getDoc, query, where, doc, setDoc, deleteDoc, addDoc, updateDoc, limit } from "firebase/firestore";
 
 export const getMusics = async (resfreshFn) => {
   const musicsRef = collection(
@@ -15,7 +15,7 @@ export const getMusics = async (resfreshFn) => {
   console.log("canciones", tempMusics)
   resfreshFn(tempMusics)
 }
-export const getAlbumes = async (resfreshFn, userOunerId) => {
+export const getAlbumes = async (resfreshFn, userOunerId,maxNumber) => {
 
   if (userOunerId) {
       const songsAlbumRef = collection(
@@ -48,7 +48,8 @@ export const getAlbumes = async (resfreshFn, userOunerId) => {
         global.db_Firestore,
         "/albums"
       );
-      const querySnapshot = await getDocs(albumRef);
+      const albumsQuery = query(albumRef, limit(maxNumber||11));
+      const querySnapshot = await getDocs(albumsQuery);
       let tempAlbumes = [];
 
       querySnapshot.forEach((doc) => {
@@ -63,7 +64,7 @@ export const getAlbumes = async (resfreshFn, userOunerId) => {
           }
       });
       let tempAlbumesOrder = [];
-      console.log("totl de albumes", tempAlbumes.length - 1);
+      console.log("totl de albumes", tempAlbumes.length );
       for (let i = 0; i < tempAlbumes.length; i++) {
         let itemAlbum = [];
         if (i % 2 == 0) {
@@ -75,6 +76,7 @@ export const getAlbumes = async (resfreshFn, userOunerId) => {
         }
 
       }
+      
       resfreshFn(tempAlbumesOrder)
     }
 
