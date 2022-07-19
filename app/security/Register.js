@@ -46,7 +46,13 @@ export const Register = ({ navigation }) => {
     const [initBirthdate, setInitBirthdate] = useState(new Date());
 
     React.useEffect(()=>{
-        if(isNotErrorStyleImputTextEmail&&isNotErrorStyleImputTextname&&isNotErrorStyleImputTextdate&&isNotErrorStyleImputlastname&&pwdsValid&&birthdate.length>0){
+        console.log("isNotErrorStyleImputTextEmail",isNotErrorStyleImputTextEmail)
+        console.log("isNotErrorStyleImputTextname",isNotErrorStyleImputTextname)
+        console.log("isNotErrorStyleImputTextdate",isNotErrorStyleImputTextdate)
+        console.log("isNotErrorStyleImputlastname",isNotErrorStyleImputlastname)
+        console.log("pwdsValid",pwdsValid)
+
+        if(isNotErrorStyleImputTextEmail&&isNotErrorStyleImputTextname&&isNotErrorStyleImputTextdate&&isNotErrorStyleImputlastname&&pwdsValid){
             setIsButtonDisabled(false);
         }else{
             setIsButtonDisabled(true);
