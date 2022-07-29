@@ -1,9 +1,9 @@
 import { getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import React, { useCallback, useMemo, useReducer, useState } from "react";
+import React, { useCallback, useMemo, useReducer, useState,useRef } from "react";
 import { Button } from '@rneui/themed';
 
-import { View, Image, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, Image, StyleSheet, Text, TouchableOpacity, Dimensions } from "react-native";
 import { ActivityIndicator, Modal, Snackbar } from "react-native-paper";
 import disco from "../../assets/images/disco.jpeg";
 import disco1 from "../../assets/images/balada.jpg";
@@ -38,6 +38,9 @@ export const TakiTriStates = ({ children }) => {
   const [message, setMessage] = useState(null);
   const [isInformationVisible, setIsInformationVisible] = useState(false);
   const [itemInformation, setItemInformation] = useState(null);
+  const [toastMessage, setToastMessage] = useState(null);
+  let contador = useRef(0);
+  let timerOut=useRef(null);
 
   React.useEffect(() => {
     if (currentMusic != null) {
@@ -90,8 +93,8 @@ export const TakiTriStates = ({ children }) => {
       });
   }, [])
   const handleUserFirebase = useCallback(async (user) => {
-    global.user_id = user.uid||user.id;
-    const docRef = doc(global.db_Firestore, "users", user.uid||user.id);
+    global.user_id = user.uid || user.id;
+    const docRef = doc(global.db_Firestore, "users", user.uid || user.id);
     const docSnap = await getDoc(docRef);
     console.log("usuario firestore", docSnap.data())
     dispatch({ type: LOAD_TAKITRI_USER, payload: docSnap.data() })
@@ -129,6 +132,7 @@ export const TakiTriStates = ({ children }) => {
 
       dispatch({ type: LOAD_TAKITRI_USER, payload: val })
       handleIsAutenticated(false);
+      handleDestroyAllSnackBar();
     }).catch((error) => {
       console.log("error al salir de la sesion")
     });
@@ -252,6 +256,7 @@ export const TakiTriStates = ({ children }) => {
     setCurrentPlayList(currentPlayList);
     setIsPlayingSoundInside(isPlaying);
   }, [])
+
   const playMusic = useCallback(async (audioPlayer, currentMusic, music) => {
     Sound.setCategory('Playback');
     if (music.id != currentMusic.id) {
@@ -311,12 +316,45 @@ export const TakiTriStates = ({ children }) => {
   }
   const onDismissSnackBar = () => setMessage(null);
 
+  const initTimer=()=>{
+    timerOut.current= setInterval(handleVisibleToast,1000);
+  }
+  const clearTimeOut=()=>{
+    clearInterval(timerOut.current);
+  }
+  const clearFunctions=()=>{
+    clearTimeOut();
+    contador.current=0;
+  }
+  const handleMessageToast=useCallback((message)=>{
+    try{
+      clearFunctions();
+    }catch(e){
+
+    }
+    initTimer();
+    setToastMessage(message);
+  },[])
+  
+  const handleVisibleToast=()=>{
+    contador.current=contador.current+1;
+    if(contador.current>=2){
+      setToastMessage(null);
+      try{
+        clearFunctions();
+      }catch(e){
+
+      }
+    }
+  }
+
   return <TakiTriContext.Provider
     value={{
       userFirebase: state.userFirebase,
       userTakiTri: state.userTakiTri,
       isAutenticated: state.isAutenticated,
       handleShowInformationMusic,
+      handleMessageToast,
       handleLoading,
       handleError,
       handleDestroyAllSnackBar,
@@ -384,7 +422,7 @@ export const TakiTriStates = ({ children }) => {
       backgroundColor: 'transparent',
       elevation: 0
     }}>
-      <ActivityIndicator size={80} />
+      <ActivityIndicator size={80} color="#12485B" />
     </Modal>
     <Modal visible={isInformationVisible} style={{
       backgroundColor: 'transparent',
@@ -396,13 +434,14 @@ export const TakiTriStates = ({ children }) => {
     }}
     >
       <View style={styles.modalInside}>
+        {/* 
         <Image
           source={{ uri: itemInformation ? itemInformation.imageURL : "" }}
           style={{ width: "100%", height: "100%", position: "absolute", borderRadius: 20, }}
           resizeMode="cover"
           blurRadius={30}
         >
-        </Image>
+        </Image>*/}
         <Image
           source={{ uri: itemInformation ? itemInformation.imageURL : "" }}
           style={{ width: 150, height: 150, borderRadius: 2, marginBottom: 20 }}
@@ -474,16 +513,16 @@ export const TakiTriStates = ({ children }) => {
         </View>
 
       </View>
-      <View style={{width:50,position:"absolute",top:20,right:20}}>
+      <View style={{ width: 50, position: "absolute", top: 20, right: 20 }}>
         <Button
           title="Ok"
-          titleStyle={{color:"#12485B"}}
+          titleStyle={{ color: "#12485B" }}
           onPress={() => {
             setIsInformationVisible(!isInformationVisible)
             setItemInformation(null);
           }}
-         
-          buttonStyle={{ backgroundColor:"#C4BFBF",borderRadius:20}}
+
+          buttonStyle={{ backgroundColor: "#C4BFBF", borderRadius: 20 }}
         >
 
         </Button>
@@ -508,6 +547,25 @@ export const TakiTriStates = ({ children }) => {
       }}>
       {message}
     </Snackbar>
+    <Snackbar
+      theme={{
+        colors: {
+          accent: '#F7DD72',
+          surface: 'red'
+        }
+      }}
+      style={{
+        backgroundColor: "transparent",
+        shadowColor:"transparent",
+        marginBottom:200,
+      }}
+      visible={toastMessage!==null}
+      onDismiss={onDismissSnackBar}>
+        <View style={{width:Dimensions.get("window").width-50,flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
+          <Text style={{width:280,height:30,textAlign:"center",paddingTop:3,borderRadius:9,color:"#12485B",fontSize:17,backgroundColor:"#C9C9C9",paddingRight:10}}> {toastMessage}</Text>
+        </View>
+    
+    </Snackbar>
 
   </TakiTriContext.Provider>
 }
@@ -527,7 +585,7 @@ const styles = StyleSheet.create({
     color: "#F0E5E5",
   },
   styleTitleText: {
-    color: "#F3F3F3",
+    color: "#12485B",
 
     fontSize: 15
   },

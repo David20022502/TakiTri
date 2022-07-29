@@ -20,6 +20,7 @@ import {
 import { Icon } from '@rneui/themed';
 import { darkThemText } from '../../constants/Colors';
 import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
+import HomeContext from '../../context/HomeContext/HomeContext';
 
 
 export function DrawerContent(props) {
@@ -27,6 +28,8 @@ export function DrawerContent(props) {
     const paperTheme = useTheme();
 
     const { handleLogOut,userTakiTri,handleDestroySnackBar } = React.useContext(TakiTriContext);
+    
+    const { finishAllMusic } = React.useContext(HomeContext);
 
   
 
@@ -127,7 +130,10 @@ export function DrawerContent(props) {
                     )}
                     labelStyle={{color:darkThemText}}
                     label="Cerrar Sesión"
-                    onPress={() => {handleLogOut()}}
+                    onPress={() => {
+                        handleLogOut()
+                        finishAllMusic()
+                    }}
                 />
             </Drawer.Section>
         </View>

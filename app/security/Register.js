@@ -12,6 +12,7 @@ import { Icon } from "@rneui/base";
 import { validateEmail, validateName, validatePassword, validatePassword1 } from "../../src/services/Validations";
 import DatePicker from 'react-native-date-picker'
 import { Button } from "react-native";
+import imageHeader from "../../assets/images/HeaderLogo.jpg"
 
 export const Register = ({ navigation }) => {
     const { handleLoading, handleError, } = useContext(TakiTriContext)
@@ -76,10 +77,10 @@ export const Register = ({ navigation }) => {
                 console.log("usuario creado credenciales", userCredential);
                 let userTemp = {
                     id: user.uid,
-                    user: userName,
-                    names: names,
-                    lastName: lastName,
-                    birthDate: birthdate,
+                    user: userName.trim(),
+                    names: names.trim(),
+                    lastName: lastName.trim(),
+                    birthDate: birthdate.trim(),
                 }
                 createUserDatabases(userTemp);
                 // ...
@@ -97,17 +98,35 @@ export const Register = ({ navigation }) => {
                 console.log("mensaje obtenido", data)
             });
     }
+    const verifyDate=(date)=>{
+        let date1 = parseInt(date);
+        let d= new Date();
+        let yearcurrent=d.getFullYear();
+        let tempDate=parseInt(yearcurrent)-date1;
+        if(tempDate>=18 && tempDate<=50){
+            return true;
+        }
+        return false;
 
+    }
     return (
 
         <View style={styles.container}>
-            <StatusBar backgroundColor='#FDFDFD'></StatusBar>
-            <ScrollView>
-                <View>
-                    <Text style={styles.title}>
+            <StatusBar backgroundColor='#20DACA'></StatusBar>
+            <View style={{position:"relative"}}>
+                <Image
+                    source={imageHeader}
+                    style={{ width: Dimensions.get("window").width+20, height: 180, marginTop: 20,marginLeft:-20 }}
+                >
+                </Image>
+                <View style={{position:"absolute",marginHorizontal:0,top:25}}>
+                        <Text style={styles.title}>
                         Se parte de nuestra comunidad
-                    </Text>
-                </View>
+                        </Text>
+                    </View>
+            </View>
+            <ScrollView>
+               
                 <View style={styles.containerImputs} >
                     <View style={{ flexDirection: "column", height: 80 }}>
                         <InputText
@@ -272,7 +291,8 @@ export const Register = ({ navigation }) => {
                         date={initBirthdate}
                         onConfirm={(date) => {
                             setOpen(false)
-                            let currentDate = initBirthdate
+                            ///let currentDate = initBirthdate
+                            let currentDate = new Date();
                             console.log("current date",Date.parse(currentDate))
                             console.log(" date",Date.parse(date))
                   
@@ -295,8 +315,20 @@ export const Register = ({ navigation }) => {
                             tempDat[2] = parseInt(tempDat[2])
                             tempDat[2] = tempDat[2];
                             let dateD = tempDat[0] + "/" + tempDat[1] + "/" + tempDat[2];
+                            let verify=verifyDate(tempDat[0]);
                             setBirthdate(dateD)
                             setInitBirthdate(new Date(dateD));
+                            if(verify){
+                                setBirthdate(dateD)
+                                setInitBirthdate(new Date(dateD));
+                            }else{
+                                setBirthdate(dateD)
+                                setInitBirthdate(new Date(dateD));
+                                setIsNotErrorStyleImputTextdate(false);
+                                setErrorTextImputMessagedate("Solo para edades de 18 a 50 años");
+                            
+                            }
+                           
                         }}
                         onCancel={() => {
                             setOpen(false)

@@ -18,8 +18,8 @@ export const Login = ({ navigation }) => {
 
     const onSubmit = () => {
         const user = {
-            email: userName,
-            password: password
+            email: userName.trim(),
+            password: password.trim()
         }
         singInWithEmailPassword(user);
     }

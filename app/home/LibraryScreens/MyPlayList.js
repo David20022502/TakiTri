@@ -121,7 +121,15 @@ export const MyPlayList = ({ navigation }) => {
             <View styles={styles.containerMain}>
                 <View style={{ position: "absolute", top: 10, left: 20 }}>
 
-                    <Icon name="back" size={30} type="ant-design" color="black" onPress={() => { navigation.goBack() }} />
+                    <Icon name="back" size={30} type="ant-design" color="black" onPress={() => { 
+                        if(navigation.canGoBack()){
+                            navigation.goBack() 
+                        }else{
+                            navigation.navigate("HomeScreen")
+                        }
+                       
+                       
+                        }} />
 
 
                 </View>

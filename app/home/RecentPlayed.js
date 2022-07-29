@@ -75,7 +75,7 @@ export const RecentPlayed = () => {
     const renderItemMusic = (item) => {
         return (<MusicItem music={item.item} playList={musicsList} ></MusicItem>);
     }
-    return <View style={{ flex: 1,position:"relative" }}>
+    return <View style={{ flex: 1, position: "relative",        }}>
         <View style={{ position: "absolute", top: 10, left: 20 }}>
 
             <Icon name="back" size={30} type="ant-design" color="black" onPress={() => { navigation.navigate("HomeScreen") }} />
@@ -85,9 +85,16 @@ export const RecentPlayed = () => {
         <Text style={styles.styleTextTitle}>
             Tus últimas reproducciones
         </Text>
+        <View style={styles.conatinerTitleHeaderItem1}>
+            <Text style={styles.textSubTitleItem}>
+                Todas las caciones escuchadas en los ultimos momentos
+            </Text>
+
+        </View>
         <View style={styles.scrollViewMusic}>
 
             <FlatList
+                contentContainerStyle={{ paddingBottom: 200 }}
                 data={musicsList}
                 renderItem={(item) => renderItemMusic(item)}
                 key={item => item.id}
@@ -102,14 +109,25 @@ const styles = StyleSheet.create({
     },
     styleTextTitle: {
         color: "#AAAAAA",
-        fontSize: 20,
+        fontSize: 25,
         width: "100%",
         textAlign: "center",
-        marginVertical: 25
+        marginTop: 40,
     },
     containerItemsFinal: {
         flexDirection: "column",
         flex: 1,
+    },
+    textSubTitleItem: {
+        fontStyle: "normal",
+        textAlign: "center",
+        fontSize: 14,
+        color: "#12485B",
+        textShadowColor: 'rgba(0, 0, 0, 0.25)',
+        textShadowOffset: { width: 0, height: 2 },
+        textShadowRadius: 4,
+        height: 40,
+        marginTop: 5
     },
     conatinerTitleHeaderItem: {
         marginTop: 10,
@@ -127,6 +145,15 @@ const styles = StyleSheet.create({
         textShadowRadius: 4,
         width: 200,
     },
+    conatinerTitleHeaderItem1: {
+        marginTop: 0,
+        flexDirection: "row",
+        justifyContent: "center",
+        paddingHorizontal: 20,
+        position: "relative",
+        height: 65,
+        marginBottom: 10
+    },
     styleAlbumType: {
 
         fontStyle: "normal",
@@ -140,7 +167,9 @@ const styles = StyleSheet.create({
         paddingLeft: 10
     },
     scrollViewMusic: {
-        paddingBottom: 150,
-        paddingLeft: 10
+        flex:1,
+        paddingBottom: 0,
+        paddingLeft: 10,
+        backgroundColor: "#AAAAAA",
     }
 });

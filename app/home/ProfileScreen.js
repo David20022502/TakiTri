@@ -179,7 +179,7 @@ export const ProfileScreen = () => {
 
       <View style={{ width: "100%", marginVertical: 10 }}>
         <InputTextInfo
-          text={"Nombres"}
+          text={"Nombres:"}
           editable={true}
           placeholder={"xxxx xxxx"}
           value={nameUser}
@@ -204,7 +204,7 @@ export const ProfileScreen = () => {
       )}
       <View style={{ width: "100%", marginVertical: 10 }}>
         <InputTextInfo
-          text={"Apelllidos"}
+          text={"Apelllidos:"}
           placeholder={"xxxx xxxx "}
           value={lastNameUser}
           editable={true}
@@ -228,7 +228,7 @@ export const ProfileScreen = () => {
 
       <View style={{ width: "100%", marginVertical: 10 }}>
         <InputTextInfo
-          text={"Correo"}
+          text={"Correo:"}
           value={email}
           editable={false}
           onChangeText={setEmail}
@@ -238,7 +238,7 @@ export const ProfileScreen = () => {
       </View>
       <View style={{ width: "100%", marginVertical: 10 }}>
         <InputTextInfo
-          text={"Fecha de Nacimiento"}
+          text={"Fecha de Nacimiento:"}
           placeholder={"xxxx xxxx "}
           value={birthDate}
           onChangeText={setBirhDate}

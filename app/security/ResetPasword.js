@@ -5,77 +5,96 @@ import { StatusBar } from 'expo-status-bar';
 import { ButtonOwn, Indicator, InputText } from "../../src/components/Components";
 import logo from "../../assets/images/logo.jpg";
 import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
+import imageHeader from "../../assets/images/HeaderLogo.jpg"
 
 export const ResetPasword = ({ navigation }) => {
     const { handleSendEmailPasswordReeset } = useContext(TakiTriContext)
-    const [emailUser,setEmailUser]=React.useState("");
+    const [emailUser, setEmailUser] = React.useState("");
     const handleSendEmailPasswordReset = () => {
-        handleSendEmailPasswordReeset(emailUser);
+        handleSendEmailPasswordReeset(emailUser.trim());
     }
     return (
 
         <View style={styles.container}>
-                         <StatusBar backgroundColor='#FDFDFD'></StatusBar>
-
-            <ScrollView>
-                <View style={styles.conatinerHeader}>
+            <StatusBar backgroundColor='#20DACA'></StatusBar>
+            <View style={{ position: "relative" ,height:400}}>
+                <Image
+                    source={imageHeader}
+                    style={{ width: Dimensions.get("window").width + 20, height: 180, marginTop: 20, marginLeft: -20 }}
+                >
+                </Image>
+                <View style={{ position: "absolute", marginHorizontal: 0, top: 100,right:Dimensions.get("window").width/5 }}>
                     <Image
                         source={logo}
-                        style={{ width: 150, height: 150 }}
+                        style={{ width: 150, height: 150,marginLeft:30}}
                     >
                     </Image>
                     <Text style={styles.title}>
                         Reestablecer Contraseña
                     </Text>
                 </View>
-                <View style={styles.containerImputs} >
-                    <InputText
-                        placeholder={"ejemplo123@gmail.com"}
-                        text={"Correo electrónico"}
-                        value={emailUser}
-                        onChangeText={setEmailUser}
-                    >
-                    </InputText>
+            </View>
+            <View style={styles.container2}>
+                <ScrollView>
 
-
-                    <View style={styles.containerButton} >
-                        <ButtonOwn
-                            title={"Enviar Código"}
-                            onPress={() => { handleSendEmailPasswordReset(); }}
+                    <View style={styles.containerImputs} >
+                        <InputText
+                            placeholder={"ejemplo123@gmail.com"}
+                            text={"Correo electrónico"}
+                            value={emailUser}
+                            onChangeText={setEmailUser}
+                            colorT={"white"}
                         >
+                        </InputText>
 
-                        </ButtonOwn>
+
+                        <View style={styles.containerButton} >
+                            <ButtonOwn
+                                title={"Enviar Código"}
+                                onPress={() => { handleSendEmailPasswordReset(); }}
+                            >
+
+                            </ButtonOwn>
+                        </View>
+
                     </View>
+                    <View style={styles.containerLine}>
+                        <View style={styles.lineStyle}>
+                        </View>
 
-                </View>
-                <View style={styles.containerLine}>
-                    <View style={styles.lineStyle}>
+
                     </View>
-
-
-                </View>
-                <View style={styles.containerOptions}>
-                    <Text style={[styles.optionsStyleText, { color: "#9E9E9E", marginRight: 10 }]}>
-                        Ya tienes una cuenta?
-                    </Text>
-                    <TouchableOpacity
-                        onPress={() => { navigation.navigate("login") }}
-                    >
-                        <Text style={styles.optionsStyleText}>
-                            Iniciar Sesión
+                    <View style={styles.containerOptions}>
+                        <Text style={[styles.optionsStyleText, { color: "#9E9E9E", marginRight: 10 }]}>
+                            Ya tienes una cuenta?
                         </Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => { navigation.navigate("login") }}
+                        >
+                            <Text style={styles.optionsStyleText}>
+                                Iniciar Sesión
+                            </Text>
+                        </TouchableOpacity>
 
 
 
-                </View>
-            </ScrollView>
+                    </View>
+                </ScrollView>
+            </View>
+
         </View>
 
     );
 }
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
+        backgroundColor: '#FDFDFD',
+        flexDirection: "column",
+        justifyContent: 'center',
+        position: "relative",
+    },
+    container2: {
         flex: 1,
         backgroundColor: '#FDFDFD',
         flexDirection: "column",

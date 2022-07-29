@@ -74,10 +74,11 @@ export const InputText = ({
     changeVisibility,
     IconR,
     showDate,
-    isDate
+    isDate,
+    colorT
 }) => {
     return <View style={styles.fieldSet}>
-        <Text style={styles.legend}>{text}</Text>
+        <Text style={colorT?[styles.legend,{backgroundColor:colorT}]:styles.legend}>{text}</Text>
         <TextInput
             keyboardType={keyboardType}
             onChangeText={onChangeText}

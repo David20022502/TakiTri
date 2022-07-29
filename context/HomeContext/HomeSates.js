@@ -62,6 +62,11 @@ export const HomeStates = ({ children }) => {
     
     dispatch({ type: UPDATE_PLAYED_MUSIC, payload: musicListTemp })
   }, []);
+  const finishAllMusic=()=>{
+    if(state.audioPlayer){
+      state.audioPlayer.stop();
+    }
+  }
   const playMusic = useCallback(async (audioPlayer, currentMusic, music, playList) => {
     if (audioPlayer == null) {
       await TrackPlayer.setupPlayer()
@@ -216,6 +221,7 @@ export const HomeStates = ({ children }) => {
       isUpdatingStateAlbum:state.isUpdatingStateAlbum,
       albumAll:state.albumAll,
       loadAlbumAll,
+      finishAllMusic,
       handleIsUpdatingAlbum,
       handleMaxNumberDataBase,
       handleSnackBarElement,

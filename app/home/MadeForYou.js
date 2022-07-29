@@ -150,7 +150,7 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
           </View>
           <View style={styles.conatinerTitleHeaderItem}>
             <Text style={styles.textSubTitleItem}>
-              Todas los Álbumes y PlayLists lo encuentras en esta sección
+              Todos los Álbumes y PlayLists lo encuentras en esta sección
             </Text>
 
           </View>

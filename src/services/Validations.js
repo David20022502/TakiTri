@@ -131,7 +131,7 @@ export const validateName = (value) => {
             Response.message = "Debe ingresar solo letras";
             return Response;
         } else {
-            if(value.startsWith(" ")||value.endsWith(" ")){
+            /*if(value.startsWith(" ")||value.endsWith(" ")){
                 Response.Result = false;
                 Response.resultValidation = true;
                 Response.message = "No debe ingresar espacios al inicio y al final";
@@ -141,7 +141,11 @@ export const validateName = (value) => {
                 Response.resultValidation = true;
                 Response.message = "Nombre correcto";
                 return Response;
-            }
+            }*/
+            Response.Result = true;
+                Response.resultValidation = true;
+                Response.message = "Nombre correcto";
+                return Response;
            
         }
     } else {
@@ -315,7 +319,7 @@ const validateEmailDomains = (ValueEmail) => {
         }
     }
     if (tempArrayDuplicate.length === 0) {
-        if(ValueEmail.startsWith(" ")||ValueEmail.endsWith(" ")){
+       /* if(ValueEmail.startsWith(" ")||ValueEmail.endsWith(" ")){
             Response.Result = false;
             Response.resultValidation = true;
             Response.message = "No debe ingresar espacios al inicio y al final";
@@ -325,7 +329,11 @@ const validateEmailDomains = (ValueEmail) => {
             Response.resultValidation = true;
             Response.message = "Email Correcto";
             return Response;
-        }
+        }*/
+        Response.Result = true;
+        Response.resultValidation = true;
+        Response.message = "Email Correcto";
+        return Response;
        
     } else {
         alert("Ingrese un email correcto");

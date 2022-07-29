@@ -11,7 +11,7 @@ import { useState } from "react";
 export const MusicItem = ({ music, playList }) => {
 
     const { playMusic, audioPlayer, currentMusic,likedSongsList,loadLikedMusics} = useContext(HomeContext)
-    const {handleShowInformationMusic,handleShowSnackBar,handleDestroyAllSnackBar} = useContext(TakiTriContext)
+    const {handleMessageToast,handleShowInformationMusic,handleShowSnackBar,handleDestroyAllSnackBar} = useContext(TakiTriContext)
     const [isLiked,setIsliked]=useState(false);
     useEffect(()=>{
         if(likedSongsList.includes(music.id)){
@@ -28,8 +28,10 @@ export const MusicItem = ({ music, playList }) => {
     }
     const handleLike=()=>{
         if(!isLiked){
+            handleMessageToast("Canción agregada a favoritos");
             putLikedSong(music.id,loadLikedMusics);
         }else{
+            handleMessageToast("Canción eliminada de favoritos");
             deleteLikedSong(music.id,loadLikedMusics);
         }
        
