@@ -216,10 +216,12 @@ export const AlbumRender = (props) => {
                     <View style={{ paddingBottom: 40 }}>
                         {
                             datasLookFor ? <FlatList
+                            contentContainerStyle={{ paddingBottom: 200 }}
                                 data={datasLookFor}
                                 renderItem={(item) => renderItemMusic(item)}
                                 key={item => item.id}
                             /> : <FlatList
+                            contentContainerStyle={{ paddingBottom: 200 }}
                                 data={datas}
                                 renderItem={(item) => renderItemMusic(item)}
                                 key={item => item.id}

@@ -15,6 +15,9 @@ export const getMusics = async (resfreshFn) => {
   console.log("canciones", tempMusics)
   resfreshFn(tempMusics)
 }
+export const getPlayLists=async(resfreshFn, userOunerId)=>{
+
+}
 export const getAlbumes = async (resfreshFn, userOunerId,maxNumber) => {
 
   if (userOunerId) {

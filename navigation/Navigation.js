@@ -13,26 +13,51 @@ import { ResetPasword } from '../app/security/ResetPasword';
 import { HomeStates } from '../context/HomeContext/HomeSates';
 import TakiTriContext from '../context/SecurityContext/TakiTriContext';
 import { WaitPage } from '../src/components/WaitPage';
+import { createTableDatabaseChecker, getChecker } from '../src/services/DataBase';
+import { openDatabase } from "expo-sqlite";
 
 const Stack = createNativeStackNavigator();
 const StackAutenticated = createNativeStackNavigator();
 
 
 export const Navigation = () => {
-    const { isAutenticated, currentAutenticatedUser, handleLoading } = useContext(TakiTriContext)
+    const { isFirstTimeUsing, handleCheckerAppFirstTime, isAutenticated, currentAutenticatedUser, handleLoading } = useContext(TakiTriContext)
     React.useEffect(() => {
         //currentAutenticatedUser();
-        setTimeout(currentAutenticatedUser, 1000)
+        setTimeout(currentAutenticatedUser, 1000);
+        console.log("iniciando checker")
     }, [])
+    React.useEffect(()=>{
+        console.log("cambianod iisFirstTimeUsing",isFirstTimeUsing)
+    },[isFirstTimeUsing])
     React.useEffect(() => {
 
         handleLoading(false);
-
+        fillAppChecker();
     }, [isAutenticated])
+    const fillAppChecker = async() => {
+        if (global.dbStatusChecker == null) {
+    
+          global.dbStatusChecker = openDatabase("checkerapp");
+        }
+
+        console.log("inciando cretae checker")
+         await createTableDatabaseChecker();
+         await getChecker(handleCheckerAppFirstTime);
+
+      };
+    const CheckFirstTime = () => {
+        return <>
+            { 
+            isFirstTimeUsing==false?<UnAtenticatedUserFirstTime></UnAtenticatedUserFirstTime>:<UnAtenticatedUserUsing></UnAtenticatedUserUsing>
+            }
+    
+        </>
+    }
     return (
         <HomeStates>
             {
-                isAutenticated === null ? <WaitPage></WaitPage> : isAutenticated == true ? <AtenticatedUser /> : <UnAtenticatedUser />
+                (isAutenticated === null || isFirstTimeUsing === null) ? <WaitPage></WaitPage> : isAutenticated == true ? <AtenticatedUser /> : <CheckFirstTime />
             }
             {
                 //isAutenticated === true ? <AtenticatedUser /> : <UnAtenticatedUser />
@@ -41,7 +66,8 @@ export const Navigation = () => {
         </HomeStates>
     );
 }
-const UnAtenticatedUser = () => {
+
+const UnAtenticatedUserFirstTime = () => {
     return (
         <Stack.Navigator initialRouteName='firstSplash'>
             <Stack.Screen name="firstSplash"
@@ -53,6 +79,29 @@ const UnAtenticatedUser = () => {
                 component={SecondSplash}
                 options={{ headerShown: false }}
             />
+            <Stack.Screen name="login"
+                component={Login}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="register"
+                component={Register}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="ResetPasword"
+                component={ResetPasword}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="ConfirmPassword"
+                component={ConfirmPassword}
+                options={{ headerShown: false }}
+            />
+        </Stack.Navigator>
+    );
+}
+const UnAtenticatedUserUsing = () => {
+    return (
+        <Stack.Navigator initialRouteName='login'>
+
             <Stack.Screen name="login"
                 component={Login}
                 options={{ headerShown: false }}

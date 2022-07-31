@@ -1,6 +1,6 @@
 import { getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import React, { useCallback, useMemo, useReducer, useState,useRef } from "react";
+import React, { useCallback, useMemo, useReducer, useState, useRef } from "react";
 import { Button } from '@rneui/themed';
 
 import { View, Image, StyleSheet, Text, TouchableOpacity, Dimensions } from "react-native";
@@ -11,7 +11,7 @@ import Sound from 'react-native-sound';
 
 import TakiTriContext from "./TakiTriContext";
 import { TakiTriReducer } from "./TakiTriReducer";
-import { IS_AUTENTICATED, LOADING_END, LOADING_START, LOAD_FIREBASE_USER, LOAD_TAKITRI_USER, SHOW_INFORMATION_SONG } from "./TakiTriTypes";
+import { IS_AUTENTICATED, LOADING_END, LOADING_START, LOAD_FIREBASE_USER, LOAD_TAKITRI_USER, SHOW_INFORMATION_SONG, UPDATE_IS_FIRSTTIME } from "./TakiTriTypes";
 import { Icon } from "@rneui/base";
 import { getMessage } from "../../src/components/Messages";
 
@@ -23,7 +23,8 @@ export const TakiTriStates = ({ children }) => {
       userTakiTri: null,
       isAutenticated: null,
       isLoading: false,
-      informationVisible: null
+      informationVisible: null,
+      isFirstTimeUsing: null
     }),
     []
   );
@@ -40,7 +41,7 @@ export const TakiTriStates = ({ children }) => {
   const [itemInformation, setItemInformation] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
   let contador = useRef(0);
-  let timerOut=useRef(null);
+  let timerOut = useRef(null);
 
   React.useEffect(() => {
     if (currentMusic != null) {
@@ -91,6 +92,9 @@ export const TakiTriStates = ({ children }) => {
         console.log("mensaje obtenido", data)
 
       });
+  }, [])
+  const handleCheckerAppFirstTime = useCallback(async (isFirstTime) => {
+    dispatch({ type: UPDATE_IS_FIRSTTIME, payload: isFirstTime })
   }, [])
   const handleUserFirebase = useCallback(async (user) => {
     global.user_id = user.uid || user.id;
@@ -316,43 +320,45 @@ export const TakiTriStates = ({ children }) => {
   }
   const onDismissSnackBar = () => setMessage(null);
 
-  const initTimer=()=>{
-    timerOut.current= setInterval(handleVisibleToast,1000);
+  const initTimer = () => {
+    timerOut.current = setInterval(handleVisibleToast, 1000);
   }
-  const clearTimeOut=()=>{
+  const clearTimeOut = () => {
     clearInterval(timerOut.current);
   }
-  const clearFunctions=()=>{
+  const clearFunctions = () => {
     clearTimeOut();
-    contador.current=0;
+    contador.current = 0;
   }
-  const handleMessageToast=useCallback((message)=>{
-    try{
+  const handleMessageToast = useCallback((message) => {
+    try {
       clearFunctions();
-    }catch(e){
+    } catch (e) {
 
     }
     initTimer();
     setToastMessage(message);
-  },[])
-  
-  const handleVisibleToast=()=>{
-    contador.current=contador.current+1;
-    if(contador.current>=2){
+  }, [])
+
+  const handleVisibleToast = () => {
+    contador.current = contador.current + 1;
+    if (contador.current >= 2) {
       setToastMessage(null);
-      try{
+      try {
         clearFunctions();
-      }catch(e){
+      } catch (e) {
 
       }
     }
   }
-
+  //  {/* visible={isSnackVisible}*/}
   return <TakiTriContext.Provider
     value={{
       userFirebase: state.userFirebase,
       userTakiTri: state.userTakiTri,
       isAutenticated: state.isAutenticated,
+      isFirstTimeUsing: state.isFirstTimeUsing,
+      handleCheckerAppFirstTime,
       handleShowInformationMusic,
       handleMessageToast,
       handleLoading,
@@ -377,8 +383,9 @@ export const TakiTriStates = ({ children }) => {
           surface: '#FFFFFF'
         }
       }}
+
       visible={isSnackVisible}
-      style={{
+        style={{
         backgroundColor: "#12485B",
         height: 60,
         marginBottom: snackBarPadding,
@@ -393,6 +400,7 @@ export const TakiTriStates = ({ children }) => {
 
         </View>
         <TouchableOpacity
+        onLongPress={()=>{handleDestroyAllSnackBar()}}
           onPress={() => {
             global.navigation.navigate("PlayMusicHome", { audioPlayer: audioPlayer, currentMusic: currentMusic, currentPlayList: currentPlayList })
             handleDestroySnackBar();
@@ -414,8 +422,6 @@ export const TakiTriStates = ({ children }) => {
             </Image>
           </View>
         </TouchableOpacity>
-
-
       </View>
     </Snackbar>
     <Modal visible={state.isLoading} style={{
@@ -556,15 +562,15 @@ export const TakiTriStates = ({ children }) => {
       }}
       style={{
         backgroundColor: "transparent",
-        shadowColor:"transparent",
-        marginBottom:200,
+        shadowColor: "transparent",
+        marginBottom: 200,
       }}
-      visible={toastMessage!==null}
+      visible={toastMessage !== null}
       onDismiss={onDismissSnackBar}>
-        <View style={{width:Dimensions.get("window").width-50,flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
-          <Text style={{width:280,height:30,textAlign:"center",paddingTop:3,borderRadius:9,color:"#12485B",fontSize:17,backgroundColor:"#C9C9C9",paddingRight:10}}> {toastMessage}</Text>
-        </View>
-    
+      <View style={{ width: Dimensions.get("window").width - 50, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ width: 280, height: 30, textAlign: "center", paddingTop: 3, borderRadius: 9, color: "#12485B", fontSize: 17, backgroundColor: "#C9C9C9", paddingRight: 10 }}> {toastMessage}</Text>
+      </View>
+
     </Snackbar>
 
   </TakiTriContext.Provider>

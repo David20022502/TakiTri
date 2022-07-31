@@ -8,6 +8,7 @@ import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
 import { ModalInfoError } from "../components/ModalInfoError"
 import imageHeader from "../../assets/images/HeaderLogo.jpg"
 import { Icon } from "@rneui/base";
+import { insertDataBaseChecker } from "../../src/services/DataBase";
 export const Login = ({ navigation }) => {
     const { singInWithEmailPassword } = useContext(TakiTriContext)
     const [userName, setUserName] = useState("");
@@ -15,7 +16,12 @@ export const Login = ({ navigation }) => {
     const [messageError, setMessageError] = useState("");
     const [modalErrorVisible, setmodalErrorVisible] = useState(false);
     const [isPwdVisible, setIsPwdVisible] = useState(true);
+    React.useEffect(()=>{
+        if( global.dbStatusChecker){
+            insertDataBaseChecker(1,"TRUE")
 
+        }
+    },[])
     const onSubmit = () => {
         const user = {
             email: userName.trim(),

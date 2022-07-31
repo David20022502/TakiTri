@@ -16,6 +16,9 @@ import {
 } from 'react-native-paper';
 import TakiTriContext from './context/SecurityContext/TakiTriContext';
 import { TakiTriStates } from './context/SecurityContext/TakiTriStates';
+import { createTableDatabaseChecker } from './src/services/DataBase';
+import { openDatabase } from "expo-sqlite";
+
 function getDimensions() {
   let d = Dimensions.get("window").width;
   let result = d - 208;
@@ -23,9 +26,19 @@ function getDimensions() {
 }
 export default function App() {
   React.useEffect(() => {
+    
     getDimensions();
     firebaseinitializeApp();
+    //fillAppChecker();
   }, [])
+  const fillAppChecker = () => {
+    if (global.dbStatusChecker == null) {
+
+      global.dbStatusChecker = openDatabase("checkerapp");
+    }
+    console.log("inciando cretae checker")
+     createTableDatabaseChecker();
+  };
   const CustomDarkTheme = {
     ...PaperDarkTheme,
     colors: {

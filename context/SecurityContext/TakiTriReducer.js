@@ -1,25 +1,25 @@
-import { IS_AUTENTICATED, LOADING_END, LOADING_START, LOAD_FIREBASE_USER, LOAD_TAKITRI_USER } from "./TakiTriTypes";
+import { IS_AUTENTICATED, LOADING_END, LOADING_START, LOAD_FIREBASE_USER, LOAD_TAKITRI_USER, UPDATE_IS_FIRSTTIME } from "./TakiTriTypes";
 
-export const TakiTriReducer=(state, action)=>{
-    const {payload, type} = action;
-    switch(type){
-        
-        case LOAD_FIREBASE_USER:{
-            return{
+export const TakiTriReducer = (state, action) => {
+    const { payload, type } = action;
+    switch (type) {
+
+        case LOAD_FIREBASE_USER: {
+            return {
                 ...state,
-                userFirebase:payload
+                userFirebase: payload
             }
         }
-        case LOAD_TAKITRI_USER:{
-            return{
+        case LOAD_TAKITRI_USER: {
+            return {
                 ...state,
-                userTakiTri:payload
+                userTakiTri: payload
             }
         }
-        case IS_AUTENTICATED:{
-            return{
+        case IS_AUTENTICATED: {
+            return {
                 ...state,
-                isAutenticated:payload
+                isAutenticated: payload
             }
         }
         case LOADING_START:
@@ -33,5 +33,11 @@ export const TakiTriReducer=(state, action)=>{
                 ...state,
                 isLoading: false
             };
+        case UPDATE_IS_FIRSTTIME:
+            return {
+                ...state,
+                isFirstTimeUsing: payload
+            };
+            
     }
 }
