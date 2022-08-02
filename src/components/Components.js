@@ -235,8 +235,8 @@ export const InputLookFor = ({
             placeholderStyle={{ fontFamily: "AnotherFont", borderColor: 'red' }}
         />
         <TouchableOpacity>
-            <View style={{ height: 30 }}>
-                <Icon name="microphone" size={30} type={"font-awesome"} color={"#7DDAFF"} />
+            <View style={{ height: 30, width:30}}>
+                
             </View>
         </TouchableOpacity>
 
@@ -269,8 +269,8 @@ export const InputAddLookFor = ({
             placeholderStyle={{ fontFamily: "AnotherFont", borderColor: 'red' }}
         />
         <TouchableOpacity>
-            <View style={{ height: 30 }}>
-                <Icon name="microphone" size={30} type={"font-awesome"} color={"#7DDAFF"} />
+            <View style={{ height: 30,height:30 }}>
+              
             </View>
         </TouchableOpacity>
 
@@ -298,7 +298,8 @@ export const SwitchCase = ({
 }
 export const InputLookForAlbumMusic = ({
     value,
-    onChangeText
+    onChangeText,
+    valueText
 }) => {
     return <View>
         <TextInput
@@ -307,7 +308,7 @@ export const InputLookForAlbumMusic = ({
             style={{ color: "#12485B", fontSize: 18, backgroundColor: "#D9D9D9", width: 250, height: 35, borderRadius: 6, paddingLeft: 10 }}
             placeholderTextColor="#AAAAAA"
             placeholderStyle={{ fontFamily: "AnotherFont", borderColor: 'red' }}
-            placeholder="Buscar música"
+            placeholder={valueText}
         >
 
         </TextInput>
@@ -394,6 +395,8 @@ const styles = StyleSheet.create({
     containerButton: {
         backgroundColor: "#20DACA",
         borderRadius: 15,
+        width: 293,
+        height: 45,
     },
     ButtonOwn: {
         backgroundColor: "#20DACA",
@@ -406,6 +409,8 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#12485B",
         borderRadius: 15,
+        width: 289,
+
     },
     ButtonOwnRegister: {
         backgroundColor: "transparent",

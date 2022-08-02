@@ -2,70 +2,77 @@ import { Icon } from '@rneui/themed';
 import * as React from 'react';
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions, Image, BackHandler } from 'react-native';
 import { MusicItem } from '../../src/Items/MusicItem';
-import { getLikedSongById, getMusics, getSongsByAlbum, handleUpdateStateAlbum } from '../../src/services/MusicServices';
-import disco from "../../assets/images/disco.jpeg";
+import { getAlbumes, getLikedSongById, getMusics, getSongsByAlbum, handleUpdateStateAlbum } from '../../src/services/MusicServices';
+import favoritesIm from "../../assets/images/favoritesIm.jpeg";
 import HomeContext from '../../context/HomeContext/HomeContext';
 import { StatusBar } from 'expo-status-bar';
+import favoritosImg from "../../assets/images/favoritosImg.png";
+
 import { Button } from '@rneui/base';
 import { InputLookForAlbumMusic, SwitchCase } from '../../src/components/Components';
 import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
 export const AlbumRender = (props) => {
-    
-    global.pageStatus="AlbumRender";
+
+    global.pageStatus = "AlbumRender";
 
     let { itemAlbum } = props.route.params;
     let { typeAlbum } = props.route.params;
-    let  isSwitchVisibleType;
-    try{
-          isSwitchVisibleType  = props.route.params.isSwitchVisibleType;
-    }catch(e){
-        isSwitchVisibleType=false
+    let isSwitchVisibleType;
+    try {
+        isSwitchVisibleType = props.route.params.isSwitchVisibleType;
+    } catch (e) {
+        isSwitchVisibleType = false
     }
 
     const { navigation } = props;
-    
-    
-    const [datas, setDatas] = React.useState([])
-    const {handleShowSnackBar,handlePaddingSnackBar} = React.useContext(TakiTriContext)
-    const { handleIsToUpdatePlayList } =React.useContext(HomeContext);
 
+
+    const [datas, setDatas] = React.useState([])
+    const { handleShowSnackBar, handlePaddingSnackBar } = React.useContext(TakiTriContext)
+    const { loadAlbumAll, handleIsToUpdatePlayList } = React.useContext(HomeContext);
     const [datasLookFor, setDatasLookFor] = React.useState(null)
     const [switchValue, setValueSwith] = React.useState(false)
     const [textLookFor, setTextLookFor] = React.useState("")
     const [isSwitchVisible, setIsSwitchVisible] = React.useState(false)
-    
+
     const [playListOwner, setPlayListOwner] = React.useState("")
 
-    const [isLookingFor, setIslookingFor] = React.useState(false)
+    const [isLookingFor, setIslookingFor] = React.useState(itemAlbum.state ? false : true)
     const { likedSongsList } = React.useContext(HomeContext)
     let isLookingForRef = React.useRef(false);
     React.useEffect(() => {
-        if(itemAlbum.state){
+        if (itemAlbum.state) {
             //setIsSwitchVisible(true)
-            setValueSwith(itemAlbum.state=="PUBLIC"?true:false);
+            setValueSwith(itemAlbum.state == "PUBLIC" ? true : false);
         }
-        if(isSwitchVisibleType){
+        if (isSwitchVisibleType) {
             setIsSwitchVisible(true)
-            let name=itemAlbum.author;
-            
-            console.log("****",itemAlbum)
+            let name = itemAlbum.author;
+
             name = name.split(" ");
-            console.log("names antes--",name)
-            setPlayListOwner(name[0]+" "+name[1])
+            setPlayListOwner(name[0] + " " + name[1])
         }
         handlePaddingSnackBar(5);
         const backAction = () => {
-            console.log("navigation", navigation.canGoBack())
             if (navigation.canGoBack()) {
-                if (isLookingForRef.current) {
-                    setIslookingFor(false);
+                if (itemAlbum.state) {
+                    if (isLookingForRef.current) {
+                        setIslookingFor(false);
+                    } else {
+                        if (itemAlbum.state) {
+                            handleIsToUpdatePlayList(true);
+                        }
+                        navigation.goBack();
+                        handlePaddingSnackBar(54);
+                    }
                 } else {
-                    if(itemAlbum.state){
+                    if (itemAlbum.state) {
                         handleIsToUpdatePlayList(true);
                     }
                     navigation.goBack();
                     handlePaddingSnackBar(54);
                 }
+
 
             } else {
                 BackHandler.exitApp();
@@ -81,17 +88,26 @@ export const AlbumRender = (props) => {
 
         return () => backHandler.remove();
     }, [])
-    React.useEffect(()=>{
-        console.log("album item",itemAlbum)
-        if(itemAlbum.state){
+    React.useEffect(async () => {
+        if (itemAlbum.state) {
             //setValueSwith(itemAlbum.state=="PUBLIC"?true:false);
-            if(switchValue){
-                handleUpdateStateAlbum("PUBLIC",itemAlbum.id);
-            }else{
-                handleUpdateStateAlbum("PRIVATE",itemAlbum.id);
+            if (switchValue) {
+                await handleUpdateStateAlbum("PUBLIC", itemAlbum.id);
+                await handleIsToUpdatePlayList(true);
+
+                await getAlbumes(loadAlbumAll, 1000);
+
+            } else {
+                await handleUpdateStateAlbum("PRIVATE", itemAlbum.id);
+                await handleIsToUpdatePlayList(true);
+                await getAlbumes(loadAlbumAll,1000);
+
+
+                //await getAlbumes(loadAlbumAll, 1000);
+
             }
         }
-    },[switchValue])
+    }, [switchValue])
 
     React.useEffect(() => {
         switch (typeAlbum) {
@@ -109,7 +125,7 @@ export const AlbumRender = (props) => {
     }, [likedSongsList])
     React.useEffect(() => {
         isLookingForRef.current = isLookingFor;
-        if(!isLookingFor){
+        if (!isLookingFor) {
             setDatasLookFor(null);
             setTextLookFor("");
         }
@@ -125,6 +141,31 @@ export const AlbumRender = (props) => {
     const renderItemMusic = (item) => {
         return (<MusicItem music={item.item} playList={datas} ></MusicItem>);
     }
+    const EmptyPlayList = () => {
+        console.log("vacio fav")
+        return (<View
+            style={{ flexDirection: "column", justifyContent: "center", alignItems: "center" }}
+        >
+            <Text
+                style={{ color: "#F3F3F3", fontSize: 20, marginHorizontal: 20, textAlign: "center" }}
+            >{
+                    itemAlbum.name == "Favoritos" ? "Por el momento no tienes ninguna canción que te guste" : "Álbum sin canciónes"
+                }
+            </Text>
+        </View>);
+    }
+    const NotFound = () => {
+        console.log("vacio fav")
+        return (<View
+            style={{ flexDirection: "column", justifyContent: "center", alignItems: "center" }}
+        >
+            <Text
+                style={{ color: "#F3F3F3", fontSize: 20, marginHorizontal: 20, textAlign: "center" }}
+            >
+                Sin resultados...
+            </Text>
+        </View>);
+    }
     const lookForMusic = () => {
 
         let tempSongsAlbum = [];
@@ -134,11 +175,7 @@ export const AlbumRender = (props) => {
                 const NOMBRE = item.song_name;
                 const AUTOR = item.author;
                 //console.log(NOMBRE,GENERO,AUTOR);
-                if (item.id == "7uxRJlaFVdpPUmB63qQ2") {
-                    console.log("cancion encontrada", item)
-                } else {
-                    console.log("cancion no encontrada")
-                }
+
                 if (NOMBRE.toLowerCase().includes(textLookFor.toLowerCase()) ||
                     AUTOR.toLowerCase().includes(textLookFor.toLowerCase())) {
                     tempSongsAlbum.push(item);
@@ -155,21 +192,29 @@ export const AlbumRender = (props) => {
             <View style={styles.containerItemsFinal}>
                 <View style={styles.conatinerTitleHeaderItem}>
                     <View>
-                        <Image
-                            source={{ uri: itemAlbum.imageURL }}
-                            style={{ width: 180, height: 130, borderRadius: 2 }}
-                        >
-                        </Image>
+                        {
+                            itemAlbum.name == "Favoritos" ? <Image
+                                source={favoritosImg }
+                                style={{ width: 180, height: 150, borderRadius: 2 }}
+                            >
+                            </Image> : <Image
+                                source={{ uri: itemAlbum.imageURL }}
+                                style={{ width: 180, height: 150, borderRadius: 2 }}
+                            >
+                            </Image>
+                            
+                        }
+                       
 
                     </View>
                     <Text style={styles.styleAlbumTitle}>{itemAlbum.name}</Text>
                     <Text style={styles.styleAlbumType}>{
-                    itemAlbum.state==undefined?"Álbum":"PlayList por "+playListOwner
+                        itemAlbum.state == undefined ? "Álbum" : "PlayList por " + playListOwner
                     }</Text>
 
                     <View style={{ position: "absolute", top: 40, left: 20 }}>
 
-                        <Icon name="back" size={30} type="ant-design" color="black" onPress={() => { navigation.goBack();  handlePaddingSnackBar(54); }} />
+                        <Icon name="back" size={30} type="ant-design" color="black" onPress={() => { navigation.goBack(); handlePaddingSnackBar(54); }} />
 
 
                     </View>
@@ -181,13 +226,14 @@ export const AlbumRender = (props) => {
                                 <InputLookForAlbumMusic
                                     onChangeText={setTextLookFor}
                                     value={textLookFor}
+                                    valueText={"Buscar música"}
                                 >
 
                                 </InputLookForAlbumMusic>
                                 <View style={{ width: 30, marginRight: 50 }}>
                                     <Icon name="search" size={30} color="#12485B" onPress={() => { }} />
                                 </View>
-                            </> : isSwitchVisible?<>
+                            </> : isSwitchVisible ? <>
                                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                                     <SwitchCase
                                         active={switchValue}
@@ -200,9 +246,9 @@ export const AlbumRender = (props) => {
                                 <View style={{ width: 30, marginRight: 50 }}>
                                     <Icon name="search" size={30} color="#12485B" onPress={() => { setIslookingFor(!isLookingFor) }} />
                                 </View>
-                            </>:<>
+                            </> : <>
                                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                    
+
                                 </View>
                                 <View style={{ width: 30, marginRight: 50 }}>
                                     <Icon name="search" size={30} color="#12485B" onPress={() => { setIslookingFor(!isLookingFor) }} />
@@ -216,16 +262,20 @@ export const AlbumRender = (props) => {
                     <View style={{ paddingBottom: 40 }}>
                         {
                             datasLookFor ? <FlatList
-                            contentContainerStyle={{ paddingBottom: 200 }}
+                                contentContainerStyle={{ paddingBottom: 200 }}
                                 data={datasLookFor}
                                 renderItem={(item) => renderItemMusic(item)}
                                 key={item => item.id}
                             /> : <FlatList
-                            contentContainerStyle={{ paddingBottom: 200 }}
+                                contentContainerStyle={{ paddingBottom: 200 }}
                                 data={datas}
                                 renderItem={(item) => renderItemMusic(item)}
                                 key={item => item.id}
                             />
+                        }
+                        {
+                            
+                            (datasLookFor && datasLookFor.length <= 0) ?<NotFound></NotFound>:(datas && datas.length <= 0) && <EmptyPlayList></EmptyPlayList>
                         }
 
 
@@ -234,7 +284,9 @@ export const AlbumRender = (props) => {
 
 
             </View>
-            <View style={{ width: 200, position: "absolute", top: 240, left: (Dimensions.get("window").width / 3) - 10 }}>
+            {
+                /*
+ <View style={{ width: 200, position: "absolute", top: 240, left: (Dimensions.get("window").width / 3) - 10 }}>
 
                 <Button
                     buttonStyle={styles.ButtonOwn1}
@@ -245,6 +297,9 @@ export const AlbumRender = (props) => {
 
                 </Button>
             </View>
+                 */
+            }
+
         </View>
     );
 }

@@ -159,7 +159,10 @@ export const AddPlayList = (props) => {
             mediaTypes: MediaTypeOptions.Images,
         };
         let response = await launchImageLibraryAsync(options);
-        setImageUser(response.uri);
+        if(response.cancelled==false){
+            setImageUser(response.uri);
+
+        }
     };
 
     const lettersName = (nameBasic, surnameBasic) => {
@@ -184,18 +187,18 @@ export const AddPlayList = (props) => {
                 handleLoading(true);
                 if (imageUser != null) {
                     checkUpdateCreate.current = "CREATING";
-
                     uploadFile();
 
                 } else {
                     handleLoading(false);
-                    handleError(getMessage("*"), "red");
+                    handleError(getMessage("select_image"), "red");
                 }
 
 
             }
         }
     }
+    
     const uploadFile = async () => {
         try {
             const blob = await new Promise((resolve, reject) => {

@@ -10,4 +10,11 @@ const data ={
     "auth/too-many-requests":"Ha realizados varios intentos, espere unos minutos y vuelva a intentarlo",
     "min3musics":"Debe incluir mínimo tres canciones",
     "dataRequired":"Ingrese los campos requeridos",
+    "select_image":"Seleccione una imágen",
+    "emailRequired":"Ingrese su email",
+    "passwordRequired":"Ingrese su contraseña",
+    "credentialsRequired":"Ingrese sus credenciales",
+    "nameRequired":"Ingrese su nombre",
+    "lastNameReuired":"Ingrese su apellido",
+    "authRequired":"Necesita iniciar sesión para poder realizar esta acción"
 }

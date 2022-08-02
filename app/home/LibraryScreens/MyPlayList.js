@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { FAB } from "@rneui/base";
 import { FloatingAction } from "react-native-floating-action";
 
@@ -8,7 +8,7 @@ import { Alert, BackHandler, Dimensions, FlatList, StyleSheet, Text, TouchableOp
 import HomeContext from "../../../context/HomeContext/HomeContext";
 import TakiTriContext from "../../../context/SecurityContext/TakiTriContext";
 import { AlbumItem } from "../../../src/Items/AlbumItem";
-import { getAlbumes, handleDeletePlayList } from "../../../src/services/MusicServices";
+import { getAlbumes, getPlayLists, handleDeletePlayList } from "../../../src/services/MusicServices";
 export const MyPlayList = ({ navigation }) => {
     global.pageStatus = "MyPlayList";
     const { handlePushPlayListMusicAdded, handleIsToUpdatePlayList, isToUpdatePlayList, isOnLongPress, handleIsonlongPress, selectedList, handleDeleteSelectedList, handleMessageError, handleIsModalErrorVisible } = useContext(HomeContext);
@@ -18,7 +18,8 @@ export const MyPlayList = ({ navigation }) => {
     const [albumes, setAlbumes] = React.useState([]);
     let isOnlongPressItem = React.useRef(false);
     React.useEffect(() => {
-        getAlbumes(setAlbumes, userTakiTri.id);
+        getPlayLists(setAlbumes, userTakiTri.id);
+
         const backAction = () => {
             console.log("datos de onlongs", isOnlongPressItem.current);
             if (!isOnlongPressItem.current) {
@@ -49,10 +50,13 @@ export const MyPlayList = ({ navigation }) => {
     React.useEffect(() => {
         isOnlongPressItem.current = isOnLongPress;
     }, [isOnLongPress])
+    React.useEffect(() => {
+       console.log("albumes--playlist",albumes)
+    }, [albumes])
 
     React.useEffect(() => {
         if (isToUpdatePlayList) {
-            getAlbumes(setAlbumes, userTakiTri.id);
+            getPlayLists(setAlbumes, userTakiTri.id);
             handleIsToUpdatePlayList(false);
         }
 
@@ -101,35 +105,30 @@ export const MyPlayList = ({ navigation }) => {
         handleDeleteSelectedList({}, {}, true);
         handleIsToUpdatePlayList(true);
     }
-    const actions = [
-        {
-            text: "Accessibility",
-            icon: require("../../../assets/images/iconGoogle.jpg"),
-            name: "bt_accessibility",
-            position: 2
-        },
-        {
-            text: "Language",
-            icon: require("../../../assets/images/iconGoogle.jpg"),
-            name: "bt_language",
-            position: 1
-        }
 
-    ];
+    const EmptyPlayList = () => {
+        return (<View
+            style={{  flexDirection: "column", justifyContent: "center", alignItems: "center",height:Dimensions.get("window").height-200}}
+        >
+            <Text
+                style={{ color: "#AAAAAA", fontSize: 20, marginHorizontal: 20, textAlign: "center" }}
+            >Por el momento no tienes ninguna playList, puedes crearlo ya!</Text>
+        </View>);
+    }
     return (
         <>
             <View styles={styles.containerMain}>
                 <View style={{ position: "absolute", top: 10, left: 20 }}>
 
-                    <Icon name="back" size={30} type="ant-design" color="black" onPress={() => { 
-                        if(navigation.canGoBack()){
-                            navigation.goBack() 
-                        }else{
+                    <Icon name="back" size={30} type="ant-design" color="black" onPress={() => {
+                        if (navigation.canGoBack()) {
+                            navigation.goBack()
+                        } else {
                             navigation.navigate("HomeScreen")
                         }
-                       
-                       
-                        }} />
+
+
+                    }} />
 
 
                 </View>
@@ -139,17 +138,19 @@ export const MyPlayList = ({ navigation }) => {
                             Tus PlayLists
                         </Text>
                     </View>
-
-                    <View style={styles.scrollViewMusic}>
-                        {
-                            albumes.length > 0 && <FlatList
-                                data={albumes}
-                                renderItem={(item) => renderItemMusic(item)}
-                                key={item => item.id}
-                            />
-                        }
-
-                    </View>
+                    {
+                         albumes.length > 0? <View style={styles.scrollViewMusic}>
+                         {
+                             <FlatList
+                                 data={albumes}
+                                 renderItem={(item) => renderItemMusic(item)}
+                                 key={item => item.id}
+                             /> 
+                         }
+ 
+                     </View>:<EmptyPlayList></EmptyPlayList>
+                    }
+                   
                 </View>
 
 

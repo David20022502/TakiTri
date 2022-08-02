@@ -8,35 +8,47 @@ import { deleteFromDatabeMusic, getMaxNumberDataBase, insertHistoryMusicDataBase
 import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
 
 export const PlayMusicHome = (props) => {
-  
+
   const { navigation } = props;
-  const {handleSnackBarElement, handleMaxNumberDataBase, maxNumberDataBase, handleMusicPlayed, musicListenedNow, audioPlayer, currentMusic, isPlayingSound, playMusic, currentPlayList, likedSongsList, loadLikedMusics } = useContext(HomeContext)
+  let isPlayingSnackBar = null;
+  try {
+    isPlayingSnackBar = props.route.params.isPlayingSnackBar;
+
+  } catch (e) {
+    isPlayingSnackBar = null;
+  }
+
+
+  const { handleSnackBarElement, handleMaxNumberDataBase, maxNumberDataBase, handleMusicPlayed, musicListenedNow, audioPlayer, currentMusic, isPlayingSound, playMusic, currentPlayList, likedSongsList, loadLikedMusics } = useContext(HomeContext)
   const [progresBar, setProgresBar] = React.useState(0);
-  const { handleShowSnackBar, handlePaddingSnackBar,handleShowInformationMusic } = useContext(TakiTriContext)
-  const [isPlayingSoundInside, setIsPlayingSoundInside] = React.useState(isPlayingSound);
+  const { handleShowSnackBar, handlePaddingSnackBar, handleShowInformationMusic } = useContext(TakiTriContext)
+  const [isPlayingSoundInside, setIsPlayingSoundInside] = React.useState(false);
   const [progresTime, setProgresTime] = React.useState("00:00");
   const [duration, setDuration] = React.useState("00:00");
   const [isRandom, setIsRandom] = React.useState(false);
   const [isRepeatingButton, setIsRepeatingButton] = React.useState(false);
   const [isLiked, setIsLiked] = React.useState(false);
+  let volumenMusic = useRef(null);
+  const [isMuted, setIsMuted] = React.useState(null);
+
   let currentMusicRef = useRef(null);
   let audioPlayerRef = useRef(null);
   let currentPlayListRef = useRef(null);
   let isRepeating = React.useRef(false)
   let isSliderChanging = React.useRef(false)
   let timeProgresInterval = useRef(null)
+  let currentIsRandom = useRef(false);
   React.useEffect(() => {
     try {
       let audioPlayer = props.route.params.audioPlayer;
       let currentMusic = props.route.params.currentMusic;
       let currentPlayList = props.route.params.currentPlayList;
-   
-      handleSnackBarElement(audioPlayer,currentMusic,currentPlayList);
+      handleSnackBarElement(audioPlayer, currentMusic, currentPlayList);
     } catch (e) {
       console.log(e);
     }
     const backAction = () => {
-     
+
       navigation.goBack();
       showSnackBarPlay();
       return true;
@@ -56,27 +68,61 @@ export const PlayMusicHome = (props) => {
       finsihInterval
     );
     if (timeProgresInterval.current == null) {
-      console.log("inicia uno nuevo")
       initInterval();
     }
     else {
-      console.log("destrye el anterior y crea uno nuevo")
       finsihInterval();
       initInterval();
     }
     audioPlayerRef.current = audioPlayer;
+    if (audioPlayer) {
+      volumenMusic.current = audioPlayer.getVolume();
+      //setIsPlayingSoundInside(audioPlayer.isPlaying());
+    }
   }, [audioPlayer])
   React.useEffect(() => {
     currentPlayListRef.current = currentPlayList;
   }, [currentPlayList])
+  React.useEffect(() => {
+    currentIsRandom.current = isRandom;
+  }, [isRandom])
 
+  React.useEffect(() => {
+    if (isMuted != null) {
+      if (isMuted) {
+        audioPlayer.setVolume(0);
 
+      } else {
+        audioPlayer.setVolume(volumenMusic.current);
+      }
+    }
+  }, [isMuted])
+  React.useEffect(() => {
+
+    if (isPlayingSnackBar != null) {
+
+      setIsPlayingSoundInside(isPlayingSnackBar);
+    } else {
+      if (audioPlayer != null) {
+        if (isPlayingSound) {
+          audioPlayer.play();
+        } else {
+          audioPlayer.pause();
+        }
+      }
+
+      setIsPlayingSoundInside(isPlayingSound);
+
+    }
+
+    isPlayingSnackBar = null;
+  }, [isPlayingSound])
 
   React.useEffect(() => {
     if (currentMusic) {
-      const index = likedSongsList.indexOf(currentMusic.id);
-      console.log("cambia de musica y ver si es favorito", index)
-      if (index > 0) {
+      console.log("liked playList", likedSongsList)
+      const index = likedSongsList.filter(item => item === currentMusic.id);
+      if (index.length > 0) {
         setIsLiked(true)
       } else {
         setIsLiked(false)
@@ -90,15 +136,13 @@ export const PlayMusicHome = (props) => {
     handleShowSnackBar(currentMusicRef.current, audioPlayerRef.current, currentPlayListRef.current, audioPlayerRef.current.isPlaying());
     //handlePaddingSnackBar(5);
   }
-  const loadToHistoryPlayed = () => {
-    console.log("global.user_id", global.user_id);
+  const loadToHistoryPlayed = async () => {
     const date = new Date();
-    const dateFormated = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
+    //const dateFormated = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
     // const currentDate=date.getFullYear()+"/"+(date.getMonth()+1)+"/"+date.getDate()+":"+date.getHours()+"/"+date.getMinutes()+"/"+date.getSeconds();
-    const currentDate = dateFormated.toString();
-    console.log("currentDate", currentDate);
+    let currentDate = date.getTime();
+    currentDate = currentDate + "";
     if (musicListenedNow.length <= 0) {
-      console.log("musica de arreglo listenednow vacio", musicListenedNow);
       let numMax = maxNumberDataBase + 1;
       insertHistoryMusicDataBase(numMax, global.user_id, currentMusic.id, currentDate);
       const value = {
@@ -107,10 +151,9 @@ export const PlayMusicHome = (props) => {
         "user_id": global.user_id,
         "date": currentDate
       }
-      console.log("datos para data base", value);
       if (musicListenedNow.includes(currentMusic.id)) {
-        deleteFromDatabeMusic(currentMusic.id, global.user_id, currentDate);
-        handleMusicPlayed(value, musicListenedNow);
+        await deleteFromDatabeMusic(currentMusic.id, global.user_id, currentDate);
+        await handleMusicPlayed(value, musicListenedNow);
       } else {
         handleMusicPlayed(value, musicListenedNow);
       }
@@ -125,9 +168,7 @@ export const PlayMusicHome = (props) => {
         musicListPlayedMusicId.push(musicListenedNow[i].music_id);
       }
       var numMax = Math.max(...musicListPlayed);
-      console.log("maxNumberDataBase ates de enviarlos", maxNumberDataBase);
       numMax = maxNumberDataBase + 1;
-      console.log("numero maximo", numMax);
       const value = {
         "id_history": numMax,
         "music_id": currentMusic.id,
@@ -135,8 +176,8 @@ export const PlayMusicHome = (props) => {
         "date": currentDate
       }
       if (musicListPlayedMusicId.includes(currentMusic.id)) {
-        deleteFromDatabeMusic(currentMusic.id, global.user_id);
-        handleMusicPlayed(value, musicListenedNow);
+        await deleteFromDatabeMusic(currentMusic.id, global.user_id);
+        await handleMusicPlayed(value, musicListenedNow);
         insertHistoryMusicDataBase(numMax, global.user_id, currentMusic.id, currentDate);
 
       } else {
@@ -161,8 +202,11 @@ export const PlayMusicHome = (props) => {
         }
         if (parseInt(seconds) >= parseInt(audioPlayer.getDuration())) {
           if (isRepeating.current) {
+            audioPlayer.stop();
             audioPlayer.play();
-          } else {
+
+
+          } else if (currentIsRandom.current) {
             onNextMusic();
           }
         }
@@ -187,11 +231,9 @@ export const PlayMusicHome = (props) => {
   }
   const onStartSliderChange = () => {
     isSliderChanging.current = true;
-    console.log("onStart")
 
   }
   const onFinishSliderChange = () => {
-    console.log("onFinish")
     let data = progresBar * audioPlayer.getDuration();
     audioPlayer.setCurrentTime(data)
     isSliderChanging.current = false;
@@ -203,7 +245,7 @@ export const PlayMusicHome = (props) => {
   const conChangeProgresBar = (e) => {
     setProgresBar(e)
   }
-  const onNextMusic = () => {
+  const onNextMusic = async () => {
     let numRandom = calculateRandomMusic();
     let index = 0;
     if (isRandom) {
@@ -215,13 +257,13 @@ export const PlayMusicHome = (props) => {
     let tempCurrentMusic;
     if (index > currentPlayList.length - 1) {
       tempCurrentMusic = currentPlayList[0];
-      console.log("fin de lalista", tempCurrentMusic)
-      playMusic(audioPlayer, currentMusic, tempCurrentMusic, currentPlayList);
+      await playMusic(audioPlayer, currentMusic, tempCurrentMusic, currentPlayList);
     } else {
       tempCurrentMusic = currentPlayList[index];
-      playMusic(audioPlayer, currentMusic, tempCurrentMusic, currentPlayList);
+      await playMusic(audioPlayer, currentMusic, tempCurrentMusic, currentPlayList);
     }
     setIsPlayingSoundInside(true)
+    //await loadToHistoryPlayed();
   }
 
   const onPrevMusic = () => {
@@ -236,7 +278,6 @@ export const PlayMusicHome = (props) => {
     let tempCurrentMusic;
     if (index < 0) {
       tempCurrentMusic = currentPlayList[currentPlayList.length - 1];
-      console.log("fin de lalista", tempCurrentMusic)
       playMusic(audioPlayer, currentMusic, tempCurrentMusic, currentPlayList);
     } else {
       tempCurrentMusic = currentPlayList[index];
@@ -246,19 +287,20 @@ export const PlayMusicHome = (props) => {
   }
   const calculateRandomMusic = () => {
     let numRandom = Math.floor(Math.random() * (currentPlayList.length - 1));
-    console.log("numero randomico", numRandom);
     return numRandom;
 
   }
+
   const handleLikedMusic = () => {
-    const index = likedSongsList.indexOf(currentMusic.id);
-    if (index > 0) {
+    const index = likedSongsList.filter(item => item == currentMusic.id);
+    if (index.length > 0) {
       deleteLikedSong(currentMusic.id, loadLikedMusics);
     } else {
       putLikedSong(currentMusic.id, loadLikedMusics);
     }
 
   }
+
 
   return (
     <>
@@ -286,7 +328,7 @@ export const PlayMusicHome = (props) => {
             <View style={styles.containerImage}>
               <Image
                 source={{ uri: currentMusic.imageURL }}
-                style={{ width: 330, height: 330, borderRadius: 20 }}
+                style={{ width: 300, height: 300, borderRadius: 20 }}
               >
               </Image>
               <View style={{ flexDirection: "row", width: 120, justifyContent: "space-between", paddingTop: 10, marginRight: 10 }}>
@@ -307,105 +349,118 @@ export const PlayMusicHome = (props) => {
 
                 </TouchableOpacity>
                 <TouchableOpacity>
-                  <Icon name="dots-three-vertical" size={25} type="entypo" color={"#FDFDFD"} onPress={()=>{handleShowInformationMusic(currentMusic)}} />
+                  <Icon name="dots-three-vertical" size={25} type="entypo" color={"#FDFDFD"} onPress={() => { handleShowInformationMusic(currentMusic) }} />
 
                 </TouchableOpacity>
               </View>
             </View>
           </View>
-          <View style={styles.containerItemsTitles}>
-            <View style={{ flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-              <Text style={styles.TitleName}>{currentMusic.author}</Text>
-              <Text style={styles.subTitleName}>{currentMusic.song_name}</Text>
-            </View>
-
-          </View>
-          <View style={{ paddingTop: 20, alignItems: 'stretch', justifyContent: 'center' }}>
-
-            <Slider
-              onTouchStart={onStartSliderChange}
-              onTouchEnd={onFinishSliderChange}
-              value={progresBar}
-              onValueChange={conChangeProgresBar}
-              minimumTrackTintColor={"#FFFFFF"}
-              maximumTrackTintColor={"#B7B7B7"}
-              maximumValue={1}
-              minimumValue={0}
-              thumbStyle={{ height: 15, width: 15 }}
-              thumbProps={{
-                children: (
-
-                  <View
-
-                    style={{ width: 15, height: 15, backgroundColor: "#FFFFFF", borderRadius: 7 }}
-                  >
-
-                  </View>
-
-
-                )
-              }}
-            />
-          </View>
-          <View style={styles.containerItemsControl}>
-            <Text style={[styles.counter, { paddingRight: 20 }]}>
-              {progresTime}
-            </Text>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: 200 }}>
-              <TouchableOpacity
-                onPress={onPrevMusic}
-              >
-                <Icon name="fastbackward" size={25} type="ant-design" color={"#FDFDFD"} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={async () => {
-                if (audioPlayer && audioPlayer.isPlaying()) {
-                  setIsPlayingSoundInside(false)
-                  audioPlayer.pause();
-                  //finsihInterval();
-
-                } else {
-                  setIsPlayingSoundInside(true)
-                  audioPlayer.play();
-                  //initInterval();
-
-                }
-
-              }}>
-                <Icon name={isPlayingSoundInside ? "pause" : "play"} size={60} type="ant-design" color={"#FDFDFD"} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={onNextMusic}
-              >
-                <Icon name="fastbackward" size={25} type="ant-design" color={"#FDFDFD"} style={{ transform: [{ rotateY: '180deg' }] }} />
-              </TouchableOpacity>
+          <View style={{flex:1,flexDirection:"column",justifyContent:"space-between",paddingBottom:50}}>
+            <View style={styles.containerItemsTitles}>
+              <View style={{ flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+                <Text style={styles.TitleName}>{currentMusic.author}</Text>
+                <Text style={styles.subTitleName}>{currentMusic.song_name}</Text>
+              </View>
 
             </View>
-            <Text style={[styles.counter, { paddingLeft: 20 }]}>
-              {duration}
-            </Text>
-          </View>
+            <View style={{ paddingTop: 20, alignItems: 'stretch', justifyContent: 'center' }}>
+
+              <Slider
+                onTouchStart={onStartSliderChange}
+                onTouchEnd={onFinishSliderChange}
+                value={progresBar}
+                onValueChange={conChangeProgresBar}
+                minimumTrackTintColor={"#FFFFFF"}
+                maximumTrackTintColor={"#B7B7B7"}
+                maximumValue={1}
+                minimumValue={0}
+                thumbStyle={{ height: 15, width: 15 }}
+                thumbProps={{
+                  children: (
+
+                    <View
+
+                      style={{ width: 15, height: 15, backgroundColor: "#FFFFFF", borderRadius: 7 }}
+                    >
+
+                    </View>
 
 
-          <View style={styles.containerItemsControlBottom}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: 200 }}>
-              <TouchableOpacity>
-                <Icon name="volume-mute" size={25} type="fontisto" color={"#FDFDFD"} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  handleLikedMusic();
-                  setIsLiked(!isLiked)
+                  )
                 }}
-              >
-                <Icon name={isLiked ? "heart" : "hearto"} size={30} type="ant-design" color={"#FDFDFD"} />
+              />
+            </View>
+            <View style={styles.containerItemsControl}>
+              <Text style={[styles.counter, { paddingRight: 20 }]}>
+                {progresTime}
+              </Text>
+              <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: 200 }}>
+                <TouchableOpacity
+                  onPress={onPrevMusic}
+                >
+                  <Icon name="fastbackward" size={25} type="ant-design" color={"#FDFDFD"} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={async () => {
+                  if (audioPlayer && audioPlayer.isPlaying()) {
+                    setIsPlayingSoundInside(false)
+                    audioPlayer.pause();
+                    //finsihInterval();
 
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Icon name="sharealt" size={30} type="ant-design" color={"#FDFDFD"} style={{ transform: [{ rotateY: '180deg' }] }} />
-              </TouchableOpacity>
+                  } else {
+                    setIsPlayingSoundInside(true)
+                    audioPlayer.play();
+                    //initInterval();
+
+                  }
+
+                }}>
+                  <Icon name={isPlayingSoundInside ? "pause" : "play"} size={60} type="ant-design" color={"#FDFDFD"} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={onNextMusic}
+                >
+                  <Icon name="fastbackward" size={25} type="ant-design" color={"#FDFDFD"} style={{ transform: [{ rotateY: '180deg' }] }} />
+                </TouchableOpacity>
+
+              </View>
+              <Text style={[styles.counter, { paddingLeft: 20 }]}>
+                {duration}
+              </Text>
+            </View>
+
+
+            <View style={styles.containerItemsControlBottom}>
+              <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: 100 }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (isMuted == null) {
+                      setIsMuted(true)
+
+                    } else {
+                      setIsMuted(!isMuted)
+
+                    }
+
+                  }}
+                >
+                  <Icon name={(isMuted == true) ? "mute" : "unmute"} size={30} type="octicon" color={"#FDFDFD"} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    handleLikedMusic();
+                    setIsLiked(!isLiked)
+                  }}
+                >
+                  <Icon name={isLiked ? "heart" : "hearto"} size={30} type="ant-design" color={"#FDFDFD"} />
+
+                </TouchableOpacity>
+
+              </View>
+
             </View>
 
           </View>
+
         </View>
       </View>}
     </>
@@ -475,7 +530,7 @@ const styles = StyleSheet.create({
     height: 330,
     paddingTop: 0,
     flexDirection: "column",
-    alignItems: "flex-end"
+    alignItems: "center"
   },
   containerItems: {
     width: Dimensions.get("window").width,

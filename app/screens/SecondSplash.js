@@ -6,14 +6,14 @@ export const SecondSplash = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <ScrollView>
-                <View>
+                <View style={{ flexDirection: "row", justifyContent: "center" }}>
                     <Text style={styles.title}>
-                        Conócenos
+                        Acerca de
                     </Text>
                 </View>
                 <View style={styles.containerItemInformation} >
                     <Text style={styles.subTitle}>
-                        Quiénes somos?
+                        ¿Quiénes somos?
                     </Text>
                     <Text style={styles.textStyle}>
                         Somos un grupo de desarrolladores que buscamos lo mejor para nuestros usuarios.
@@ -24,7 +24,7 @@ export const SecondSplash = ({ navigation }) => {
                         Géneros Musicales
                     </Text>
                     <Text style={styles.textStyle}>
-                        Los géneros musicales que encontraras en en la Aplicación Móvil, son propios del Ecuador.
+                        Esta aplicacón móvil está destinada a acojer géneros musicales pertenecientes al Ecuador.
                     </Text>
                 </View>
 
@@ -33,7 +33,8 @@ export const SecondSplash = ({ navigation }) => {
                         Misión
                     </Text>
                     <Text style={styles.textStyle}>
-                        Dar un espacio a los ecuatorianos para que puedan presentar su música.
+                        Brindar a los artistas la oportunidad de llegar a más personas mediante la  música ,
+                        construyendo una identidad musical en los niños, jóvenes y adultos ecuatorianos.
                     </Text>
                 </View>
 
@@ -42,7 +43,10 @@ export const SecondSplash = ({ navigation }) => {
                         Visión
                     </Text>
                     <Text style={[styles.textStyle, { marginBottom: 30 }]}>
-                        Ser la app más usada en Ecuador.
+                        Comunicar  mediante la música,
+                        donde el respeto en cada uno de los artistas se refleja en cada canción de Taki-tri,
+                        donde la humildad del ecuatoriano se escucha en los versos y la sinceridad en cada estrofa,
+                        sin dejar a un lado la  honestidad en cada nota musical que  da vida y coraje al talento ecuatoriano.
                     </Text>
                 </View>
 
@@ -74,7 +78,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: "relative",
         paddingHorizontal: 50,
-        paddingBottom:100
+        paddingBottom: 100
 
     },
     containerIndicator: {
@@ -87,8 +91,9 @@ const styles = StyleSheet.create({
         fontStyle: "normal",
         fontSize: 20,
         lineHeight: 30,
-        
-        color: "#838383"
+        color: "#838383",
+        textAlign: "justify"
+
     },
     containerImage: {
         position: "relative",
@@ -124,11 +129,12 @@ const styles = StyleSheet.create({
         textShadowColor: 'rgba(0, 0, 0, 0.25)',
         textShadowOffset: { width: 0, height: 1 },
         textShadowRadius: 4,
+        marginTop: 20,
+        marginBottom:10,
+        textAlign:"center"
     },
     containerItemInformation: {
         flexDirection: "column",
         justifyContent: "space-between",
-        height: 125,
-        marginTop: 15
     }
 });

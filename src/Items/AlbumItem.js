@@ -48,11 +48,11 @@ export const AlbumItem = ({ onPresseAlbum, title, imageUri ,item}) => {
                     {
                         (typeof (imageUri) == "string") ? <Image
                             source={{ uri: imageUri }}
-                            style={{ width: 160, height: 160, borderRadius: 4 }}
+                            style={{ width: 140, height: 140, borderRadius: 4 }}
                         >
                         </Image> : <Image
                             source={imageUri}
-                            style={{ width: 160, height: 160, borderRadius: 4 }}
+                            style={{ width: 140, height: 140, borderRadius: 4 }}
                         >
                         </Image>
 
@@ -77,8 +77,8 @@ const styles = StyleSheet.create({
         position: "relative",
         marginTop: 20,
         paddingTop:20,
-        width: 180,
-        height: 250,
+        width: 165,
+        height: 240,
         borderRadius: 15
     },
     containerFront:{

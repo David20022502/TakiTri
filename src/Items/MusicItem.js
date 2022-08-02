@@ -7,38 +7,50 @@ import HomeContext from "../../context/HomeContext/HomeContext";
 import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
 import { deleteLikedSong, putLikedSong } from "../services/MusicServices";
 import { useState } from "react";
+import { getMessage } from "../components/Messages";
 
 export const MusicItem = ({ music, playList }) => {
 
-    const { playMusic, audioPlayer, currentMusic,likedSongsList,loadLikedMusics} = useContext(HomeContext)
-    const {handleMessageToast,handleShowInformationMusic,handleShowSnackBar,handleDestroyAllSnackBar} = useContext(TakiTriContext)
-    const [isLiked,setIsliked]=useState(false);
-    useEffect(()=>{
-        if(likedSongsList.includes(music.id)){
+    const { playMusic, audioPlayer, currentMusic, likedSongsList, loadLikedMusics } = useContext(HomeContext)
+    const { handleError,isAutenticated,handleMessageToast, handleShowInformationMusic, handleShowSnackBar, handleDestroyAllSnackBar } = useContext(TakiTriContext)
+    const [isLiked, setIsliked] = useState(false);
+    useEffect(() => {
+        if (likedSongsList.includes(music.id)) {
             setIsliked(true);
-        }else{
+        } else {
             setIsliked(false);
         }
-    },[likedSongsList])
+    }, [likedSongsList])
     const changeAlbumPage = () => {
-        //changePageStatus(PLAY_MUSIC_HOME);
-        handleDestroyAllSnackBar();
-        global.navigation.navigate("PlayMusicHome")
-        playMusic(audioPlayer, currentMusic, music, playList);
-    }
-    const handleLike=()=>{
-        if(!isLiked){
-            handleMessageToast("Canción agregada a favoritos");
-            putLikedSong(music.id,loadLikedMusics);
+        if(isAutenticated){
+            handleDestroyAllSnackBar();
+            global.navigation.navigate("PlayMusicHome")
+            playMusic(audioPlayer, currentMusic, music, playList);
         }else{
-            handleMessageToast("Canción eliminada de favoritos");
-            deleteLikedSong(music.id,loadLikedMusics);
+            handleError(getMessage("authRequired"),"red");
+        }
+        //changePageStatus(PLAY_MUSIC_HOME);
+      
+    }
+    const handleLike = () => {
+        if(isAutenticated){
+            if (!isLiked) {
+                handleMessageToast("Canción agregada a favoritos");
+                putLikedSong(music.id, loadLikedMusics);
+            } else {
+                handleMessageToast("Canción eliminada de favoritos");
+                deleteLikedSong(music.id, loadLikedMusics);
+            }
+        }else{
+            handleError(getMessage("authRequired"),"red");
+
         }
        
-       
+
+
     }
     return (
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", justifyContent:"space-between"}}>
             <TouchableOpacity
                 onPress={() => { changeAlbumPage() }}
             >
@@ -59,16 +71,20 @@ export const MusicItem = ({ music, playList }) => {
 
                 </View>
             </TouchableOpacity>
-            
-            <View style={styles.containerOPtions}>
-                {
-                    isLiked? <Icon name="heart" size={25} type="ant-design" color={"#12485B"} onPress={() => {handleLike() }} />:
-                    <Icon name="hearto" size={25} type="ant-design" color={"#12485B"} onPress={() => {handleLike() }}  />
-                }
-                  </View>
-            <View style={styles.containerOPtions}>
-                <Icon name="dots-three-vertical" size={20} type="entypo"  color="#12485B"  onPress={() => {handleShowInformationMusic(music) }} />
+            <View 
+            style={styles.optionsContainer}
+            >
+                <View style={styles.containerOPtions}>
+                    {
+                        isLiked ? <Icon name="heart" size={25} type="ant-design" color={"#12485B"} onPress={() => { handleLike() }} /> :
+                            <Icon name="hearto" size={25} type="ant-design" color={"#12485B"} onPress={() => { handleLike() }} />
+                    }
+                </View>
+                <View style={styles.containerOPtions}>
+                    <Icon name="dots-three-vertical" size={20} type="entypo" color="#12485B" onPress={() => { handleShowInformationMusic(music) }} />
+                </View>
             </View>
+
         </View>
 
 
@@ -90,7 +106,7 @@ const styles = StyleSheet.create({
     },
     containerOPtions: {
         flexDirection: "row",
-        marginHorizontal: 15,
+        marginHorizontal:15,
         alignItems: "center",
     },
     title: {
@@ -107,6 +123,10 @@ const styles = StyleSheet.create({
         color: "#848282",
         width: 180
     },
+    optionsContainer:{
+        flexDirection:"row",
+        justifyContent:"flex-end",
+    }
 
 
 });

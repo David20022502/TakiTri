@@ -7,12 +7,20 @@ import { AlbumItem } from '../../src/Items/AlbumItem';
 import { getAlbumes } from '../../src/services/MusicServices';
 
 
-export const MadeForYou = ({ onPresseAlbum, navigation }) => {
+export const MadeForYou = (props) => {
   global.pageStatus = "MadeForYou";
-  const { loadAlbumAll,albumAll  } = React.useContext(HomeContext)
+  const{navigation}=props;
+  let isInvitedUser=null;
+  try{
+    isInvitedUser=props.route.params.isInvitedUser;
+  }catch(e){
+    isInvitedUser=false;
+  }
+  
+  const { loadAlbumAll, albumAll } = React.useContext(HomeContext)
 
   const [albumes, setAlbumes] = React.useState([]);
-  const [isLookingFor, setIslookingFor] = React.useState(false)
+  const [isLookingFor, setIslookingFor] = React.useState(true)
   const [textLookFor, setTextLookFor] = React.useState("")
   const [datasLookFor, setDatasLookFor] = React.useState(null)
   const [datasOrderAlbum, setDatasOrderAlbum] = React.useState([]);
@@ -20,10 +28,11 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
   let maxNumberToSearch = React.useRef(11);
 
   React.useEffect(() => {
-    getAlbumes(setAlbumes, null, maxNumberToSearch.current);
+    getAlbumes(setAlbumes, maxNumberToSearch.current);
     const backAction = () => {
       if (isLookingForRef.current == true) {
-        setIslookingFor(false)
+        //setIslookingFor(false)
+        navigation.popToTop();
       } else {
         navigation.popToTop();
       }
@@ -39,10 +48,10 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
     // console.log("datasLookFor", datasLookFor);
   }, [datasLookFor])
   React.useEffect(() => {
-    if (albumes.length > 0) {
+    if (albumAll.length > 0) {
       handleOrderAlbum();
     }
-  }, [albumes])
+  }, [albumAll])
   React.useEffect(() => {
     isLookingForRef.current = isLookingFor;
     if (!isLookingFor) {
@@ -105,6 +114,24 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
       setDatasLookFor(null)
     }
   }
+  const NotFound = () => {
+    return (<View
+      style={{flexDirection: "column", justifyContent: "center", alignItems: "center"}}
+    >
+      <Text
+        style={{ color: "#AAAAAA", fontSize: 30 }}
+      >Sin Resultados...</Text>
+    </View>);
+  }
+  const EmptyAlbum = () => {
+    return (<View
+      style={{flexDirection: "column", justifyContent: "center", alignItems: "center",height:Dimensions.get("window").height-400}}
+    >
+      <Text
+        style={{ color: "#AAAAAA", fontSize: 30 }}
+      >No existen registros</Text>
+    </View>);
+  }
   const renderItemMusic = (item) => {
 
     if (item.item.length > 1) {
@@ -127,17 +154,28 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
   }
   const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
     const paddingToBottom = 0;
-   
 
-    return layoutMeasurement.height + contentOffset.y >=
-      contentSize.height - paddingToBottom;
+    let var1 = parseInt(layoutMeasurement.height + contentOffset.y);
+    let var2 = parseInt(contentSize.height - paddingToBottom);
+    console.log("var1",var1);
+    console.log("var 2",var2)
+    if(var1>=var2){
+      return true;
+    }else{
+      //i//f((var1+3)>=var2){
+        return false;
+      //}
+    }
+
   };
   return (
-    <View style={{ flex: 1, position: "relative" }}>
+    <View style={{ flex: 1, position: "relative",paddingTop:isInvitedUser?30:0}}>
       <View style={{ position: "absolute", top: 10, left: 20 }}>
+        {
+          isInvitedUser!=true&& <Icon name="back" size={30} type="ant-design" color="black" onPress={() => { navigation.goBack() }} />
 
-        <Icon name="back" size={30} type="ant-design" color="black" onPress={() => { navigation.goBack() }} />
-
+        }
+       
 
       </View>
       <View style={styles.containerItemsFinal}>
@@ -155,10 +193,11 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
 
           </View>
           {
-            isLookingFor ? <View style={{ width: Dimensions.get("window").width, flexDirection: "row", justifyContent: "flex-end", marginBottom: 10 }}>
+            (isInvitedUser!=true)&&(isLookingFor ? <View style={{ width: Dimensions.get("window").width, flexDirection: "row", justifyContent: "flex-end", marginBottom: 0,top:-15, }}>
               <InputLookForAlbumMusic
                 onChangeText={(e) => { setTextLookFor(e) }}
                 value={textLookFor}
+                valueText={"Buscar Álbum"}
               >
 
               </InputLookForAlbumMusic>
@@ -175,7 +214,7 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
                 <View style={{ width: 30, marginRight: 50, marginLeft: 10, marginBottom: 10 }}>
                   <Icon name="search" size={30} color="#12485B" onPress={() => { setIslookingFor(true) }} />
                 </View>
-              </View>
+              </View>)
           }
 
 
@@ -193,8 +232,8 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
                 if (isCloseToBottom(nativeEvent)) {
                   //enableSomeButton();
                   console.log("ha llegado al fn")
-                  maxNumberToSearch.current= maxNumberToSearch.current+10;
-                  getAlbumes(setAlbumes, null, maxNumberToSearch.current);
+                  maxNumberToSearch.current = maxNumberToSearch.current + 10;
+                  getAlbumes(setAlbumes, maxNumberToSearch.current);
 
                 }
               }}
@@ -205,13 +244,7 @@ export const MadeForYou = ({ onPresseAlbum, navigation }) => {
 
           }
           {
-            /*
-             <FlatList
-                        data={albumes}
-                        renderItem={(item) => renderItemMusic(item)}
-                        key={item => item.id}
-                      />
-             */
+            (datasLookFor&&datasLookFor.length<=0)? <NotFound></NotFound>:(albumes.length<=0)&&<EmptyAlbum></EmptyAlbum>
           }
 
         </View>
@@ -234,7 +267,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     position: "relative",
     height: 65,
-    marginBottom: 10
   },
   textSubTitleItem: {
     fontStyle: "normal",

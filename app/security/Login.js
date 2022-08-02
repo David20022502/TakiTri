@@ -9,47 +9,54 @@ import { ModalInfoError } from "../components/ModalInfoError"
 import imageHeader from "../../assets/images/HeaderLogo.jpg"
 import { Icon } from "@rneui/base";
 import { insertDataBaseChecker } from "../../src/services/DataBase";
+import { getMessage } from "../../src/components/Messages";
 export const Login = ({ navigation }) => {
-    const { singInWithEmailPassword } = useContext(TakiTriContext)
+    const { singInWithEmailPassword, handleError } = useContext(TakiTriContext)
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [messageError, setMessageError] = useState("");
     const [modalErrorVisible, setmodalErrorVisible] = useState(false);
     const [isPwdVisible, setIsPwdVisible] = useState(true);
-    React.useEffect(()=>{
-        if( global.dbStatusChecker){
-            insertDataBaseChecker(1,"TRUE")
-
+    React.useEffect(() => {
+        if (global.dbStatusChecker) {
+            insertDataBaseChecker(1, "TRUE")
         }
-    },[])
+    }, [])
     const onSubmit = () => {
         const user = {
             email: userName.trim(),
             password: password.trim()
         }
-        singInWithEmailPassword(user);
+        if (userName.length <= 0) {
+            handleError(getMessage("credentialsRequired"), "red");
+        } else if (password.length <= 0) {
+            handleError(getMessage("credentialsRequired"), "red");
+        } else {
+            singInWithEmailPassword(user);
+
+        }
     }
     return (
         <View style={{ flex: 1 }}>
             <StatusBar backgroundColor='#20DACA'></StatusBar>
-            <View style={{position:"relative"}}>
+            <View style={{ position: "relative" }}>
                 <Image
                     source={imageHeader}
-                    style={{ width: Dimensions.get("window").width+20, height: 180, marginTop: 20,marginLeft:-20 }}
+                    style={{ width: Dimensions.get("window").width + 20, height: 180, marginTop: 20, marginLeft: -20 }}
                 >
                 </Image>
-                <View style={{position:"absolute",marginHorizontal:30,top:20}}>
-                        <Text style={styles.title}>
-                            Mira lo que tenemos para ti
-                        </Text>
-                    </View>
+                <View style={{ position: "absolute", marginHorizontal: 30, top: 20 }}>
+                    <Text style={styles.title}>
+                        Mira lo que tenemos para ti
+                    </Text>
+                </View>
             </View>
 
             <View style={styles.container}>
 
                 <ScrollView>
 
-                    
+
                     <View style={styles.containerImputs} >
                         <InputText
                             placeholder={"ejemplo123@gmail.com"}
@@ -65,39 +72,53 @@ export const Login = ({ navigation }) => {
                             onChangeText={setPassword}
                             modify={isPwdVisible}
                             isPassword={true}
-                            changeVisibility={() => {setIsPwdVisible(!isPwdVisible)}}
-                            IconR ={()=>{return(<Icon name={isPwdVisible ? "eye-off" : "eye"} type="feather" color={"#AAAAAA"}/>)}}
+                            changeVisibility={() => { setIsPwdVisible(!isPwdVisible) }}
+                            IconR={() => { return (<Icon name={isPwdVisible ? "eye-off" : "eye"} type="feather" color={"#AAAAAA"} />) }}
                         >
                         </InputText>
-                       
+
                     </View>
                     <View style={styles.containerButton} >
-                            <ButtonOwn
-                                title={"Iniciar Sesión"}
-                                onPress={() => { onSubmit() }}
-                            >
+                        <ButtonOwn
+                            title={"Iniciar Sesión"}
+                            onPress={() => { onSubmit() }}
+                        >
 
-                            </ButtonOwn>
-                            <ButtonOwnRegister
-                             title={"Registrarse"}
-                             onPress={() => { navigation.navigate("register")  }}
-                            >
+                        </ButtonOwn>
+                        <ButtonOwnRegister
+                            title={"Registrarse"}
+                            onPress={() => { navigation.navigate("register") }}
+                        >
 
-                            </ButtonOwnRegister>
-                        </View>
-                        <View style={styles.containerOptions}>
-                        
-                        <Text style={[styles.optionsStyleText,{color:"#9E9E9E",marginRight:5}]}>
-                            ¿Olvidaste la Contraseña? 
-                            </Text>
+                        </ButtonOwnRegister>
+                    </View>
+                    <View style={styles.containerOptions}>
+
+                        <Text style={[styles.optionsStyleText, { color: "#9E9E9E", marginRight: 5 }]}>
+                            ¿Olvidaste la Contraseña?
+                        </Text>
                         <TouchableOpacity
                             onPress={() => { navigation.navigate("ResetPasword") }}
                         >
                             <Text style={styles.optionsStyleText}>
-                             ¿Deseas recuperarla?
+                                ¿Deseas recuperarla?
                             </Text>
                         </TouchableOpacity>
-                      
+
+
+
+                    </View>
+                    <View style={[styles.containerOptions,{marginTop:10}]}>
+
+
+                        <TouchableOpacity
+                            onPress={() => { navigation.navigate("madeForYou", { isSwitchVisibleType: false, isInvitedUser:true}) }}
+                        >
+                            <Text style={styles.optionsStyleText}>
+                                Explorar Álbumes
+                            </Text>
+                        </TouchableOpacity>
+
 
 
                     </View>
@@ -116,12 +137,12 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: 'center',
         position: "relative",
-       
+
     },
     containerOptions: {
         marginTop: 50,
         flexDirection: "row",
-        justifyContent:"center"
+        justifyContent: "center"
     },
     optionsStyleText: {
         fontStyle: "normal",
@@ -160,9 +181,9 @@ const styles = StyleSheet.create({
         color: "#838383"
     },
     containerButton: {
-        flexDirection:"column",
-        justifyContent:"space-between",
-        height:120,
+        flexDirection: "column",
+        justifyContent: "space-between",
+        height: 120,
         paddingHorizontal: 50,
     },
     title: {
@@ -175,7 +196,8 @@ const styles = StyleSheet.create({
         textShadowOffset: { width: 0, height: 3 },
         textShadowRadius: 4,
         marginTop: 80,
-        width:300
+        width: 300,
+        textAlign: "center"
     },
     subTitle: {
         fontStyle: "normal",
@@ -187,16 +209,16 @@ const styles = StyleSheet.create({
         textShadowRadius: 4,
     },
     containerImputs: {
-        backgroundColor:"#F3F3F3",
+        backgroundColor: "#F3F3F3",
         flexDirection: "column",
         justifyContent: "space-between",
         height: 240,
-        paddingVertical:40,
+        paddingVertical: 40,
         marginTop: 80,
         paddingHorizontal: 50,
-        marginHorizontal:10,
-        borderRadius:20,
-        marginBottom:20
+        marginHorizontal: 10,
+        borderRadius: 20,
+        marginBottom: 20
 
     }
 });

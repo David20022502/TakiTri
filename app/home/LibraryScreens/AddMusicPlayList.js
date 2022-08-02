@@ -136,8 +136,23 @@ export const AddMusicPlayList = (props) => {
             >Sin Resultados...</Text>
         </View>);
     }
+    const EmptyAddPlayList = () => {
+        return (<View
+            style={{ flex: 1, flexDirection: "column", justifyContent: "center", alignItems: "center" }}
+        >
+            <Text
+                style={{ color: "#AAAAAA", fontSize: 20,marginTop:20 }}
+            >
+                No has agreado ninguna canción
+            </Text>
+        </View>);
+    }
     const handleAddMusic=(item)=>{
-        setMusicList([...musicList,item]);
+        let index=musicList.filter(it=>it.id==item.id);
+        if(index.length<=0){
+            setMusicList([...musicList,item]);
+
+        }
     }
     const handleDeleteMusic=(item)=>{
         const nuewData=musicList.filter(item1=>item1.id!=item.id);
@@ -185,7 +200,7 @@ export const AddMusicPlayList = (props) => {
                                 key={item => item.id}
                             />
 
-                        </View> : <View></View>
+                        </View> : <EmptyAddPlayList></EmptyAddPlayList>
                     }
 
                 </ScrollView>

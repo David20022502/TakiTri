@@ -81,15 +81,8 @@ export const TakiTriStates = ({ children }) => {
         // ...
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log("errorCode", errorCode);
-        console.log("errorMessage", errorMessage);
         handleLoading(false);
         handleError(getMessage(error.code), "red");
-        console.log("error al inciar sesion", error)
-        const data = getMessage("notAutenticated");
-        console.log("mensaje obtenido", data)
 
       });
   }, [])
@@ -175,70 +168,6 @@ export const TakiTriStates = ({ children }) => {
     setCurrentMusic(currentMusicRef.current);
   }, [])
   const handlePaddingSnackBar = useCallback(async (value) => {
-    /*switch (value || global.pageStatus) {
-      case "AddMusicPlayList": {
-        setsNackBarPadding(54);
-        break;
-      }
-      case "AddPlayList": {
-        setsNackBarPadding(54);
-        break;
-      }
-      case "FavoriteScreen": {
-        setsNackBarPadding(5);
-        break;
-      }
-      case "LibraryPlayLists": {
-        setsNackBarPadding(54);
-        break;
-      }
-      case "MyPlayList": {
-        setsNackBarPadding(54);
-        break;
-      }
-      case "PlayListsScreen": {
-        setsNackBarPadding(54);
-        break;
-      }
-      case "AlbumRender": {
-        setsNackBarPadding(5);
-        break;
-      }
-      case "Home": {
-        setsNackBarPadding(54);
-        break;
-      }
-      case "HomeScreen": {
-        setsNackBarPadding(54);
-        break;
-      }
-      case "Library": {
-        setsNackBarPadding(54);
-        break;
-      }
-      case "LookFor": {
-        setsNackBarPadding(54);
-        break;
-      }
-      case "MadeForYou": {
-        setsNackBarPadding(54);
-        break;
-      }
-      case "ProfileScreen": {
-        setsNackBarPadding(5);
-
-        break;
-      }
-      case "RecentPlayed": {
-        setsNackBarPadding(54);
-        break;
-      }
-      case "AboutInfo": {
-        setsNackBarPadding(5);
-        break;
-      }
-    }*/
-
     setsNackBarPadding(value);
     console.log("cambia padding a", value)
   }, [])
@@ -402,7 +331,9 @@ export const TakiTriStates = ({ children }) => {
         <TouchableOpacity
         onLongPress={()=>{handleDestroyAllSnackBar()}}
           onPress={() => {
-            global.navigation.navigate("PlayMusicHome", { audioPlayer: audioPlayer, currentMusic: currentMusic, currentPlayList: currentPlayList })
+            console.log("is playing now",audioPlayer.isPlaying())
+            global.navigation.navigate("PlayMusicHome", { audioPlayer: audioPlayer, currentMusic: currentMusic, currentPlayList: currentPlayList,isPlayingSnackBar:audioPlayer.isPlaying() })
+            //global.navigation.navigate("PlayMusicHome", { audioPlayer: audioPlayer, currentMusic: currentMusic, currentPlayList: currentPlayList})
             handleDestroySnackBar();
           }}
         >
@@ -505,7 +436,8 @@ export const TakiTriStates = ({ children }) => {
             </Text>
           </View>
         </View>
-        <View style={{ flexDirection: "row", alignItems: "center", height: 40, justifyContent: "center", width: 300 }}>
+        {
+          itemInformation&&itemInformation.year&& <View style={{ flexDirection: "row", alignItems: "center", height: 40, justifyContent: "center", width: 300 }}>
           <View style={{ width: 150, flexDirection: "row", justifyContent: "flex-end" }}>
             <Text style={styles.styleTitle}>
               Año:{"  "}
@@ -517,6 +449,8 @@ export const TakiTriStates = ({ children }) => {
             </Text>
           </View>
         </View>
+        }
+       
 
       </View>
       <View style={{ width: 50, position: "absolute", top: 20, right: 20 }}>

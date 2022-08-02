@@ -15,6 +15,8 @@ import TakiTriContext from '../context/SecurityContext/TakiTriContext';
 import { WaitPage } from '../src/components/WaitPage';
 import { createTableDatabaseChecker, getChecker } from '../src/services/DataBase';
 import { openDatabase } from "expo-sqlite";
+import { RecentPlayed } from '../app/home/RecentPlayed';
+import { MadeForYou } from '../app/home/MadeForYou';
 
 const Stack = createNativeStackNavigator();
 const StackAutenticated = createNativeStackNavigator();
@@ -27,31 +29,31 @@ export const Navigation = () => {
         setTimeout(currentAutenticatedUser, 1000);
         console.log("iniciando checker")
     }, [])
-    React.useEffect(()=>{
-        console.log("cambianod iisFirstTimeUsing",isFirstTimeUsing)
-    },[isFirstTimeUsing])
+    React.useEffect(() => {
+        console.log("cambianod iisFirstTimeUsing", isFirstTimeUsing)
+    }, [isFirstTimeUsing])
     React.useEffect(() => {
 
         handleLoading(false);
         fillAppChecker();
     }, [isAutenticated])
-    const fillAppChecker = async() => {
+    const fillAppChecker = async () => {
         if (global.dbStatusChecker == null) {
-    
-          global.dbStatusChecker = openDatabase("checkerapp");
+
+            global.dbStatusChecker = openDatabase("checkerapp");
         }
 
         console.log("inciando cretae checker")
-         await createTableDatabaseChecker();
-         await getChecker(handleCheckerAppFirstTime);
+        await createTableDatabaseChecker();
+        await getChecker(handleCheckerAppFirstTime);
 
-      };
+    };
     const CheckFirstTime = () => {
         return <>
-            { 
-            isFirstTimeUsing==false?<UnAtenticatedUserFirstTime></UnAtenticatedUserFirstTime>:<UnAtenticatedUserUsing></UnAtenticatedUserUsing>
+            {
+                isFirstTimeUsing == false ? <UnAtenticatedUserFirstTime></UnAtenticatedUserFirstTime> : <UnAtenticatedUserUsing></UnAtenticatedUserUsing>
             }
-    
+
         </>
     }
     return (
@@ -95,13 +97,28 @@ const UnAtenticatedUserFirstTime = () => {
                 component={ConfirmPassword}
                 options={{ headerShown: false }}
             />
+            <Stack.Screen name="madeForYou"
+                component={MadeForYou}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="AlbumListMusic"
+                component={AlbumRender}
+                options={{ headerShown: false }}
+            />
         </Stack.Navigator>
     );
 }
 const UnAtenticatedUserUsing = () => {
     return (
         <Stack.Navigator initialRouteName='login'>
-
+            <Stack.Screen name="madeForYou"
+                component={MadeForYou}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="AlbumListMusic"
+                component={AlbumRender}
+                options={{ headerShown: false }}
+            />
             <Stack.Screen name="login"
                 component={Login}
                 options={{ headerShown: false }}
@@ -142,6 +159,12 @@ const AtenticatedUser = () => {
                 options={{ headerShown: false }}
 
             />
+            <Stack.Screen name="RecentPlayed"
+                component={RecentPlayed}
+                options={{ headerShown: false }}
+
+            />
+
         </StackAutenticated.Navigator>
     );
 }

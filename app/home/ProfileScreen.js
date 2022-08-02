@@ -16,7 +16,7 @@ import { ButtonOwn, ButtonOwnAddPlayList, InputTextInfo } from '../../src/compon
 import TakiTriContext from '../../context/SecurityContext/TakiTriContext'
 import { getMessage } from '../../src/components/Messages'
 import DatePicker from 'react-native-date-picker'
-import { validateName } from '../../src/services/Validations'
+import { checkOnlySpaces, validateName } from '../../src/services/Validations'
 
 export const ProfileScreen = () => {
   global.pageStatus = "ProfileScreen";
@@ -40,9 +40,7 @@ export const ProfileScreen = () => {
   const [initBirthdate, setInitBirthdate] = useState(new Date());
 
   React.useEffect(() => {
-    console.log("userTakiTri", userTakiTri)
-    handlePaddingSnackBar(5);
-    console.log("----------------------- dentro de profile");
+    //handlePaddingSnackBar(5);
   }, []);
   React.useEffect(async () => {
     if (userImageUrl) {
@@ -66,20 +64,22 @@ export const ProfileScreen = () => {
 
     }
   }, [userImageUrl]);
-  React.useEffect(()=>{
-    if(isNotErrorStyleImputTextname&&isNotErrorStyleImputTextdate&&isNotErrorStyleImputlastname){
-        setIsButtonDisabled(false);
-    }else{
-        setIsButtonDisabled(true);
+  React.useEffect(() => {
+    if (isNotErrorStyleImputTextname && isNotErrorStyleImputTextdate && isNotErrorStyleImputlastname) {
+      setIsButtonDisabled(false);
+    } else {
+      setIsButtonDisabled(true);
     }
-},[isNotErrorStyleImputTextname,isNotErrorStyleImputTextdate,isNotErrorStyleImputlastname])
+  }, [isNotErrorStyleImputTextname, isNotErrorStyleImputTextdate, isNotErrorStyleImputlastname])
 
   const chooseFile = async () => {
     let options = {
       mediaTypes: MediaTypeOptions.Images,
     };
     let response = await launchImageLibraryAsync(options);
-    setImageUser(response.uri);
+    if(response.cancelled==false){
+      setImageUser(response.uri);
+    }
   };
 
 
@@ -125,7 +125,6 @@ export const ProfileScreen = () => {
 
       const url = await getDownloadURL(fileStorage);
       setUserImageUrl(url);
-      console.log("url--", url)
       global.urlProfile = url;
     } catch (e) {
       handleLoading(false)
@@ -134,6 +133,17 @@ export const ProfileScreen = () => {
     }
 
   };
+  const verifyDate=(date)=>{
+    let date1 = parseInt(date);
+    let d= new Date();
+    let yearcurrent=d.getFullYear();
+    let tempDate=parseInt(yearcurrent)-date1;
+    if(tempDate>=18 && tempDate<=50){
+        return true;
+    }
+    return false;
+
+}
   return (
     <View style={{ flex: 1, marginHorizontal: 20 }}>
 
@@ -183,18 +193,25 @@ export const ProfileScreen = () => {
           editable={true}
           placeholder={"xxxx xxxx"}
           value={nameUser}
-          onChangeText={(e)=>{
-           // e=e.trim();
-            let validation = validateName(e);
-            if (validation.resultValidation) {
-            
+          onChangeText={(e) => {
+            // e=e.trim();
+            let checkSpaces = checkOnlySpaces(e);
+            if (!checkSpaces) {
+              let validation = validateName(e);
+              if (validation.resultValidation) {
+
+                setNameUser(e);
+
+              }
+              setErrorTextImputMessagename(validation.message)
+              setIsNotErrorStyleImputTextname(validation.Result)
+
+            }else{
               setNameUser(e);
-                
+              setErrorTextImputMessagename(getMessage("nameRequired"))
+              setIsNotErrorStyleImputTextname(false)
             }
-            console.log(validation);
-            setErrorTextImputMessagename(validation.message)
-            setIsNotErrorStyleImputTextname(validation.Result)
-            
+
           }}
         >
         </InputTextInfo>
@@ -208,15 +225,22 @@ export const ProfileScreen = () => {
           placeholder={"xxxx xxxx "}
           value={lastNameUser}
           editable={true}
-          onChangeText={(e)=>{
-            let validation = validateName(e);
-            if (validation.resultValidation) {
+          onChangeText={(e) => {
+            let checkSpaces = checkOnlySpaces(e);
+            if (!checkSpaces) {
+              let validation = validateName(e);
+              if (validation.resultValidation) {
+                setLastNameUser(e);
+              }
+              setErrorTextImputMessagelastname(validation.message)
+              setIsNotErrorStyleImputTextlastname(validation.Result)
+            } else {
               setLastNameUser(e);
+              setErrorTextImputMessagelastname(getMessage("lastNameReuired"))
+              setIsNotErrorStyleImputTextlastname(false)
             }
-            console.log(validation);
-            setErrorTextImputMessagelastname(validation.message)
-            setIsNotErrorStyleImputTextlastname(validation.Result)
-            
+
+
           }}
         >
         </InputTextInfo>
@@ -270,11 +294,11 @@ export const ProfileScreen = () => {
         modal
         open={open}
         mode="date"
-        date={new Date(birthDate)}
+        date={initBirthdate}
         onConfirm={(date) => {
-          console.log("-----")
           setOpen(false)
-          let currentDate = initBirthdate
+          ///let currentDate = initBirthdate
+          let currentDate = new Date();
           console.log("current date",Date.parse(currentDate))
           console.log(" date",Date.parse(date))
 
@@ -289,7 +313,6 @@ export const ProfileScreen = () => {
             setErrorTextImputMessagedate("La fecha no puede ser mayor a la fecha actual");
           }
           console.log("date", date)
-          console.log("current date", currentDate)
           date = date.toJSON();
           let tempDat = date.split("T");
           tempDat = tempDat[0].split("-");
@@ -298,7 +321,18 @@ export const ProfileScreen = () => {
           tempDat[2] = parseInt(tempDat[2])
           tempDat[2] = tempDat[2];
           let dateD = tempDat[0] + "/" + tempDat[1] + "/" + tempDat[2];
+          let verify=verifyDate(tempDat[0]);
           setBirhDate(dateD)
+          setInitBirthdate(new Date(dateD));
+          if(verify){
+            setBirhDate(dateD)
+              setInitBirthdate(new Date(dateD));
+          }else{
+            setBirhDate(dateD)
+              setInitBirthdate(new Date(dateD));
+              setIsNotErrorStyleImputTextdate(false);
+              setErrorTextImputMessagedate("Solo para edades de 18 a 50 años");
+          }
         }}
         onCancel={() => {
           setOpen(false)

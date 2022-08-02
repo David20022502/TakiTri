@@ -41,6 +41,11 @@ export const ValidateNumerOfCreditSimple = (number) => {
         return response;
     }
 };
+export const checkOnlySpaces=(text)=>{
+    let expresion=/^\s*$/gim;
+    return expresion.test(text);
+  
+}
 export const validatePassword1 = (ValueNum) => {
     let Response = {
         Result: null,
@@ -103,13 +108,14 @@ export const validatePassword = (ValueNum, ValueNum2) => {
         // setPassword2(null);
     }
 };
+
 export const validateName = (value) => {
     let Response = {
         Result: null,
         message: null,
         resultValidation: false
     };
-    let expresion = /^([a-z])\w*$/gim;
+    let expresion = /^[a-zA-ZÀ-ÿ\u00f1\u00d1]*(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]*$/gim;
     console.log("nombres",value)
     if (value.includes(" ")) {
         let tempData = value.split(" ");
@@ -117,7 +123,7 @@ export const validateName = (value) => {
         console.log(tempData)
         for (let i = 0; i < tempData.length; i++) {
             if (tempData[i].length > 0) {
-                let expresion = /^([a-z])\w*$/gim;
+                let expresion = /^[a-zA-ZÀ-ÿ\u00f1\u00d1]*(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]*$/gim;
                 console.log(tempData[i]);
                 let Resultr =expresion.test(tempData[i])
                 console.log("Resultr",Resultr);

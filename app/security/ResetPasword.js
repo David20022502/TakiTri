@@ -4,14 +4,25 @@ import { StatusBar } from 'expo-status-bar';
 
 import { ButtonOwn, Indicator, InputText } from "../../src/components/Components";
 import logo from "../../assets/images/logo.jpg";
+
+import guitarImg from "../../assets/images/guitarImg.png";
+
 import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
+
 import imageHeader from "../../assets/images/HeaderLogo.jpg"
+import { getMessage } from "../../src/components/Messages";
 
 export const ResetPasword = ({ navigation }) => {
-    const { handleSendEmailPasswordReeset } = useContext(TakiTriContext)
+    const { handleSendEmailPasswordReeset,handleError } = useContext(TakiTriContext)
     const [emailUser, setEmailUser] = React.useState("");
     const handleSendEmailPasswordReset = () => {
-        handleSendEmailPasswordReeset(emailUser.trim());
+        if(emailUser.length<=0){
+            handleError(getMessage("emailRequired"),"red");
+
+        }else{
+            handleSendEmailPasswordReeset(emailUser.trim());
+
+        }
     }
     return (
 
@@ -23,10 +34,10 @@ export const ResetPasword = ({ navigation }) => {
                     style={{ width: Dimensions.get("window").width + 20, height: 180, marginTop: 20, marginLeft: -20 }}
                 >
                 </Image>
-                <View style={{ position: "absolute", marginHorizontal: 0, top: 100,right:Dimensions.get("window").width/5 }}>
+                <View style={{ position: "absolute", marginHorizontal: 0, top: 100,left:(Dimensions.get("window").width / 3) - 50 }}>
                     <Image
-                        source={logo}
-                        style={{ width: 150, height: 150,marginLeft:30}}
+                        source={guitarImg}
+                        style={{ width: 250, height: 150}}
                     >
                     </Image>
                     <Text style={styles.title}>
@@ -50,7 +61,7 @@ export const ResetPasword = ({ navigation }) => {
 
                         <View style={styles.containerButton} >
                             <ButtonOwn
-                                title={"Enviar Código"}
+                                title={"Enviar Email"}
                                 onPress={() => { handleSendEmailPasswordReset(); }}
                             >
 
@@ -161,6 +172,7 @@ const styles = StyleSheet.create({
         textShadowOffset: { width: 0, height: 3 },
         textShadowRadius: 4,
         marginTop: 30,
+        textAlign:"center"
 
     },
     subTitle: {

@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet, Image, Dimensions, ScrollView } from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import React, { useContext } from "react";
-import headPhone from "../../assets/images/headPhone.jpg";
 import { ButtonOwn, Indicator } from "../../src/components/Components";
 import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
 export const FirstSplash = ({ navigation }) => {
@@ -11,7 +10,7 @@ export const FirstSplash = ({ navigation }) => {
     }, [])
     return (
         <ScrollView>
-              <StatusBar backgroundColor='#FDFDFD'></StatusBar>
+            <StatusBar backgroundColor='#FDFDFD'></StatusBar>
             <View style={styles.container}>
 
                 <View>
@@ -27,7 +26,7 @@ export const FirstSplash = ({ navigation }) => {
                 </View>
                 <View style={styles.containerImage}>
                     <Image
-                        source={headPhone}
+                        source={{ uri: "https://firebasestorage.googleapis.com/v0/b/borrador-a0724.appspot.com/o/codePictures%2FWhatsApp%20Image%202022-07-11%20at%206.06.01%20PM.jpeg?alt=media&token=2c9d14da-67a2-4f4d-849d-db8745a0e976" }}
                         style={styles.imageStyle}
                     >
                     </Image>
@@ -63,7 +62,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: "relative",
         paddingHorizontal: 50,
-        height:Dimensions.get("window").height
+        height: Dimensions.get("window").height
 
     },
     containerIndicator: {
@@ -102,7 +101,8 @@ const styles = StyleSheet.create({
         textShadowOffset: { width: 0, height: 3 },
         textShadowRadius: 4,
         marginTop: 0,
-        marginBottom: 20
+        marginBottom: 20,
+        textAlign: "center"
     },
     subTitle: {
         fontStyle: "normal",

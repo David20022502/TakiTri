@@ -9,7 +9,7 @@ import { createUserDatabases } from "../../src/services/UserServices";
 import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
 import { getMessage } from "../../src/components/Messages";
 import { Icon } from "@rneui/base";
-import { validateEmail, validateName, validatePassword, validatePassword1 } from "../../src/services/Validations";
+import { checkOnlySpaces, validateEmail, validateName, validatePassword, validatePassword1 } from "../../src/services/Validations";
 import DatePicker from 'react-native-date-picker'
 import { Button } from "react-native";
 import imageHeader from "../../assets/images/HeaderLogo.jpg"
@@ -47,11 +47,7 @@ export const Register = ({ navigation }) => {
     const [initBirthdate, setInitBirthdate] = useState(new Date());
 
     React.useEffect(()=>{
-        console.log("isNotErrorStyleImputTextEmail",isNotErrorStyleImputTextEmail)
-        console.log("isNotErrorStyleImputTextname",isNotErrorStyleImputTextname)
-        console.log("isNotErrorStyleImputTextdate",isNotErrorStyleImputTextdate)
-        console.log("isNotErrorStyleImputlastname",isNotErrorStyleImputlastname)
-        console.log("pwdsValid",pwdsValid)
+ 
 
         if(isNotErrorStyleImputTextEmail&&isNotErrorStyleImputTextname&&isNotErrorStyleImputTextdate&&isNotErrorStyleImputlastname&&pwdsValid){
             setIsButtonDisabled(false);
@@ -71,10 +67,7 @@ export const Register = ({ navigation }) => {
         handleLoading(true);
         createUserWithEmailAndPassword(auth, userName, password)
             .then((userCredential) => {
-                // Signed in
                 const user = userCredential.user;
-                console.log("usuario creado", user);
-                console.log("usuario creado credenciales", userCredential);
                 let userTemp = {
                     id: user.uid,
                     user: userName.trim(),
@@ -83,7 +76,6 @@ export const Register = ({ navigation }) => {
                     birthDate: birthdate.trim(),
                 }
                 createUserDatabases(userTemp);
-                // ...
                 handleLoading(true);
             })
             .catch((error) => {
@@ -226,15 +218,25 @@ export const Register = ({ navigation }) => {
                             text={"Nombres"}
                             value={names}
                             onChangeText={(e) => {
-                                let validation = validateName(e);
-                                if (validation.resultValidation) {
-                                
-                                        setNames(e);
+                                let checkSpaces=checkOnlySpaces(e);
+                                console.log("checkSpaces",checkSpaces)
+                                if(e.length>=0&&!checkSpaces){
+                                    let validation = validateName(e);
+                                    if (validation.resultValidation) {
                                     
+                                            setNames(e);
+                                        
+                                    }
+                                    console.log(validation);
+                                    setErrorTextImputMessagename(validation.message)
+                                    setIsNotErrorStyleImputTextname(validation.Result)
+                                }else{
+                                    setNames(e);
+
+                                    setErrorTextImputMessagename(getMessage("nameRequired"))
+                                    setIsNotErrorStyleImputTextname(false)
                                 }
-                                console.log(validation);
-                                setErrorTextImputMessagename(validation.message)
-                                setIsNotErrorStyleImputTextname(validation.Result)
+                               
                             }}
 
 
@@ -250,13 +252,21 @@ export const Register = ({ navigation }) => {
                             text={"Apellidos"}
                             value={lastName}
                             onChangeText={(e) => {
-                                let validation = validateName(e);
-                                if (validation.resultValidation) {
+                                let checkSpaces=checkOnlySpaces(e);
+                                if(e.length>0 && !checkSpaces){
+                                    let validation = validateName(e);
+                                    if (validation.resultValidation) {
+                                        setLastName(e);
+                                    }
+                                    console.log(validation);
+                                    setErrorTextImputMessagelastname(validation.message)
+                                    setIsNotErrorStyleImputTextlastname(validation.Result)
+                                }else{
                                     setLastName(e);
+                                    setErrorTextImputMessagelastname(getMessage("lastNameReuired"))
+                                    setIsNotErrorStyleImputTextlastname(false)
                                 }
-                                console.log(validation);
-                                setErrorTextImputMessagelastname(validation.message)
-                                setIsNotErrorStyleImputTextlastname(validation.Result)
+                               
                             }}
 
                         >

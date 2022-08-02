@@ -14,7 +14,7 @@ export const HomeStates = ({ children }) => {
       currentMusic: null,
       isPlayingSound: null,
       currentPlayList: null,
-      likedSongsList: null,
+      likedSongsList: [],
       isOnLongPress: false,
       selectedList: [],
       isLoading: false,
@@ -70,7 +70,6 @@ export const HomeStates = ({ children }) => {
   const playMusic = useCallback(async (audioPlayer, currentMusic, music, playList) => {
     if (audioPlayer == null) {
       await TrackPlayer.setupPlayer()
-      console.log("crendo audio", music);
       Sound.setCategory('Playback');
       audioPlayer = new Sound(music.songURL, Sound.MAIN_BUNDLE, (error) => {
         if (error) {
@@ -78,7 +77,6 @@ export const HomeStates = ({ children }) => {
           return;
         }
         console.log("reproducido con ")
-
         audioPlayer.play((success) => {
           if (success) {
             console.log('successfully finished playing');
@@ -87,6 +85,7 @@ export const HomeStates = ({ children }) => {
           }
         });
       });
+      
       dispatch({ type: LOAD_AUDIO_PLAYER, payload: audioPlayer })
       dispatch({ type: LOAD_CURRENT_MUSIC, payload: music })
       loadCurrentPlayList(playList);
@@ -120,9 +119,12 @@ export const HomeStates = ({ children }) => {
         }
 
       } else {
-        if (!audioPlayer.isPlaying()) {
-          audioPlayer.play();
-        }
+        setisPlayingSound(true);
+
+        /*if (!state.audioPlayer.isPlaying()) {
+          state.audioPlayer.play();
+        }*/
+       
       }
     }
   }, [])

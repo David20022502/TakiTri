@@ -70,7 +70,7 @@ export const createTableDatabaseChecker = async() => {
 
 };
 
-export const deleteFromDatabeMusic = (music_id, user_id) => {
+export const deleteFromDatabeMusic = async(music_id, user_id) => {
   global.dbStatus.transaction((tx) => {
     tx.executeSql(
       "DELETE FROM history WHERE music_id=? and user_id=?",
