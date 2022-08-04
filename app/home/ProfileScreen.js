@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, View, TextInput } from 'react-native'
+import { StyleSheet, TouchableOpacity, View, TextInput, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { useTheme, Text } from 'react-native-paper'
 //import * as styles from '../../assets/styles/appStyles'
@@ -17,6 +17,7 @@ import TakiTriContext from '../../context/SecurityContext/TakiTriContext'
 import { getMessage } from '../../src/components/Messages'
 import DatePicker from 'react-native-date-picker'
 import { checkOnlySpaces, validateName } from '../../src/services/Validations'
+import { useIsFocused } from '@react-navigation/native'
 
 export const ProfileScreen = () => {
   global.pageStatus = "ProfileScreen";
@@ -41,7 +42,12 @@ export const ProfileScreen = () => {
 
   React.useEffect(() => {
     //handlePaddingSnackBar(5);
-  }, []);
+    setImageUser(userTakiTri.imageUser);
+    setNameUser(userTakiTri.names);
+    setLastNameUser(userTakiTri.lastName);
+    setBirhDate(userTakiTri.birthDate);
+    setEmail(userTakiTri.user);
+  }, [useIsFocused]);
   React.useEffect(async () => {
     if (userImageUrl) {
       try {
@@ -91,12 +97,16 @@ export const ProfileScreen = () => {
     return lettersImg;
   };
   const onSubmit = () => {
-
-    if (imageUser != null) {
+     if(nameUser.length<=0){
+      handleError(getMessage("nameRequired"), "red");
+     }else if(lastNameUser.length<=0){
+      handleError(getMessage("lastNameReuired"), "red");
+     }else if(imageUser != null){
       handleLoading(true)
       uploadFile();
-    } else {
-    }
+     }
+
+  
 
   }
   const uploadFile = async () => {
@@ -146,7 +156,9 @@ export const ProfileScreen = () => {
 }
   return (
     <View style={{ flex: 1, marginHorizontal: 20 }}>
+      <ScrollView>
 
+     
       <View
         style={{
           justifyContent: "center",
@@ -193,6 +205,7 @@ export const ProfileScreen = () => {
           editable={true}
           placeholder={"xxxx xxxx"}
           value={nameUser}
+          maxValue={30}
           onChangeText={(e) => {
             // e=e.trim();
             let checkSpaces = checkOnlySpaces(e);
@@ -225,6 +238,8 @@ export const ProfileScreen = () => {
           placeholder={"xxxx xxxx "}
           value={lastNameUser}
           editable={true}
+          maxValue={30}
+
           onChangeText={(e) => {
             let checkSpaces = checkOnlySpaces(e);
             if (!checkSpaces) {
@@ -338,6 +353,7 @@ export const ProfileScreen = () => {
           setOpen(false)
         }}
       />
+       </ScrollView>
     </View>
   )
 }

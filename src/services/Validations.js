@@ -108,7 +108,58 @@ export const validatePassword = (ValueNum, ValueNum2) => {
         // setPassword2(null);
     }
 };
+export const validateAlfaNumeric=(value)=>{
+    let Response = {
+        Result: null,
+        message: null,
+        resultValidation: false
+    }; 
+    let expresion = /^\w+$/gim;
 
+    if (value.includes(" ")) {
+        let tempData = value.split(" ");
+        let resul = [];
+        console.log(tempData)
+        for (let i = 0; i < tempData.length; i++) {
+            if (tempData[i].length > 0) {
+                let expresion = /^\w+$/gim;
+                console.log(tempData[i]);
+                let Resultr =expresion.test(tempData[i])
+                console.log("Resultr",Resultr);
+                resul.push(Resultr)
+            }
+        }
+        console.log(resul)
+        if (resul.includes(false)) {
+            Response.Result = false;
+            Response.resultValidation = true;
+            Response.message = "Debe ingresar solo letras";
+            return Response;
+        } else {
+          
+            Response.Result = true;
+                Response.resultValidation = true;
+                Response.message = "";
+                return Response;
+           
+        }
+    } else {
+        let result = expresion.test(value.trim())
+        if (result==false) {
+            Response.Result = false;
+            Response.resultValidation = true;
+            Response.message = "Debe ingresar solo letras";
+            return Response;
+        } else {
+            Response.Result = true;
+            Response.resultValidation = true;
+            Response.message = "Nombre correcto";
+            return Response;
+        }
+
+    }
+
+}
 export const validateName = (value) => {
     let Response = {
         Result: null,

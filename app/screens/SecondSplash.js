@@ -6,49 +6,52 @@ export const SecondSplash = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <ScrollView>
-                <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                    <Text style={styles.title}>
-                        Acerca de
-                    </Text>
-                </View>
-                <View style={styles.containerItemInformation} >
-                    <Text style={styles.subTitle}>
-                        ¿Quiénes somos?
-                    </Text>
-                    <Text style={styles.textStyle}>
-                        Somos un grupo de desarrolladores que buscamos lo mejor para nuestros usuarios.
-                    </Text>
-                </View>
-                <View style={styles.containerItemInformation} >
-                    <Text style={styles.subTitle}>
-                        Géneros Musicales
-                    </Text>
-                    <Text style={styles.textStyle}>
-                        Esta aplicacón móvil está destinada a acojer géneros musicales pertenecientes al Ecuador.
-                    </Text>
+                <View style={{paddingRight:30}}>
+                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                        <Text style={styles.title}>
+                            Acerca de
+                        </Text>
+                    </View>
+                    <View style={styles.containerItemInformation} >
+                        <Text style={styles.subTitle}>
+                            ¿Quiénes somos?
+                        </Text>
+                        <Text style={styles.textStyle}>
+                            Somos un grupo de desarrolladores que buscamos lo mejor para nuestros usuarios.
+                        </Text>
+                    </View>
+                    <View style={styles.containerItemInformation} >
+                        <Text style={styles.subTitle}>
+                            Géneros Musicales
+                        </Text>
+                        <Text style={styles.textStyle}>
+                            Esta aplicacón móvil está destinada a acojer géneros musicales pertenecientes al Ecuador.
+                        </Text>
+                    </View>
+
+                    <View style={styles.containerItemInformation} >
+                        <Text style={styles.subTitle}>
+                            Misión
+                        </Text>
+                        <Text style={styles.textStyle}>
+                            Brindar a los artistas la oportunidad de llegar a más personas mediante la  música ,
+                            construyendo una identidad musical en los niños, jóvenes y adultos ecuatorianos.
+                        </Text>
+                    </View>
+
+                    <View style={[styles.containerItemInformation, { marginBottom: 60 }]} >
+                        <Text style={styles.subTitle}>
+                            Visión
+                        </Text>
+                        <Text style={[styles.textStyle, { marginBottom: 30 }]}>
+                            Comunicar  mediante la música,
+                            donde el respeto en cada uno de los artistas se refleja en cada canción de Taki-tri,
+                            donde la humildad del ecuatoriano se escucha en los versos y la sinceridad en cada estrofa,
+                            sin dejar a un lado la  honestidad en cada nota musical que  da vida y coraje al talento ecuatoriano.
+                        </Text>
+                    </View>
                 </View>
 
-                <View style={styles.containerItemInformation} >
-                    <Text style={styles.subTitle}>
-                        Misión
-                    </Text>
-                    <Text style={styles.textStyle}>
-                        Brindar a los artistas la oportunidad de llegar a más personas mediante la  música ,
-                        construyendo una identidad musical en los niños, jóvenes y adultos ecuatorianos.
-                    </Text>
-                </View>
-
-                <View style={[styles.containerItemInformation, { marginBottom: 60 }]} >
-                    <Text style={styles.subTitle}>
-                        Visión
-                    </Text>
-                    <Text style={[styles.textStyle, { marginBottom: 30 }]}>
-                        Comunicar  mediante la música,
-                        donde el respeto en cada uno de los artistas se refleja en cada canción de Taki-tri,
-                        donde la humildad del ecuatoriano se escucha en los versos y la sinceridad en cada estrofa,
-                        sin dejar a un lado la  honestidad en cada nota musical que  da vida y coraje al talento ecuatoriano.
-                    </Text>
-                </View>
 
 
 
@@ -71,13 +74,12 @@ export const SecondSplash = ({ navigation }) => {
 }
 const styles = StyleSheet.create({
     container: {
-        paddingHorizontal: 10,
         flex: 1,
         backgroundColor: '#FDFDFD',
         flexDirection: "column",
         justifyContent: 'center',
         position: "relative",
-        paddingHorizontal: 50,
+        paddingHorizontal: 40,
         paddingBottom: 100
 
     },
@@ -130,8 +132,8 @@ const styles = StyleSheet.create({
         textShadowOffset: { width: 0, height: 1 },
         textShadowRadius: 4,
         marginTop: 20,
-        marginBottom:10,
-        textAlign:"center"
+        marginBottom: 10,
+        textAlign: "center"
     },
     containerItemInformation: {
         flexDirection: "column",

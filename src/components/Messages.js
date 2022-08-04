@@ -16,5 +16,7 @@ const data ={
     "credentialsRequired":"Ingrese sus credenciales",
     "nameRequired":"Ingrese su nombre",
     "lastNameReuired":"Ingrese su apellido",
-    "authRequired":"Necesita iniciar sesión para poder realizar esta acción"
+    "authRequired":"Necesita iniciar sesión para poder realizar esta acción",
+    "playListNameRequired":"Ingrese el nombre de la PlayList"
+
 }

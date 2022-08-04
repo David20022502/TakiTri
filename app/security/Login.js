@@ -63,6 +63,7 @@ export const Login = ({ navigation }) => {
                             text={"Correo electrónico"}
                             value={userName}
                             onChangeText={setUserName}
+                            maxLength={50}
                         >
                         </InputText>
                         <InputText
@@ -72,6 +73,8 @@ export const Login = ({ navigation }) => {
                             onChangeText={setPassword}
                             modify={isPwdVisible}
                             isPassword={true}
+                            maxLength={30}
+
                             changeVisibility={() => { setIsPwdVisible(!isPwdVisible) }}
                             IconR={() => { return (<Icon name={isPwdVisible ? "eye-off" : "eye"} type="feather" color={"#AAAAAA"} />) }}
                         >

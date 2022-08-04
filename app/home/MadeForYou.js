@@ -2,6 +2,7 @@ import { Icon } from '@rneui/themed';
 import * as React from 'react';
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList, BackHandler, Dimensions } from 'react-native';
 import HomeContext from '../../context/HomeContext/HomeContext';
+import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
 import { InputLookForAlbumMusic } from '../../src/components/Components';
 import { AlbumItem } from '../../src/Items/AlbumItem';
 import { getAlbumes } from '../../src/services/MusicServices';
@@ -18,6 +19,7 @@ export const MadeForYou = (props) => {
   }
   
   const { loadAlbumAll, albumAll } = React.useContext(HomeContext)
+  const { isAutenticated } = React.useContext(TakiTriContext)
 
   const [albumes, setAlbumes] = React.useState([]);
   const [isLookingFor, setIslookingFor] = React.useState(true)
@@ -137,15 +139,15 @@ export const MadeForYou = (props) => {
     if (item.item.length > 1) {
       return (
         <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 5 }}>
-          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic", { itemAlbum: item.item[0], typeAlbum: "ALBUM" }) }} imageUri={item.item[0].imageURL} title={item.item[0].name}></AlbumItem>
-          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic", { itemAlbum: item.item[1], typeAlbum: "ALBUM" }) }} imageUri={item.item[1].imageURL} title={item.item[1].name}></AlbumItem>
+          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic", { itemAlbum: item.item[0], typeAlbum: "ALBUM" }) }} imageUri={item.item[0].imageURL} title={item.item[0].name } itemAlbum={item.item[0]}></AlbumItem>
+          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic", { itemAlbum: item.item[1], typeAlbum: "ALBUM" }) }} imageUri={item.item[1].imageURL} title={item.item[1].name} itemAlbum={item.item[1]}></AlbumItem>
         </View>
 
       );
     } else {
       return (
         <View style={{ flexDirection: "row", justifyContent: "flex-start", paddingHorizontal: 5 }}>
-          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic", { itemAlbum: item.item[0], typeAlbum: "ALBUM" }) }} imageUri={item.item[0].imageURL} title={item.item[0].name}></AlbumItem>
+          <AlbumItem onPresseAlbum={() => { navigation.navigate("AlbumListMusic", { itemAlbum: item.item[0], typeAlbum: "ALBUM" }) }} imageUri={item.item[0].imageURL} title={item.item[0].name} itemAlbum={item.item[0]}></AlbumItem>
         </View>
 
       );
@@ -157,8 +159,7 @@ export const MadeForYou = (props) => {
 
     let var1 = parseInt(layoutMeasurement.height + contentOffset.y);
     let var2 = parseInt(contentSize.height - paddingToBottom);
-    console.log("var1",var1);
-    console.log("var 2",var2)
+
     if(var1>=var2){
       return true;
     }else{
@@ -181,9 +182,14 @@ export const MadeForYou = (props) => {
       <View style={styles.containerItemsFinal}>
         <View >
           <View style={styles.conatinerTitleHeaderItem}>
-            <Text style={styles.textTitleItem}>
+            {
+              isAutenticated?<Text style={styles.textTitleItem}>
               Hecho Para ti
+            </Text>:<Text style={styles.textTitleItem}>
+              Géneros Musicales
             </Text>
+            }
+            
 
           </View>
           <View style={styles.conatinerTitleHeaderItem}>

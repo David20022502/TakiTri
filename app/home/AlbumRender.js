@@ -44,13 +44,26 @@ export const AlbumRender = (props) => {
         if (itemAlbum.state) {
             //setIsSwitchVisible(true)
             setValueSwith(itemAlbum.state == "PUBLIC" ? true : false);
+            let name = itemAlbum.author;
+
+            name = name.split(" ");
+            if(name.length>1){
+                setPlayListOwner(name[0] + " " + name[1])
+            }else{
+                setPlayListOwner(name[0])
+            }
         }
         if (isSwitchVisibleType) {
             setIsSwitchVisible(true)
             let name = itemAlbum.author;
 
             name = name.split(" ");
-            setPlayListOwner(name[0] + " " + name[1])
+            if(name.length>1){
+                setPlayListOwner(name[0] + " " + name[1])
+            }else{
+                setPlayListOwner(name[0])
+            }
+            
         }
         handlePaddingSnackBar(5);
         const backAction = () => {

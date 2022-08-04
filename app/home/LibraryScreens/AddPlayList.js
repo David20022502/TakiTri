@@ -16,6 +16,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { MusicItem } from "../../../src/Items/MusicItem";
 import TakiTriContext from "../../../context/SecurityContext/TakiTriContext";
 import { getMessage } from "../../../src/components/Messages";
+import { checkOnlySpaces, validateAlfaNumeric } from "../../../src/services/Validations";
 export const AddPlayList = (props) => {
     global.pageStatus = "AddPlayList";
     const { navigation } = props;
@@ -27,6 +28,12 @@ export const AddPlayList = (props) => {
     const [typePlayList, setTypePlayList] = React.useState("");
     const [itemSelectedEdit, setItemSelectedEdit] = React.useState(null);
     const [userImageUrl, setUserImageUrl] = React.useState(null);
+
+    const [isNotErrorStyleImputName, setIsNotErrorStyleImputName] = React.useState(true);
+    const [errorTextImputMessageName, setErrorTextImputMessageName] = React.useState("");
+    const [isNotErrorStyleImputType, setIsNotErrorStyleImputType] = React.useState(true);
+    const [errorTextImputMessageType, setErrorTextImputMessageType] = React.useState("");
+
     let checkUpdateCreate = useRef("");
     let docIdPlayList = useRef("");
     let isOnlongPressItem = React.useRef(false);
@@ -91,7 +98,7 @@ export const AddPlayList = (props) => {
         let date = new Date();
         if (userImageUrl) {
             try {
-               
+
                 if (checkUpdateCreate.current == "UPDATING") {
                     const values = {
                         id: itemSelectedEdit[0].id,
@@ -101,9 +108,9 @@ export const AddPlayList = (props) => {
                         image_references: "albumes/selección de capishcas",
                         name: playListName,
                         songList: itemSelectedEdit[0].songList,
-                        state:"PRIVATE"
+                        state: "PRIVATE"
                     }
-            
+
                     console.log("actualizando....")
 
                     await handleUpdatePlayList(values, backToPlayList);
@@ -112,14 +119,14 @@ export const AddPlayList = (props) => {
                     const values = {
                         author: userTakiTri.names + " " + userTakiTri.lastName,
                         genre_name: typePlayList,
-                        id:  docIdPlayList.current,
+                        id: docIdPlayList.current,
                         idUserOwn: userTakiTri.id,
                         imageURL: userImageUrl,
                         image_references: "albumes/selección de capishcas",
                         name: playListName,
                         year: date.getFullYear(),
                         songList: musicListPlayList,
-                        state:"PRIVATE"
+                        state: "PRIVATE"
 
                     }
                     console.log("creando....123")
@@ -159,7 +166,7 @@ export const AddPlayList = (props) => {
             mediaTypes: MediaTypeOptions.Images,
         };
         let response = await launchImageLibraryAsync(options);
-        if(response.cancelled==false){
+        if (response.cancelled == false) {
             setImageUser(response.uri);
 
         }
@@ -193,12 +200,10 @@ export const AddPlayList = (props) => {
                     handleLoading(false);
                     handleError(getMessage("select_image"), "red");
                 }
-
-
             }
         }
     }
-    
+
     const uploadFile = async () => {
         try {
             const blob = await new Promise((resolve, reject) => {
@@ -216,18 +221,18 @@ export const AddPlayList = (props) => {
 
             const storage = getStorage();
             let fileStorage;
-            if(checkUpdateCreate.current == "CREATING"){
-                const values={
-                    id:""
+            if (checkUpdateCreate.current == "CREATING") {
+                const values = {
+                    id: ""
                 }
-                let docId=await handleSubmitPlayList(values, backToPlayList);
-                docIdPlayList.current=docId;
-                 fileStorage = ref(
+                let docId = await handleSubmitPlayList(values, backToPlayList);
+                docIdPlayList.current = docId;
+                fileStorage = ref(
                     storage,
                     "imagesPlayList/" + docId + ".jpg"
                 );
-            }else{
-                 fileStorage = ref(
+            } else {
+                fileStorage = ref(
                     storage,
                     "imagesPlayList/" + selectedList[0].id + ".jpg"
                 );
@@ -357,23 +362,60 @@ export const AddPlayList = (props) => {
                 <InputTextAdd
                     text={"Nombre:"}
                     placeholder={"Nombre de tu PlayList"}
-                    maxLength={30}
+                    maxLength={27}
                     value={playListName}
-                    onChangeText={setPlayListName}
+                    onChangeText={(e) => {                        
+                        let checkSpaces = checkOnlySpaces(e);
+                        if (!checkSpaces) {
+                          let validation = validateAlfaNumeric(e);
+                          if (validation.resultValidation) {
+                            setPlayListName(e);
+                          }
+                          setErrorTextImputMessageName(validation.message)
+                          setIsNotErrorStyleImputName(validation.Result)
+                        } else {
+                            setPlayListName(e);
+                          setErrorTextImputMessageName(getMessage("playListNameRequired"))
+                          setIsNotErrorStyleImputName(false)
+                        }
+                    }}
                 >
                 </InputTextAdd>
+              
+
             </View>
+            {isNotErrorStyleImputName== false && (
+                    <Text style={styles.errorStyleImputText}>{errorTextImputMessageName}</Text>
+                )}
             <View style={{ flexDirection: "row", justifyContent: "center", marginBottom: 20 }}>
                 <InputTextAdd
                     text={"Tipo:"}
                     placeholder={"Género de las canciones"}
-                    maxLength={30}
+                    maxLength={27}
                     value={typePlayList}
-                    onChangeText={setTypePlayList}
+                    onChangeText={(e)=>{
+                        let checkSpaces = checkOnlySpaces(e);
+                        if (!checkSpaces) {
+                          let validation = validateAlfaNumeric(e);
+                          if (validation.resultValidation) {
+                            setTypePlayList(e);
+                          }
+                          setErrorTextImputMessageType(validation.message)
+                          setIsNotErrorStyleImputType(validation.Result)
+                        } else {
+                            setTypePlayList(e);
+                          setErrorTextImputMessageType(getMessage("playListNameRequired"))
+                          setIsNotErrorStyleImputType(false)
+                        }
+                    }}
 
                 >
                 </InputTextAdd>
+             
             </View>
+               {isNotErrorStyleImputType== false && (
+                    <Text style={styles.errorStyleImputText}>{errorTextImputMessageType}</Text>
+                )}
             <View style={{ flexDirection: "row", justifyContent: "center", marginBottom: 20 }}>
                 {
                     (itemSelectedEdit && itemSelectedEdit.length > 0 && itemSelectedEdit[0]) ? <InputTextAdd
@@ -485,6 +527,12 @@ const styles = StyleSheet.create({
     },
     scrollViewMusic: {
 
-    }
+    },
+    errorStyleImputText: {
+        color: "red",
+        top: -10,
+        marginHorizontal:40,
+        fontSize: 11,
+      },
 
 })

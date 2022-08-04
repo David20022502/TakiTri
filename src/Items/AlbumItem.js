@@ -4,10 +4,12 @@ import example from "../../assets/images/example.jpg";
 import { Icon } from '@rneui/themed';
 import HomeContext from "../../context/HomeContext/HomeContext";
 import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
+import { getMessage } from "../components/Messages";
 
-export const AlbumItem = ({ onPresseAlbum, title, imageUri ,item}) => {
+export const AlbumItem = ({ onPresseAlbum, title, imageUri ,item,itemAlbum}) => {
     const { isOnLongPress, handleIsonlongPress,handlePushSelectedList,handleDeleteSelectedList,selectedList} = useContext(HomeContext);
-    
+    const { handleError,isAutenticated,handleMessageToast, handleShowInformationMusic, handleShowSnackBar, handleDestroyAllSnackBar } = useContext(TakiTriContext)
+
 
     const [isSelecting, setIsSelecting] = useState(false);
     React.useEffect(() => {
@@ -27,7 +29,12 @@ export const AlbumItem = ({ onPresseAlbum, title, imageUri ,item}) => {
     }, [isSelecting])
     const changeAlbumPage = () => {
         // changePageStatus("PLAY_LIST_ALBUM_PAGE");
-        onPresseAlbum();
+        if(isAutenticated){
+            onPresseAlbum();
+
+        }else{
+            handleError(getMessage("authRequired"),"red");
+        }
     }
     return (
         <TouchableOpacity
@@ -60,6 +67,11 @@ export const AlbumItem = ({ onPresseAlbum, title, imageUri ,item}) => {
                     }
 
                     <Text style={styles.TextStyle}>{title}</Text>
+                    {
+                        itemAlbum&&itemAlbum.genre_name&& <Text style={styles.TextStyleGenre}>{itemAlbum.genre_name}</Text>
+                    }
+                   
+
                 </View>
                 <View style={isSelecting&&styles.containerFront}>
 
@@ -96,6 +108,15 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontStyle: "normal",
         fontSize: 17,
+        marginTop: 5,
+        paddingHorizontal: 10,
+        color: "#12485B",
+        height:45
+    },
+    TextStyleGenre:{
+        textAlign: "center",
+        fontStyle: "normal",
+        fontSize: 13,
         marginTop: 5,
         paddingHorizontal: 10,
         color: "#12485B",

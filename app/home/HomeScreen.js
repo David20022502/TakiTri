@@ -32,7 +32,7 @@ export const HomeScreen = ({ navigation }) => {
   //const [isSelected, setIsSelected] = React.useState("MainPage");
   global.pageStatus = "HomeScreen";
 
-  const { loadAlbumAll, handleMaxNumberDataBase, audioPlayer, handleMusicPlayed, musicPlayedList } = React.useContext(HomeContext)
+  const {albumAll, loadAlbumAll, handleMaxNumberDataBase, audioPlayer, handleMusicPlayed, musicPlayedList } = React.useContext(HomeContext)
   const { userTakiTri, handlePaddingSnackBar } = React.useContext(TakiTriContext);
   const [musicPlayed, setMusicPlayed] = React.useState([]);
   const [maxNumberDataBase, setMaxNumberDataBase] = React.useState([]);
@@ -55,7 +55,12 @@ export const HomeScreen = ({ navigation }) => {
   React.useEffect(() => {
     handlePaddingSnackBar(54)
   }, [useIsFocused])
+  React.useEffect(() => {
 
+    console.log("albumAll",albumAll);
+    console.log("albumAll",albumAll.length);
+  }, [albumAll])
+  
 
 
   const fillAppStatus = () => {

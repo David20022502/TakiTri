@@ -11,10 +11,13 @@ import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
 
 import imageHeader from "../../assets/images/HeaderLogo.jpg"
 import { getMessage } from "../../src/components/Messages";
+import { validateEmail } from "../../src/services/Validations";
 
 export const ResetPasword = ({ navigation }) => {
     const { handleSendEmailPasswordReeset,handleError } = useContext(TakiTriContext)
     const [emailUser, setEmailUser] = React.useState("");
+    const [isNotErrorStyleImputTextEmail, setIsNotErrorStyleImputTextEmail] = React.useState(false);
+    const [errorTextImputMessageEmail, setErrorTextImputMessageEmail] = React.useState("");
     const handleSendEmailPasswordReset = () => {
         if(emailUser.length<=0){
             handleError(getMessage("emailRequired"),"red");
@@ -53,16 +56,30 @@ export const ResetPasword = ({ navigation }) => {
                             placeholder={"ejemplo123@gmail.com"}
                             text={"Correo electrónico"}
                             value={emailUser}
-                            onChangeText={setEmailUser}
+                            maxLength={50}
+
+                            onChangeText={(e)=>{
+                                console.log("email", e);
+                                let validation = validateEmail(e);
+                                if (validation.resultValidation) {
+                                    setEmailUser(e);
+                                }
+                                console.log(validation);
+                                setErrorTextImputMessageEmail(validation.message);
+                                setIsNotErrorStyleImputTextEmail(validation.Result);
+                            }}
                             colorT={"white"}
                         >
                         </InputText>
-
+                        {isNotErrorStyleImputTextEmail == false && (
+                            <Text style={styles.errorStyleImputText}>{errorTextImputMessageEmail}</Text>
+                        )}
 
                         <View style={styles.containerButton} >
                             <ButtonOwn
                                 title={"Enviar Email"}
                                 onPress={() => { handleSendEmailPasswordReset(); }}
+                                disabled={!isNotErrorStyleImputTextEmail}
                             >
 
                             </ButtonOwn>
@@ -112,6 +129,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: "relative",
         paddingHorizontal: 50,
+    },
+    errorStyleImputText: {
+        color: "red",
+        top: -20,
+        marginLeft: 20,
+        fontSize: 11,
     },
     conatinerHeader: {
         marginTop: 75,

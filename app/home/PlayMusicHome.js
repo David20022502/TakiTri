@@ -337,7 +337,7 @@ export const PlayMusicHome = (props) => {
                     setIsRandom(!isRandom);
                   }}
                 >
-                  <Icon name="shuffle" size={25} type="entypo" color={isRandom ? "red" : "#FDFDFD"} />
+                  <Icon name="shuffle" size={25} type="entypo" color={isRandom ? "#000000" : "#FDFDFD"} />
 
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -345,7 +345,7 @@ export const PlayMusicHome = (props) => {
                     isRepeating.current = !isRepeating.current; setIsRepeatingButton(!isRepeatingButton)
                   }}
                 >
-                  <Icon name="repeat" size={25} type="feather" color={isRepeatingButton ? "red" : "#FDFDFD"} />
+                  <Icon name="repeat" size={25} type="feather" color={isRepeatingButton ? "#000000" : "#FDFDFD"} />
 
                 </TouchableOpacity>
                 <TouchableOpacity>

@@ -59,7 +59,6 @@ export const RecentPlayed = () => {
 
                }
             }
-            console.log("to rencet",tempMusics);
             setMusicsListShow(tempMusics);
 
         }

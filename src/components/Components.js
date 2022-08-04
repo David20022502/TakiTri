@@ -159,7 +159,8 @@ export const InputTextInfo = ({
     style,
     isDate,
     changeVisibility,
-    IconR
+    IconR,
+    maxValue
 }) => {
     return <View style={{ flexDirection: "column", }}>
         <View style={styles.fieldSetInfoProfile}>
@@ -169,7 +170,7 @@ export const InputTextInfo = ({
                 onChangeText={onChangeText}
                 value={value}
                 autoCapitalize={autoCapitalize}
-                maxLength={maxLength}
+                maxLength={maxValue}
                 secureTextEntry={modify}
                 minLength={minLength}
                 placeholder={placeholder}

@@ -73,6 +73,7 @@ export const Register = ({ navigation }) => {
                     user: userName.trim(),
                     names: names.trim(),
                     lastName: lastName.trim(),
+                    imageUser:"https://ui-avatars.com/api/?background=0B2460&color=fff&size=600&font-size=0.4&name=UU",
                     birthDate: birthdate.trim(),
                 }
                 createUserDatabases(userTemp);
@@ -125,6 +126,7 @@ export const Register = ({ navigation }) => {
                             placeholder={"ejemplo123@gmail.com"}
                             text={"Email"}
                             value={userName}
+                            maxLength={50}
                             onChangeText={(e) => {
                                 console.log("email", e);
                                 let validation = validateEmail(e);
@@ -147,6 +149,8 @@ export const Register = ({ navigation }) => {
                             placeholder={"**********"}
                             text={"Contraseña"}
                             value={password}
+                            maxLength={30}
+
                             onChangeText={(e) => {
                                 let validation = validatePassword1(e);
                                 if (validation.resultValidation) {
@@ -187,6 +191,8 @@ export const Register = ({ navigation }) => {
                             placeholder={"**********"}
                             text={"Repetir la contraseña"}
                             value={password2}
+                            maxLength={30}
+
                             onChangeText={(e) => {
                                 let validation = validatePassword(password, e, false);
                                 if (validation.resultValidation) {
@@ -216,6 +222,8 @@ export const Register = ({ navigation }) => {
                         <InputText
                             placeholder={"xxxx xxxx  "}
                             text={"Nombres"}
+                            maxLength={50}
+
                             value={names}
                             onChangeText={(e) => {
                                 let checkSpaces=checkOnlySpaces(e);
@@ -250,6 +258,8 @@ export const Register = ({ navigation }) => {
                         <InputText
                             placeholder={"xxxx xxxx  "}
                             text={"Apellidos"}
+                            maxLength={50}
+
                             value={lastName}
                             onChangeText={(e) => {
                                 let checkSpaces=checkOnlySpaces(e);
@@ -446,6 +456,7 @@ const styles = StyleSheet.create({
         textShadowRadius: 4,
         marginTop: 50,
         paddingHorizontal: 50,
+        textAlign:"center"
 
     },
     subTitle: {
