@@ -57,8 +57,7 @@ export const HomeScreen = ({ navigation }) => {
   }, [useIsFocused])
   React.useEffect(() => {
 
-    console.log("albumAll",albumAll);
-    console.log("albumAll",albumAll.length);
+ 
   }, [albumAll])
   
 

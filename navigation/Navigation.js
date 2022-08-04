@@ -51,7 +51,7 @@ export const Navigation = () => {
     const CheckFirstTime = () => {
         return <>
             {
-                isFirstTimeUsing != null ? <UnAtenticatedUserFirstTime></UnAtenticatedUserFirstTime> : <UnAtenticatedUserUsing></UnAtenticatedUserUsing>
+                isFirstTimeUsing == false ? <UnAtenticatedUserFirstTime></UnAtenticatedUserFirstTime> : <UnAtenticatedUserUsing></UnAtenticatedUserUsing>
             }
 
         </>

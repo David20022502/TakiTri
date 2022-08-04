@@ -162,7 +162,7 @@ export const AlbumRender = (props) => {
             <Text
                 style={{ color: "#F3F3F3", fontSize: 20, marginHorizontal: 20, textAlign: "center" }}
             >{
-                    itemAlbum.name == "Favoritos" ? "Por el momento no tienes ninguna canción que te guste" : "Álbum sin canciónes"
+                    itemAlbum.name == "Favoritos" ? "Por el momento no tienes ninguna canción en favoritos" : "Álbum sin canciónes"
                 }
             </Text>
         </View>);

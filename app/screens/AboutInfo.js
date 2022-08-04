@@ -17,7 +17,7 @@ export const AboutInfo = () => {
         <View style={{width:300,flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
             <Text style={styles.text}>TakiTri</Text>
             <Text style={styles.text}>Versión-{version}</Text>
-            <Text style={styles.text}>Es una app de protipo, toda la información que encuentre son usados con fines de prueba</Text>
+            <Text style={styles.text}>TakiTri es una app de prototipo, toda la información desplegada aquí, es usada con fines de prueba.</Text>
         </View>
     </View>
 }

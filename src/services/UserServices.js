@@ -9,6 +9,7 @@ export const createUserDatabases=async(user)=>{
         names:user.names,
         lastName:user.lastName,
         birthDate:user.birthDate,
+        imageUser:user.imageUser
       });
      
 }

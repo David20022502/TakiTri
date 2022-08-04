@@ -6,6 +6,8 @@ import HomeContext from "../../../context/HomeContext/HomeContext";
 import { InputAddLookFor, InputLookFor, InputTextAdd } from "../../../src/components/Components";
 import { AlbumItem } from "../../../src/Items/AlbumItem";
 import { getAlbumes, lokForSongs } from "../../../src/services/MusicServices";
+import { Button } from '@rneui/themed';
+
 import {
     launchImageLibraryAsync,
     MediaTypeOptions,
@@ -14,18 +16,18 @@ import {
 import { MusicItem } from "../../../src/Items/MusicItem";
 import { Icon } from "@rneui/base";
 export const AddMusicPlayList = (props) => {
-    global.pageStatus="AddMusicPlayList";
-    const{navigation}=props;
-    let musicList1=React.useRef([]);
-    try{
-        musicList1.current=props.route.params.musicList;
-    }catch(e){
+    global.pageStatus = "AddMusicPlayList";
+    const { navigation } = props;
+    let musicList1 = React.useRef([]);
+    try {
+        musicList1.current = props.route.params.musicList;
+    } catch (e) {
 
     }
-    const { handlePushPlayListMusicAdded,musicListPlayList, handleIsonlongPress, selectedList, handleDeleteSelectedList,handlePushSelectedList } = useContext(HomeContext);
+    const { handlePushPlayListMusicAdded, musicListPlayList, handleIsonlongPress, selectedList, handleDeleteSelectedList, handlePushSelectedList } = useContext(HomeContext);
     const [inputLookFor, setInputLookFor] = React.useState("");
     const [resultsMusics, setResultsMusics] = React.useState(null);
-    const [musicList, setMusicList] = React.useState(  musicList1.current);
+    const [musicList, setMusicList] = React.useState(musicList1.current);
     let listMusic = React.useRef([]);
     let isOnlongPressItem = React.useRef(false);
     React.useEffect(() => {
@@ -53,29 +55,29 @@ export const AddMusicPlayList = (props) => {
 
         return () => backHandler.remove();
     }, [])
-    React.useEffect(()=>{
-        if(selectedList.length>0){
-            let itemSelectedTemp=selectedList[0];
-            let idMusics=[];
-            handleDeleteSelectedList({},{},true)
+    React.useEffect(() => {
+        if (selectedList.length > 0) {
+            let itemSelectedTemp = selectedList[0];
+            let idMusics = [];
+            handleDeleteSelectedList({}, {}, true)
             for (let i = 0; i < musicList.length; i++) {
                 idMusics.push(musicList[i].id);
             }
-            itemSelectedTemp.songList=idMusics;
-            console.log("datos nuevos",itemSelectedTemp)
-            handlePushSelectedList(itemSelectedTemp,selectedList);
-        }else{
-            let idMusics=[];  
+            itemSelectedTemp.songList = idMusics;
+            console.log("datos nuevos", itemSelectedTemp)
+            handlePushSelectedList(itemSelectedTemp, selectedList);
+        } else {
+            let idMusics = [];
             for (let i = 0; i < musicList.length; i++) {
                 idMusics.push(musicList[i].id);
-            }          
+            }
             handlePushPlayListMusicAdded(idMusics);
         }
-        listMusic.current=musicList;
-    },[musicList])
-    React.useEffect(()=>{
-        console.log("musicListPlayList",musicListPlayList);
-    },[musicListPlayList])
+        listMusic.current = musicList;
+    }, [musicList])
+    React.useEffect(() => {
+        console.log("musicListPlayList", musicListPlayList);
+    }, [musicListPlayList])
 
     const renderItemMusic = (item) => {
         return (
@@ -86,7 +88,7 @@ export const AddMusicPlayList = (props) => {
 
                 <View style={styles.containerOPtions}>
                     <TouchableOpacity
-                        onPress={() => {handleAddMusic(item.item)}}
+                        onPress={() => { handleAddMusic(item.item) }}
                     >
                         <Icon name="plus" size={30} type="ant-design" color="#12485B" />
                     </TouchableOpacity>
@@ -105,7 +107,7 @@ export const AddMusicPlayList = (props) => {
 
                 <View style={styles.containerOPtions}>
                     <TouchableOpacity
-                        onPress={() => {handleDeleteMusic(item.item)}}
+                        onPress={() => { handleDeleteMusic(item.item) }}
                     >
                         <Icon name="minus" size={30} type="ant-design" color="#12485B" />
                     </TouchableOpacity>
@@ -132,7 +134,7 @@ export const AddMusicPlayList = (props) => {
             style={{ flex: 1, flexDirection: "column", justifyContent: "center", alignItems: "center" }}
         >
             <Text
-                style={{ color: "#AAAAAA", fontSize: 20,marginTop:20 }}
+                style={{ color: "#AAAAAA", fontSize: 20, marginTop: 20 }}
             >Sin Resultados...</Text>
         </View>);
     }
@@ -141,21 +143,21 @@ export const AddMusicPlayList = (props) => {
             style={{ flex: 1, flexDirection: "column", justifyContent: "center", alignItems: "center" }}
         >
             <Text
-                style={{ color: "#AAAAAA", fontSize: 20,marginTop:20 }}
+                style={{ color: "#AAAAAA", fontSize: 20, marginTop: 20 }}
             >
                 No has agreado ninguna canción
             </Text>
         </View>);
     }
-    const handleAddMusic=(item)=>{
-        let index=musicList.filter(it=>it.id==item.id);
-        if(index.length<=0){
-            setMusicList([...musicList,item]);
+    const handleAddMusic = (item) => {
+        let index = musicList.filter(it => it.id == item.id);
+        if (index.length <= 0) {
+            setMusicList([...musicList, item]);
 
         }
     }
-    const handleDeleteMusic=(item)=>{
-        const nuewData=musicList.filter(item1=>item1.id!=item.id);
+    const handleDeleteMusic = (item) => {
+        const nuewData = musicList.filter(item1 => item1.id != item.id);
         setMusicList(nuewData);
     }
     return (
@@ -195,6 +197,8 @@ export const AddMusicPlayList = (props) => {
                     {
                         musicList.length > 0 ? <View style={styles.scrollViewMusic}>
                             <FlatList
+                                contentContainerStyle={{ paddingBottom: 100 }}
+
                                 data={musicList}
                                 renderItem={(item) => renderItemMusicList(item)}
                                 key={item => item.id}
@@ -205,13 +209,37 @@ export const AddMusicPlayList = (props) => {
 
                 </ScrollView>
             </View>
+            <View style={{ width: 100, position: "absolute", bottom: 100, right: 10 }}>
+                <Button
+                    title="Guardar"
+                    titleStyle={{ color: "#12485B" }}
+                    onPress={() => {
+                        if (!isOnlongPressItem.current) {
+                            console.log("navigation", navigation.canGoBack())
+                            if (navigation.canGoBack()) {
+                                navigation.navigate("AddPlayList");
+                            } else {
+                                BackHandler.exitApp();
+                            }
+            
+                        } else {
+                            handleIsonlongPress(false);
+                            handleDeleteSelectedList({}, {}, true);
+                        }
+                    }}
 
+                    buttonStyle={{ backgroundColor: "#F3F3F3", borderRadius: 20 }}
+                >
+
+                </Button>
+            </View>
         </View>
     );
 }
 const styles = StyleSheet.create({
     containerMain: {
-        flex: 1
+        flex: 1,
+        position: "relative"
     },
     conatinerTitleHeaderItem: {
         marginTop: 0,
@@ -241,7 +269,7 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     scrollViewMusic: {
-        paddingBottom:100
+        paddingBottom: 100
     },
     containerOPtions: {
         position: "absolute",

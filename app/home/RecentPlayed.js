@@ -121,7 +121,7 @@ export const RecentPlayed = () => {
         </Text>
         <View style={styles.conatinerTitleHeaderItem1}>
             <Text style={styles.textSubTitleItem}>
-                Todas las caciones escuchadas en los ultimos momentos
+                Todas las canciones escuchadas en los últimos momentos
             </Text>
 
         </View>
