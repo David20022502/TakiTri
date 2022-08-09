@@ -300,11 +300,11 @@ export const PlayMusicHome = (props) => {
     }
 
   }
-
+//cambios 1
 
   return (
     <>
-      {currentMusic && <View style="allContainer">
+      {currentMusic && <View style={styles.allContainer}>
         <Image
           source={{ uri: currentMusic.imageURL }}
           style={{ width: "100%", height: "100%" }}

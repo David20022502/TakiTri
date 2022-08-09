@@ -114,7 +114,7 @@ export const validateAlfaNumeric=(value)=>{
         message: null,
         resultValidation: false
     }; 
-    let expresion = /^\w+$/gim;
+    let expresion = /^([A-Za-zÑñáéíóúÁÉÍÓÚ 0-9]+)$/gim;
 
     if (value.includes(" ")) {
         let tempData = value.split(" ");
@@ -122,7 +122,7 @@ export const validateAlfaNumeric=(value)=>{
         console.log(tempData)
         for (let i = 0; i < tempData.length; i++) {
             if (tempData[i].length > 0) {
-                let expresion = /^\w+$/gim;
+                let expresion = /^([A-Za-zÑñáéíóúÁÉÍÓÚ 0-9]+)$/gim;
                 console.log(tempData[i]);
                 let Resultr =expresion.test(tempData[i])
                 console.log("Resultr",Resultr);

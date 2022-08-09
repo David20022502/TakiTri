@@ -17,6 +17,9 @@ const data ={
     "nameRequired":"Ingrese su nombre",
     "lastNameReuired":"Ingrese su apellido",
     "authRequired":"Necesita iniciar sesión para poder realizar esta acción",
-    "playListNameRequired":"Ingrese el nombre de la PlayList"
+    "playListNameRequired":"Ingrese el nombre de la PlayList",
+    "typeRequired":"Ingrese el género al que se relaciona el álbum",
+
+
 
 }
