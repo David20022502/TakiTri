@@ -5,11 +5,13 @@
 > ######  **Estudiante:** Darwin David Cacuango Criollo
 > ######  Perfil GitHub: [@DavidCacuango](https://github.com/David20022502)
 ## Documentación:
-> ######  [Informe Técnico](https://epnecuador-my.sharepoint.com/:b:/g/personal/darwin_cacuango_epn_edu_ec/EeHcmmn9FItNgYKC4bz8RkYBG_wQMbAsxGUKmz540ZS5rw?e=QRXsXZ)
+> ######  [Informe Técnico](https://epnecuador-my.sharepoint.com/:b:/g/personal/darwin_cacuango_epn_edu_ec/ESAX9XrR3F9BtU7pRTgI86AB6dwGA6vfI350tRbGVR_y2A?e=axf5s9)
 > ######  [Manual de usuario](https://www.youtube.com/watch?v=7EGXcZmya68)
 ## Accesso a la aplicación en producción:
 
 > ######  [Aplicación en Google Play](https://play.google.com/store/apps/details?id=com.takitri)
+> ######  [Descargar la aplicación instalable en formato APK](https://epnecuador-my.sharepoint.com/:u:/g/personal/darwin_cacuango_epn_edu_ec/EacbX8qOa4pPkBpAGCjX35ABW9HM7eVE2fhTGTbIjphTMA?e=2U7u3G)
+
 ## Ejecución de la aplicación TakiTri (local):
 
 1. Instalar y configurar el entorno de desarrollo de React Native.
