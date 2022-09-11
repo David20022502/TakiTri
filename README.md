@@ -2,7 +2,7 @@
 
 ## Carrera: Desarrollo de Software
 
-> ######  **Estudiante:** Bryan Armando Quisaguano Casa
+> ######  **Estudiante:** Darwin David Cacuango Criollo
 > ######  Perfil GitHub: [@DavidCacuango](https://github.com/David20022502)
 ## Documentación:
 > ######  [Informe Técnico](https://epnecuador-my.sharepoint.com/:b:/g/personal/darwin_cacuango_epn_edu_ec/EeHcmmn9FItNgYKC4bz8RkYBG_wQMbAsxGUKmz540ZS5rw?e=QRXsXZ)
@@ -10,7 +10,7 @@
 ## Accesso a la aplicación en producción:
 
 > ######  [Aplicación en Google Play](https://play.google.com/store/apps/details?id=com.takitri)
-## Ejecución del proyecto TakiTri(local):
+## Ejecución de la aplicación TakiTri (local):
 
 1. Instalar y configurar el entorno de desarrollo de React Native.
 ```
