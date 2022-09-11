@@ -5,7 +5,7 @@
 > ######  **Estudiante:** Darwin David Cacuango Criollo
 > ######  Perfil GitHub: [@DavidCacuango](https://github.com/David20022502)
 ## Documentación:
-> ######  [Informe Técnico](https://epnecuador-my.sharepoint.com/:b:/g/personal/darwin_cacuango_epn_edu_ec/ESAX9XrR3F9BtU7pRTgI86AB6dwGA6vfI350tRbGVR_y2A?e=axf5s9)
+> ######  [Informe Técnico](https://epnecuador-my.sharepoint.com/:b:/g/personal/darwin_cacuango_epn_edu_ec/EeHcmmn9FItNgYKC4bz8RkYBG_wQMbAsxGUKmz540ZS5rw?e=fZpJ2k)
 > ######  [Manual de usuario](https://www.youtube.com/watch?v=7EGXcZmya68)
 ## Accesso a la aplicación en producción:
 
