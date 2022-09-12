@@ -1,8 +1,7 @@
-import { BackHandler, StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions, Image } from 'react-native';
+import { BackHandler, StyleSheet, Text, View, TouchableOpacity, Dimensions, Image } from 'react-native';
 import { Icon, Slider } from '@rneui/themed';
 import React, { useContext, useRef } from 'react';
 import HomeContext from '../../context/HomeContext/HomeContext';
-import Sound from 'react-native-sound';
 import { deleteLikedSong, putLikedSong } from '../../src/services/MusicServices';
 import { deleteFromDatabeMusic, getMaxNumberDataBase, insertHistoryMusicDataBase } from '../../src/services/DataBase';
 import TakiTriContext from '../../context/SecurityContext/TakiTriContext';

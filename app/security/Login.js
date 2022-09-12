@@ -2,10 +2,8 @@ import { View, Text, StyleSheet, Image, Dimensions, ScrollView, TouchableOpacity
 import React, { useContext, useState } from "react";
 import { StatusBar } from 'expo-status-bar';
 
-import { ButtonOwn, ButtonOwnRegister, Indicator, InputText } from "../../src/components/Components";
-import iconGoogle from "../../assets/images/iconGoogle.jpg";
+import { ButtonOwn, ButtonOwnRegister, InputText } from "../../src/components/Components";
 import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
-import { ModalInfoError } from "../components/ModalInfoError"
 import imageHeader from "../../assets/images/HeaderLogo.jpg"
 import { Icon } from "@rneui/base";
 import { insertDataBaseChecker } from "../../src/services/DataBase";
@@ -14,8 +12,6 @@ export const Login = ({ navigation }) => {
     const { singInWithEmailPassword, handleError } = useContext(TakiTriContext)
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
-    const [messageError, setMessageError] = useState("");
-    const [modalErrorVisible, setmodalErrorVisible] = useState(false);
     const [isPwdVisible, setIsPwdVisible] = useState(true);
     React.useEffect(() => {
         if (global.dbStatusChecker) {

@@ -1,14 +1,12 @@
 import { Icon } from '@rneui/themed';
 import * as React from 'react';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions, Image, BackHandler } from 'react-native';
+import {  StyleSheet, Text, View, FlatList, Image, BackHandler } from 'react-native';
 import { MusicItem } from '../../src/Items/MusicItem';
-import { getAlbumes, getLikedSongById, getMusics, getSongsByAlbum, handleUpdateStateAlbum } from '../../src/services/MusicServices';
-import favoritesIm from "../../assets/images/favoritesIm.jpeg";
+import { getAlbumes, getLikedSongById, getSongsByAlbum, handleUpdateStateAlbum } from '../../src/services/MusicServices';
 import HomeContext from '../../context/HomeContext/HomeContext';
 import { StatusBar } from 'expo-status-bar';
 import favoritosImg from "../../assets/images/favoritosImg.png";
 
-import { Button } from '@rneui/base';
 import { InputLookForAlbumMusic, SwitchCase } from '../../src/components/Components';
 import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
 export const AlbumRender = (props) => {

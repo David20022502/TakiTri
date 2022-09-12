@@ -1,20 +1,16 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HomeScreen } from './HomeScreen';
 import { LookFor } from './LookFor';
-import { Library } from './Library';
 import { Icon } from '@rneui/themed';
 import HomeContext from '../../context/HomeContext/HomeContext';
 import React, { useContext } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerContent } from '../screens/DrawerContent';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { LibraryPlayLists } from './LibraryScreens/LibraryPlayList';
-import { AlbumRender } from './AlbumRender';
 import { MadeForYou } from './MadeForYou';
 import { MyPlayList } from './LibraryScreens/MyPlayList';
 import { AddPlayList } from './LibraryScreens/AddPlayList';
 import { AddMusicPlayList } from './LibraryScreens/AddMusicPlayList';
-import { ModalInfoError } from '../components/ModalInfoError';
 import { ProfileScreen } from './ProfileScreen';
 import { RecentPlayed } from './RecentPlayed';
 import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
@@ -47,13 +43,7 @@ export default function Home({ navigation }) {
         <Drawer.Screen name="Historial" component={RecentPlayed} />
         <Drawer.Screen name="Información" component={AboutInfo} />
       </Drawer.Navigator>
-      <ModalInfoError
-        modalVisible={isModalErrorVisible}
-        setModalVisible={handleIsModalErrorVisible}
-        message={messageError}
-      >
 
-      </ModalInfoError>
     </>
 
   );

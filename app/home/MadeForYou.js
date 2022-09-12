@@ -1,6 +1,6 @@
 import { Icon } from '@rneui/themed';
 import * as React from 'react';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList, BackHandler, Dimensions } from 'react-native';
+import {  StyleSheet, Text, View, FlatList, BackHandler, Dimensions } from 'react-native';
 import HomeContext from '../../context/HomeContext/HomeContext';
 import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
 import { InputLookForAlbumMusic } from '../../src/components/Components';

@@ -11,7 +11,6 @@ import { getMessage } from "../../src/components/Messages";
 import { Icon } from "@rneui/base";
 import { checkOnlySpaces, validateEmail, validateName, validatePassword, validatePassword1 } from "../../src/services/Validations";
 import DatePicker from 'react-native-date-picker'
-import { Button } from "react-native";
 import imageHeader from "../../assets/images/HeaderLogo.jpg"
 
 export const Register = ({ navigation }) => {

@@ -2,8 +2,7 @@ import { View, Text, StyleSheet, Image, Dimensions, ScrollView, TouchableOpacity
 import React, { useContext } from "react";
 import { StatusBar } from 'expo-status-bar';
 
-import { ButtonOwn, Indicator, InputText } from "../../src/components/Components";
-import logo from "../../assets/images/logo.jpg";
+import { ButtonOwn, InputText } from "../../src/components/Components";
 
 import guitarImg from "../../assets/images/guitarImg.png";
 

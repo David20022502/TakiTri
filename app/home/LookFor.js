@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Dimensions, TouchableOpacity, FlatList, BackHandler } from 'react-native';
-import { ButtonOwnHeader, InputLookFor } from '../../src/components/Components';
+import { Text, View, StyleSheet, Dimensions, FlatList, BackHandler } from 'react-native';
+import {  InputLookFor } from '../../src/components/Components';
 import { MusicItem } from '../../src/Items/MusicItem';
 import { lokForSongs } from '../../src/services/MusicServices';
 

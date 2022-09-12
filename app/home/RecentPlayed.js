@@ -2,7 +2,6 @@ import { useIsFocused } from "@react-navigation/native";
 import { Icon } from "@rneui/base";
 import React from "react";
 import { BackHandler, Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
-import { createIconSetFromFontello } from "react-native-vector-icons";
 import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
 import { MusicItem } from "../../src/Items/MusicItem";
 import { getRecentPlayed } from "../../src/services/DataBase";

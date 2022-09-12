@@ -1,18 +1,10 @@
-import { useNavigation } from "@react-navigation/native";
-import { Avatar } from "@rneui/themed";
 import React, { useContext } from "react";
-import { Alert, BackHandler, Dimensions, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {  BackHandler, Dimensions, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import HomeContext from "../../../context/HomeContext/HomeContext";
-import { InputAddLookFor, InputLookFor, InputTextAdd } from "../../../src/components/Components";
-import { AlbumItem } from "../../../src/Items/AlbumItem";
-import { getAlbumes, lokForSongs } from "../../../src/services/MusicServices";
+import { InputAddLookFor } from "../../../src/components/Components";
+import {  lokForSongs } from "../../../src/services/MusicServices";
 import { Button } from '@rneui/themed';
 
-import {
-    launchImageLibraryAsync,
-    MediaTypeOptions,
-    useMediaLibraryPermissions,
-} from "expo-image-picker";
 import { MusicItem } from "../../../src/Items/MusicItem";
 import { Icon } from "@rneui/base";
 export const AddMusicPlayList = (props) => {
@@ -22,7 +14,7 @@ export const AddMusicPlayList = (props) => {
     try {
         musicList1.current = props.route.params.musicList;
     } catch (e) {
-
+        console.log(e);
     }
     const { handlePushPlayListMusicAdded, musicListPlayList, handleIsonlongPress, selectedList, handleDeleteSelectedList, handlePushSelectedList } = useContext(HomeContext);
     const [inputLookFor, setInputLookFor] = React.useState("");

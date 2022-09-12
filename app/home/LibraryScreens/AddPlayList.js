@@ -1,19 +1,15 @@
-import { useNavigation } from "@react-navigation/native";
 import { Avatar } from "@rneui/themed";
 import React, { useContext, useRef } from "react";
-import { Alert, BackHandler, Dimensions, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, BackHandler, ScrollView, StyleSheet, Text, View } from "react-native";
 import HomeContext from "../../../context/HomeContext/HomeContext";
-import { ButtonOwn, ButtonOwnAddPlayList, ButtonOwnHeader, InputAddLookFor, InputLookFor, InputTextAdd } from "../../../src/components/Components";
-import { AlbumItem } from "../../../src/Items/AlbumItem";
-import { getAlbumes, getLikedSongById, handleSubmitPlayList, lokForSongs, handleUpdatePlayList } from "../../../src/services/MusicServices";
+import {  ButtonOwnAddPlayList, InputTextAdd } from "../../../src/components/Components";
+import { getLikedSongById, handleSubmitPlayList, handleUpdatePlayList } from "../../../src/services/MusicServices";
 import {
     launchImageLibraryAsync,
     MediaTypeOptions,
-    useMediaLibraryPermissions,
 } from "expo-image-picker";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-import { MusicItem } from "../../../src/Items/MusicItem";
 import TakiTriContext from "../../../context/SecurityContext/TakiTriContext";
 import { getMessage } from "../../../src/components/Messages";
 import { checkOnlySpaces, validateAlfaNumeric } from "../../../src/services/Validations";

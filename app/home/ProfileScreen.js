@@ -1,18 +1,15 @@
-import { StyleSheet, TouchableOpacity, View, TextInput, ScrollView } from 'react-native'
+import { StyleSheet, View, ScrollView } from 'react-native'
 import React, { useState } from 'react'
-import { useTheme, Text } from 'react-native-paper'
-//import * as styles from '../../assets/styles/appStyles'
-import Feather from 'react-native-vector-icons/Feather'
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import { Text } from 'react-native-paper'
+
 import { Avatar, Icon } from '@rneui/themed'
 import {
   launchImageLibraryAsync,
   MediaTypeOptions,
-  useMediaLibraryPermissions,
 } from "expo-image-picker";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-import { ButtonOwn, ButtonOwnAddPlayList, InputTextInfo } from '../../src/components/Components'
+import {  ButtonOwnAddPlayList, InputTextInfo } from '../../src/components/Components'
 import TakiTriContext from '../../context/SecurityContext/TakiTriContext'
 import { getMessage } from '../../src/components/Messages'
 import DatePicker from 'react-native-date-picker'
@@ -21,7 +18,7 @@ import { useIsFocused } from '@react-navigation/native'
 
 export const ProfileScreen = () => {
   global.pageStatus = "ProfileScreen";
-  const { userTakiTri, handleLoading, handleUpdateUser, handlePaddingSnackBar, handleError } = React.useContext(TakiTriContext)
+  const { userTakiTri, handleLoading, handleUpdateUser, handleError } = React.useContext(TakiTriContext)
   const [imageUser, setImageUser] = React.useState(userTakiTri.imageUser);
   const [nameUser, setNameUser] = React.useState(userTakiTri.names);
   const [lastNameUser, setLastNameUser] = React.useState(userTakiTri.lastName);

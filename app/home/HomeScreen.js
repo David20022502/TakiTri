@@ -1,17 +1,7 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { ButtonOwnHeader } from '../../src/components/Components';
-import { Icon } from '@rneui/themed';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import { openDatabase } from "expo-sqlite";
-import { MainHome } from './HomeScreens/MainHome';
-import { TrendHome } from './HomeScreens/TrendHome';
-import { FavoriteHome } from './HomeScreens/FavoriteHome';
 import { AlbumItem } from '../../src/Items/AlbumItem';
-import MusicRecent from "../../assets/images/MusicRecent.jpg";
-import favorites from "../../assets/images/favorites.jpg";
-import playList from "../../assets/images/playList.jpg";
-import madeForYou from "../../assets/images/madeForYou.jpg";
 
 import FondoEcuador from "../../assets/images/FondoEcuador.png";
 
@@ -23,7 +13,7 @@ import favoritosImg from "../../assets/images/favoritosImg.png";
 
 import HomeContext from '../../context/HomeContext/HomeContext';
 
-import { createTableDatabase, deleteDataBase, getMaxNumberDataBase, getRecentPlayed } from '../../src/services/DataBase';
+import { createTableDatabase, getMaxNumberDataBase, getRecentPlayed } from '../../src/services/DataBase';
 import TakiTriContext from '../../context/SecurityContext/TakiTriContext';
 import { getAlbumes } from '../../src/services/MusicServices';
 import { useIsFocused } from '@react-navigation/native';

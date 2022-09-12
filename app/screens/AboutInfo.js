@@ -1,8 +1,7 @@
 import React from "react"
 import Constants from "expo-constants"
 
-import { Image, StyleSheet, Text, View } from "react-native";
-import logo from "../../assets/images/logoAppSplash.png";
+import {  StyleSheet, Text, View } from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import TakiTriContext from "../../context/SecurityContext/TakiTriContext";
 export const AboutInfo = () => {

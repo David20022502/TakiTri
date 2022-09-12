@@ -1,6 +1,3 @@
-import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { FAB } from "@rneui/base";
-import { FloatingAction } from "react-native-floating-action";
 
 import { Icon } from "@rneui/themed";
 import React, { useContext } from "react";
@@ -8,7 +5,7 @@ import { Alert, BackHandler, Dimensions, FlatList, StyleSheet, Text, TouchableOp
 import HomeContext from "../../../context/HomeContext/HomeContext";
 import TakiTriContext from "../../../context/SecurityContext/TakiTriContext";
 import { AlbumItem } from "../../../src/Items/AlbumItem";
-import { getAlbumes, getPlayLists, handleDeletePlayList } from "../../../src/services/MusicServices";
+import {  getPlayLists, handleDeletePlayList } from "../../../src/services/MusicServices";
 export const MyPlayList = ({ navigation }) => {
     global.pageStatus = "MyPlayList";
     const { handlePushPlayListMusicAdded, handleIsToUpdatePlayList, isToUpdatePlayList, isOnLongPress, handleIsonlongPress, selectedList, handleDeleteSelectedList, handleMessageError, handleIsModalErrorVisible } = useContext(HomeContext);
