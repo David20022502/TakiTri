@@ -88,6 +88,8 @@ const validatIncrementDecrement = (item1, item2) => {
     let result = item1 - item2;
     return result;
 };
+//cambios
+
 const validateNumsequentialDecrement = (ValueNum) => {
     let verifySecuential = [];
     for (let i = 0; i < ValueNum.length - 1; i++) {
